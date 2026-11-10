@@ -1,0 +1,535 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Alidade</title>
+<meta name="description" content="Alidade : les ressources pédagogiques interactives de Marc Poupée. Teaching resources by Marc Poupée.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@1,500;1,600&family=Cormorant+SC:wght@500;600;700&family=Karla:wght@400;500;700&family=Spline+Sans+Mono:wght@400;500&display=swap">
+<style>
+/* Concept : une même carte, lue de jour comme un portulan, lue de nuit comme un ciel.
+   Les îles deviennent des constellations ; au centre, une rose des vents fondue dans un sextant. */
+:root{
+  --page:#D8E1DB; --paper:#E8EEE9; --paper-2:#DCE4DE; --card:#F2F5F1; --line:#AFBDB5;
+  --ink:#1B2340; --ink-2:#4A5574;
+  --rh-a:#1B2340; --rh-b:#3B7A66; --rh-c:#A33240; --rh-op:.3;
+  --acad:#2E6E5B; --asso:#1F497D; --ludo:#8F6B0E; --brass:#8F6B0E;
+  --star:#1B2340; --halo-op:0; --cdash:2 5; --cop:.75; --coast-dash:none; --land-op:1;
+  --day:1; --night:0;
+  --f-disp:"Cormorant SC","Cormorant Garamond",Garamond,"Times New Roman",serif;
+  --f-ital:"Cormorant Garamond",Garamond,"Times New Roman",serif;
+  --f-body:"Karla",system-ui,-apple-system,"Segoe UI",sans-serif;
+  --f-mono:"Spline Sans Mono",ui-monospace,Menlo,Consolas,monospace;
+}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
+  --page:#090F26; --paper:#0E1532; --paper-2:#161F45; --card:#131B3D; --line:#2C386A;
+  --ink:#E9E3CC; --ink-2:#A1AACA;
+  --rh-a:#3D4A86; --rh-b:#3D4A86; --rh-c:#3D4A86; --rh-op:.5;
+  --acad:#7FCDB4; --asso:#97BCEF; --ludo:#E8C670; --brass:#E8C670;
+  --star:#FFF5D8; --halo-op:.6; --cdash:none; --cop:.85; --coast-dash:2 6; --land-op:.12;
+  --day:0; --night:1; color-scheme:dark}}
+:root[data-theme="dark"]{
+  --page:#090F26; --paper:#0E1532; --paper-2:#161F45; --card:#131B3D; --line:#2C386A;
+  --ink:#E9E3CC; --ink-2:#A1AACA;
+  --rh-a:#3D4A86; --rh-b:#3D4A86; --rh-c:#3D4A86; --rh-op:.5;
+  --acad:#7FCDB4; --asso:#97BCEF; --ludo:#E8C670; --brass:#E8C670;
+  --star:#FFF5D8; --halo-op:.6; --cdash:none; --cop:.85; --coast-dash:2 6; --land-op:.12;
+  --day:0; --night:1; color-scheme:dark}
+
+*{box-sizing:border-box}
+[hidden]{display:none!important}
+html{scroll-behavior:smooth}
+body{margin:0;background:var(--page);color:var(--ink);font-family:var(--f-body);font-size:17px;line-height:1.55;transition:background-color 1.2s,color 1.2s;
+  padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));padding-block:0 32px}
+a{color:inherit}
+:focus-visible{outline:2px solid var(--brass);outline-offset:3px}
+.wrap{max-width:1280px;margin:0 auto}
+.vh{position:absolute!important;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
+.skip{position:absolute;left:-999px}.skip:focus{left:16px;top:8px;background:var(--card);padding:6px 10px;z-index:9}
+
+/* Bandeau */
+.mast{display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:14px 24px;padding-block:22px 18px}
+.brand{display:flex;align-items:center;gap:14px;text-decoration:none}
+.logo{width:52px;height:52px;flex:none}
+.brand h1{font-family:var(--f-disp);font-weight:600;font-size:2.5rem;line-height:.9;margin:0;letter-spacing:.06em}
+.tag{margin:4px 0 0;font-family:var(--f-ital);font-style:italic;font-size:1.15rem;color:var(--ink-2);line-height:1.2}
+.controls{display:flex;gap:10px;align-items:center;flex-wrap:wrap}
+.seg{display:flex;border:1px solid var(--line);border-radius:999px;padding:3px;background:var(--card)}
+.seg button{border:0;background:none;font:inherit;font-family:var(--f-mono);font-size:.82rem;letter-spacing:.08em;color:var(--ink-2);padding:5px 12px;border-radius:999px;cursor:pointer}
+.seg button[aria-pressed="true"]{background:var(--ink);color:var(--paper)}
+.sky{display:flex;align-items:center;gap:9px;border:1px solid var(--line);background:var(--card);color:var(--ink);border-radius:999px;padding:7px 15px 7px 11px;cursor:pointer;
+  font:inherit;font-family:var(--f-disp);font-weight:600;font-size:1.05rem;letter-spacing:.06em}
+.sky svg{width:20px;height:20px}
+.sky:hover,.seg:hover{border-color:var(--brass)}
+
+/* Carte */
+.frame{position:relative;border-radius:4px;overflow:hidden;box-shadow:0 1px 0 var(--line),0 18px 40px -28px rgba(10,16,40,.45)}
+#map{display:block;width:100%;height:auto;background:var(--paper);transition:background-color 1.2s}
+.hint{font-family:var(--f-ital);font-style:italic;font-size:1.05rem;color:var(--ink-2);margin:10px 2px 0;max-width:80ch}
+
+.day-only{opacity:var(--day);transition:opacity 1.2s ease}
+.night-only{opacity:var(--night);transition:opacity 1.2s ease}
+.sea{fill:var(--paper);transition:fill 1.2s}
+.rh{stroke-width:1;opacity:var(--rh-op);transition:stroke 1.2s,opacity 1.2s}
+.rh-a{stroke:var(--rh-a)}.rh-b{stroke:var(--rh-b)}.rh-c{stroke:var(--rh-c)}
+.rcircle{fill:none;stroke:var(--ink-2);stroke-width:.8;stroke-dasharray:2 6;opacity:.45}
+.rnode{fill:var(--paper);stroke:var(--ink-2);stroke-width:.8}
+.sound{font-family:var(--f-ital);font-style:italic;font-size:12px;fill:var(--ink-2)}
+.sf{fill:var(--star)}
+.tw{animation:tw 3.6s ease-in-out infinite}
+@keyframes tw{50%{opacity:.25}}
+.g-acad{--c:var(--acad)}.g-asso{--c:var(--asso)}.g-ludo{--c:var(--ludo)}
+.land{fill:var(--c);opacity:calc(.13 * var(--land-op));transition:opacity 1.2s}
+.hatch{opacity:calc(.9 * var(--land-op));transition:opacity 1.2s}
+.hl{stroke:var(--c);stroke-width:1.1}
+.coast-halo{fill:none;stroke:var(--c);stroke-width:8;opacity:.2;stroke-linejoin:round}
+.coast{fill:none;stroke:var(--ink);stroke-width:1.5;stroke-dasharray:var(--coast-dash);stroke-linejoin:round;transition:stroke 1.2s}
+.cline{fill:none;stroke:var(--c);stroke-width:1.4;stroke-dasharray:var(--cdash);opacity:var(--cop);stroke-linecap:round}
+.st{cursor:pointer;outline:none}
+.st .halo{fill:var(--c);opacity:var(--halo-op);filter:url(#blur);transition:opacity 1.2s}
+.st .ring{fill:var(--paper);stroke:var(--c);stroke-width:1.6}
+.st .s4{fill:var(--star);transition:fill 1.2s}
+.st .hit{fill:transparent}
+.st .core{transition:transform .25s ease;transform-box:fill-box;transform-origin:center}
+.st:hover .core,.st:focus-visible .core,.st.on .core{transform:scale(1.45)}
+.st:focus-visible .ring{stroke:var(--brass);stroke-width:2.5}
+.minor{fill:var(--star);opacity:.7}
+.slabel{font-family:var(--f-disp);font-weight:600;font-size:15px;letter-spacing:.04em;fill:var(--ink);paint-order:stroke;stroke:var(--paper);stroke-width:4px;stroke-linejoin:round;pointer-events:none;transition:fill 1.2s}
+.alab{font-family:var(--f-ital);font-style:italic;font-weight:600;font-size:27px;fill:var(--c);paint-order:stroke;stroke:var(--paper);stroke-width:5px}
+.asub{font-family:var(--f-disp);font-size:13px;letter-spacing:.14em;fill:var(--ink-2);paint-order:stroke;stroke:var(--paper);stroke-width:4px}
+.em-bg{fill:var(--paper);transition:fill 1.2s}
+.em-ring{fill:none;stroke:var(--ink);stroke-width:1.2}
+.tick{stroke:var(--ink);stroke-width:1}
+.deg{font-family:var(--f-mono);font-size:9.5px;fill:var(--ink-2)}
+.card-n{font-family:var(--f-disp);font-weight:700;font-size:17px;fill:var(--ink)}
+.rose-d{fill:var(--ink);transition:fill 1.2s}
+.rose-l{fill:var(--paper);stroke:var(--ink);stroke-width:.9;transition:fill 1.2s}
+.hub{fill:var(--brass);stroke:var(--ink);stroke-width:1}
+.sx{transition:transform 1s cubic-bezier(.3,.7,.2,1)}
+.limb{fill:none;stroke:var(--brass);stroke-width:13;opacity:.9}
+.limb-t{stroke:var(--paper);stroke-width:1}
+.limb-n{font-family:var(--f-mono);font-size:9px;fill:var(--ink-2)}
+.frm{fill:none;stroke:var(--brass);stroke-width:3;stroke-linecap:round}
+.arm{stroke:var(--ink);stroke-width:3.2;stroke-linecap:round}
+.vern{fill:var(--paper);stroke:var(--ink);stroke-width:1.4}
+.scope{fill:var(--paper-2);stroke:var(--ink);stroke-width:1.2}
+.readout{font-family:var(--f-mono);font-size:13px;letter-spacing:.08em;fill:var(--ink)}
+.readout2{font-family:var(--f-ital);font-style:italic;font-size:19px;fill:var(--ink-2)}
+.cart{fill:var(--paper);stroke:var(--ink);stroke-width:1.2}
+.cart2{fill:none;stroke:var(--ink);stroke-width:.6}
+.ct1{font-family:var(--f-disp);font-weight:600;font-size:19px;letter-spacing:.16em;fill:var(--ink)}
+.ct2{font-family:var(--f-ital);font-style:italic;font-size:17px;fill:var(--ink-2)}
+.scale-a{fill:var(--ink)}.scale-b{fill:var(--paper);stroke:var(--ink);stroke-width:.8}
+.scale-n{font-family:var(--f-mono);font-size:9.5px;fill:var(--ink-2)}
+.bord{fill:none;stroke:var(--ink);stroke-width:1}
+.bseg{fill:var(--ink)}
+
+/* Fiche d'escale */
+.card{position:absolute;z-index:3;width:min(330px,calc(100% - 24px));background:var(--card);color:var(--ink);border:1px solid var(--line);border-radius:4px;padding:14px 16px 13px;
+  box-shadow:0 14px 30px -18px rgba(8,12,30,.55);transition:opacity .2s}
+.c-eye{margin:0;font-family:var(--f-disp);font-weight:600;font-size:.86rem;letter-spacing:.12em;color:var(--c)}
+.card h3{margin:2px 0 6px;font-family:var(--f-ital);font-style:italic;font-weight:600;font-size:1.55rem;line-height:1.1;text-wrap:balance}
+.c-desc{margin:0 0 10px;font-size:.95rem}
+.card dl{margin:0 0 8px;display:grid;grid-template-columns:auto 1fr;gap:2px 12px;font-size:.86rem}
+.card dl div{display:contents}
+.card dt{color:var(--ink-2)}.card dd{margin:0}
+.c-pos{margin:0 0 10px;font-family:var(--f-mono);font-size:.74rem;color:var(--ink-2);letter-spacing:.02em}
+.c-foot{display:flex;align-items:center;justify-content:space-between;gap:10px}
+.pill{font-family:var(--f-mono);font-size:.72rem;letter-spacing:.06em;text-transform:uppercase;border:1px dashed var(--brass);color:var(--brass);border-radius:3px;padding:2px 7px;white-space:nowrap}
+.pill.publie{border-style:solid;color:var(--acad);border-color:var(--acad)}
+.go{font-family:var(--f-disp);font-weight:700;font-size:1.05rem;letter-spacing:.06em;text-decoration:none;border-bottom:1.5px solid var(--brass)}
+.go:hover{color:var(--brass)}
+
+/* À propos + légende */
+.about{display:grid;grid-template-columns:minmax(0,1.4fr) minmax(0,1fr);gap:28px;margin:40px 0 8px;align-items:start}
+@media (max-width:820px){.about{grid-template-columns:minmax(0,1fr)}}
+.about p.lead{margin:0;font-family:var(--f-ital);font-style:italic;font-size:1.45rem;line-height:1.35;max-width:46ch;text-wrap:pretty}
+.legend{border-top:1px solid var(--ink);padding-top:10px;font-size:.92rem}
+.legend h2{margin:0 0 6px;font-family:var(--f-disp);font-weight:600;font-size:1rem;letter-spacing:.14em}
+.legend ul{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:6px}
+.legend li{display:grid;grid-template-columns:28px 1fr;gap:8px;align-items:center}
+.legend svg{width:28px;height:18px}
+
+/* Registre */
+.register{margin-top:44px}
+.register>h2{font-family:var(--f-disp);font-weight:600;font-size:1.9rem;letter-spacing:.08em;margin:0 0 4px}
+.register>p{margin:0 0 18px;color:var(--ink-2);font-family:var(--f-ital);font-style:italic;font-size:1.1rem}
+.grp{display:grid;grid-template-columns:minmax(200px,260px) minmax(0,1fr);gap:8px 28px;padding:18px 0;border-top:2px solid var(--ink)}
+@media (max-width:760px){.grp{grid-template-columns:minmax(0,1fr)}}
+.grp header{display:flex;gap:10px;align-items:flex-start}
+.gmark{width:22px;height:22px;flex:none;margin-top:4px}
+.gmark path{fill:var(--c)}
+.grp h3{margin:0;font-family:var(--f-ital);font-style:italic;font-weight:600;font-size:1.5rem;line-height:1.1;color:var(--c)}
+.grp header p{margin:2px 0 0;font-family:var(--f-disp);font-size:.9rem;letter-spacing:.1em;color:var(--ink-2)}
+.grp ul{list-style:none;margin:0;padding:0}
+.row{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:2px 16px;padding:11px 4px;border-bottom:1px solid var(--line);text-decoration:none;align-items:baseline;transition:background-color .2s}
+.row:hover,.row:focus-visible{background:var(--paper-2)}
+.r-t{font-family:var(--f-disp);font-weight:600;font-size:1.2rem;letter-spacing:.03em;line-height:1.2}
+.r-d{grid-column:1;font-size:.95rem;color:var(--ink);max-width:70ch}
+.r-m{grid-column:1;font-family:var(--f-mono);font-size:.74rem;color:var(--ink-2)}
+.row .pill{grid-column:2;grid-row:1}
+.foot{margin-top:46px;border-top:1px solid var(--line);padding-top:16px;display:flex;flex-wrap:wrap;gap:8px 24px;justify-content:space-between;font-size:.86rem;color:var(--ink-2)}
+.foot p{margin:0;max-width:70ch}
+.sig{font-family:var(--f-ital);font-style:italic;font-size:1.15rem;color:var(--ink)}
+
+@media (max-width:640px){
+  .brand h1{font-size:2rem}.logo{width:42px;height:42px}
+  .slabel{display:none}
+  .about p.lead{font-size:1.25rem}
+}
+@media (prefers-reduced-motion:reduce){
+  *,*::before,*::after{animation:none!important;transition-duration:.01ms!important}
+  html{scroll-behavior:auto}
+}
+</style>
+</head>
+<body>
+
+<a class="skip" href="#registre" id="skip">Registre</a>
+<div class="wrap">
+  <header class="mast">
+    <a class="brand" href="./" aria-label="Alidade">
+      <svg class="logo" viewBox="-50 -50 100 100" aria-hidden="true">
+        <circle r="44" fill="none" stroke="currentColor" stroke-width="2.4"/>
+        <path d="M0 -40 L6 0 L0 40 L-6 0Z M-40 0 L0 -6 L40 0 L0 6Z" fill="currentColor"/>
+        <path d="M-27 33 A44 44 0 0 0 27 33" fill="none" stroke="var(--brass)" stroke-width="7"/>
+        <path d="M0 0 L10 47" stroke="var(--brass)" stroke-width="3.5" stroke-linecap="round"/>
+        <circle r="4.5" fill="var(--brass)" stroke="currentColor" stroke-width="1.5"/>
+      </svg>
+      <div><h1>Alidade</h1><p class="tag" data-i18n="tagline"></p></div>
+    </a>
+    <div class="controls">
+      <div class="seg" role="group" aria-label="Langue · Language">
+        <button type="button" data-lang="fr" aria-pressed="false">FR</button>
+        <button type="button" data-lang="en" aria-pressed="false">EN</button>
+      </div>
+      <button type="button" class="sky" id="sky"><svg id="skyI" viewBox="0 0 24 24" aria-hidden="true"></svg><span id="skyT"></span></button>
+    </div>
+  </header>
+
+  <main>
+    <section aria-labelledby="chartT">
+      <h2 class="vh" id="chartT" data-i18n="chartTitle"></h2>
+      <div class="frame" id="frame">
+        <svg id="map" viewBox="0 0 1200 800" role="group" aria-labelledby="chartT"></svg>
+        <div class="card" id="card" hidden></div>
+      </div>
+      <p class="hint" data-i18n="hint"></p>
+    </section>
+
+    <section class="about">
+      <p class="lead" data-i18n="about"></p>
+      <div class="legend">
+        <h2 data-i18n="legendT"></h2>
+        <ul>
+          <li><svg viewBox="-14 -9 28 18" aria-hidden="true"><circle r="7" fill="var(--paper)" stroke="var(--asso)" stroke-width="1.5"/><path d="M0 -6 L1.5 -1.5 L6 0 L1.5 1.5 L0 6 L-1.5 1.5 L-6 0 L-1.5 -1.5Z" fill="var(--star)"/></svg><span data-i18n="lg1"></span></li>
+          <li><svg viewBox="0 0 28 18" aria-hidden="true"><path d="M2 9 H26" stroke="var(--ludo)" stroke-width="1.6" stroke-dasharray="2 4" stroke-linecap="round"/></svg><span data-i18n="lg2"></span></li>
+          <li><svg viewBox="0 0 28 18" aria-hidden="true"><path d="M4 15 A14 14 0 0 1 24 15" fill="none" stroke="var(--brass)" stroke-width="4"/><path d="M14 16 L18 3" stroke="var(--ink)" stroke-width="2"/></svg><span data-i18n="lg3"></span></li>
+        </ul>
+      </div>
+    </section>
+
+    <section class="register" id="registre" aria-labelledby="regT">
+      <h2 id="regT" data-i18n="register"></h2>
+      <p data-i18n="registerSub"></p>
+      <div id="groups"></div>
+    </section>
+  </main>
+
+  <footer class="foot">
+    <p class="sig" data-i18n="sig"></p>
+    <p data-i18n="licence"></p>
+    <p data-i18n="disclaimer"></p>
+  </footer>
+</div>
+
+<script src="assets/resources.js"></script>
+<script>
+(function(){
+"use strict";
+const D=window.ALIDADE||{archipelagos:[],resources:[]};
+const W=1200,H=800,CX=600,CY=410;
+const SVGNS="http://www.w3.org/2000/svg";
+const $=s=>document.querySelector(s);
+
+const T={
+ fr:{tagline:"Viser, apprendre, faire le point",chartTitle:"Carte des escales pédagogiques",
+  hint:"Survolez une étoile pour viser une escale, cliquez pour accoster. « Lire le ciel » change la carte en ciel nocturne : les îles deviennent des constellations.",
+  hintTouch:"Touchez une étoile pour viser une escale. « Lire le ciel » change la carte en ciel nocturne : les îles deviennent des constellations.",
+  readSky:"Lire le ciel",readChart:"Lire la carte",
+  about:"Alidade rassemble mes ressources pédagogiques interactives : enseignements à Géodata Paris et dans le master FIRS, formations associatives au CNIF, projets ludo-éducatifs. Chaque ressource est une escale, et toutes sont en chantier : elles évoluent au fil des séances.",
+  legendT:"Lire la carte",lg1:"Une escale : une ressource. La nuit, elle devient une étoile.",lg2:"Les routes entre escales du même archipel, qui forment ses constellations.",lg3:"L'alidade du sextant vise l'escale que vous survolez.",
+  register:"Registre des escales",registerSub:"Toutes les ressources, archipel par archipel.",
+  public:"Public",duration:"Durée",langs:"Langues",position:"Position",bearing:"Relèvement",go:"Accoster",
+  chantier:"En chantier",publie:"En ligne",
+  cart1:"CARTE DES ESCALES",cart2:"levée par Marc Poupée · MMXXVI",scale:"heures d'apprentissage",
+  readIdle:"VISEZ UNE ESCALE",
+  sig:"Marc Poupée",licence:"Contenus sous licence Creative Commons BY-NC 4.0. Site hébergé sur GitHub Pages.",
+  disclaimer:"Géodata Paris, AgroParisTech, le CNIF et AWA sont cités pour situer les ressources ; ce site personnel n'engage pas ces structures.",
+  skip:"Aller au registre des escales"},
+ en:{tagline:"Aim, learn, take a fix",chartTitle:"Chart of learning ports",
+  hint:"Hover a star to sight a port, click to go ashore. “Read the sky” turns the chart into a night sky: the islands become constellations.",
+  hintTouch:"Tap a star to sight a port. “Read the sky” turns the chart into a night sky: the islands become constellations.",
+  readSky:"Read the sky",readChart:"Read the chart",
+  about:"Alidade gathers my interactive teaching resources: courses at Géodata Paris and in the FIRS master's programme, sailing club training at the CNIF, and playful learning projects. Each resource is a port of call, and all of them are under construction: they evolve with every session.",
+  legendT:"Reading the chart",lg1:"A port of call is a resource. At night, it becomes a star.",lg2:"Routes between ports of the same archipelago, which draw its constellations.",lg3:"The sextant's alidade sights the port you hover.",
+  register:"Harbour register",registerSub:"Every resource, archipelago by archipelago.",
+  public:"Audience",duration:"Duration",langs:"Languages",position:"Position",bearing:"Bearing",go:"Go ashore",
+  chantier:"Under construction",publie:"Live",
+  cart1:"CHART OF PORTS OF CALL",cart2:"surveyed by Marc Poupée · MMXXVI",scale:"hours of learning",
+  readIdle:"SIGHT A PORT",
+  sig:"Marc Poupée",licence:"Content licensed under Creative Commons BY-NC 4.0. Hosted on GitHub Pages.",
+  disclaimer:"Géodata Paris, AgroParisTech, the CNIF and AWA are named to place the resources in context; this personal site does not speak for them.",
+  skip:"Skip to the harbour register"}
+};
+const store={get(k){try{return localStorage.getItem(k)}catch(e){return null}},set(k,v){try{localStorage.setItem(k,v)}catch(e){}}};
+let lang=store.get("alidade-lang")||((navigator.language||"fr").toLowerCase().startsWith("fr")?"fr":"en");
+const t=k=>(T[lang]&&T[lang][k])||T.fr[k]||k;
+const L=o=>o?(o[lang]||o.fr||""):"";
+const touch=window.matchMedia("(hover: none)").matches;
+
+/* Thème jour / nuit */
+const savedTheme=store.get("alidade-theme");
+if(savedTheme==="light"||savedTheme==="dark") document.documentElement.setAttribute("data-theme",savedTheme);
+const isNight=()=>{const a=document.documentElement.getAttribute("data-theme");return a?a==="dark":window.matchMedia("(prefers-color-scheme: dark)").matches;};
+
+/* Hasard reproductible : la carte est identique à chaque visite */
+function rng(seed){return function(){seed|=0;seed=seed+0x6D2B79F5|0;let x=Math.imul(seed^seed>>>15,1|seed);x=x+Math.imul(x^x>>>7,61|x)^x;return((x^x>>>14)>>>0)/4294967296;};}
+function blob(cx,cy,R,seed,n){n=n||64;const r=rng(seed);
+ const comps=[[2,.16],[3,.12],[4,.08],[5,.06],[7,.04],[11,.022],[17,.012]].map(([k,a])=>({k,a:a*(.5+r()),p:r()*6.2832}));
+ const pts=[];for(let i=0;i<n;i++){const th=i/n*6.2832;let f=1;for(const c of comps)f+=c.a*Math.sin(c.k*th+c.p);pts.push([cx+Math.cos(th)*R*f,cy+Math.sin(th)*R*f*.82]);}
+ return pts;}
+function smooth(p){const n=p.length;let d="";for(let i=0;i<n;i++){const a=p[(i-1+n)%n],b=p[i],c=p[(i+1)%n],e=p[(i+2)%n];
+ if(i===0)d+=`M${b[0].toFixed(1)} ${b[1].toFixed(1)}`;
+ d+=`C${(b[0]+(c[0]-a[0])/6).toFixed(1)} ${(b[1]+(c[1]-a[1])/6).toFixed(1)} ${(c[0]-(e[0]-b[0])/6).toFixed(1)} ${(c[1]-(e[1]-b[1])/6).toFixed(1)} ${c[0].toFixed(1)} ${c[1].toFixed(1)}`;}
+ return d+"Z";}
+const clamp=(v,a,b)=>Math.max(a,Math.min(b,v));
+const STAR4="M0 -9 L2.3 -2.3 L9 0 L2.3 2.3 L0 9 L-2.3 2.3 L-9 0 L-2.3 -2.3Z";
+
+/* Géométrie des archipels */
+const archById={};
+const ARCH=D.archipelagos.map(a=>{
+ archById[a.id]=a;
+ const res=D.resources.filter(x=>x.arch===a.id), n=res.length;
+ const R=62+12*Math.max(n,1), [cx,cy]=a.center, r=rng(a.seed*977+13);
+ const main=blob(cx,cy,R,a.seed);
+ const start=r()*6.2832;
+ const stars=res.map((x,i)=>{
+  if(n===1) return {res:x,x:cx+R*.12,y:cy-R*.08};
+  const th=start+i/n*6.2832+(r()-.5)*.45, rr=R*(.4+r()*.22);
+  return {res:x,x:cx+Math.cos(th)*rr,y:cy+Math.sin(th)*rr*.82};
+ });
+ const m=n>=3?2:3, islets=[];
+ for(let i=0;i<m;i++){
+  const th=start+(i+.5)/m*6.2832+(r()-.5)*.7, d=R*(1.28+r()*.22);
+  const ix=clamp(cx+Math.cos(th)*d,50,W-50), iy=clamp(cy+Math.sin(th)*d*.82,50,H-50), rs=9+r()*11;
+  islets.push({x:ix,y:iy,rs,pts:blob(ix,iy,rs,a.seed*31+i*7,28)});
+ }
+ const pts=stars.map(s=>({x:s.x,y:s.y})).concat(islets.map(s=>({x:s.x,y:s.y})));
+ pts.sort((p,q)=>Math.atan2(p.y-cy,p.x-cx)-Math.atan2(q.y-cy,q.x-cx));
+ let worst=0,wi=pts.length-1;
+ for(let i=0;i<pts.length;i++){const p=pts[i],q=pts[(i+1)%pts.length];const dd=Math.hypot(p.x-q.x,p.y-q.y);if(dd>worst){worst=dd;wi=i;}}
+ const order=pts.slice(wi+1).concat(pts.slice(0,wi+1));
+ return {a,res,n,R,main,stars,islets,order};
+});
+
+/* Construction du SVG */
+function el(tag,attrs,parent,text){const e=document.createElementNS(SVGNS,tag);for(const k in attrs)e.setAttribute(k,attrs[k]);if(text!=null)e.textContent=text;if(parent)parent.appendChild(e);return e;}
+let sxEl=null, sxAngle=0, readEl=null, read2El=null;
+
+function build(){
+ const svg=$("#map"); svg.innerHTML="";
+ const defs=el("defs",{},svg);
+ const f=el("filter",{id:"blur",x:"-100%",y:"-100%",width:"300%",height:"300%"},defs); el("feGaussianBlur",{stdDeviation:"5"},f);
+ for(const g of ARCH){const p=el("pattern",{id:"h-"+g.a.hue,width:"6",height:"6",patternUnits:"userSpaceOnUse",patternTransform:"rotate(35)"},defs);
+  el("line",{x1:"0",y1:"0",x2:"0",y2:"6",class:"hl g-"+g.a.hue},p);}
+ el("rect",{class:"sea",x:"0",y:"0",width:W,height:H},svg);
+
+ /* Ciel étoilé (nuit) */
+ const sky=el("g",{class:"night-only","aria-hidden":"true"},svg), rs=rng(7);
+ for(let i=0;i<280;i++){const c=el("circle",{class:"sf"+(i%9===0?" tw":""),cx:(rs()*W).toFixed(1),cy:(rs()*H).toFixed(1),r:(.35+rs()*rs()*1.3).toFixed(2),opacity:(.35+rs()*.6).toFixed(2)},sky);
+  if(i%9===0)c.style.animationDelay=(rs()*3.6).toFixed(2)+"s";}
+
+ /* Lignes de rhumb : 8 vents (encre), 8 demi-vents (vert), 16 quarts (rouge) */
+ const rh=el("g",{"aria-hidden":"true"},svg);
+ for(let i=0;i<32;i++){const th=i*Math.PI/16, cls=i%4===0?"rh-a":i%2===0?"rh-b":"rh-c";
+  el("line",{class:"rh "+cls,x1:(CX+Math.cos(th)*140).toFixed(1),y1:(CY+Math.sin(th)*140).toFixed(1),x2:(CX+Math.cos(th)*1100).toFixed(1),y2:(CY+Math.sin(th)*1100).toFixed(1)},rh);}
+ const rc=el("g",{class:"day-only","aria-hidden":"true"},svg);
+ el("circle",{class:"rcircle",cx:CX,cy:CY,r:"330"},rc);
+ for(let i=0;i<16;i++){const th=i*Math.PI/8;el("circle",{class:"rnode",cx:(CX+Math.cos(th)*330).toFixed(1),cy:(CY+Math.sin(th)*330).toFixed(1),r:"3"},rc);}
+
+ /* Sondes (jour) */
+ const so=el("g",{class:"day-only","aria-hidden":"true"},svg), rr=rng(42); let placed=0;
+ for(let k=0;k<600&&placed<70;k++){const x=40+rr()*(W-80), y=40+rr()*(H-80);
+  if(Math.hypot(x-CX,y-CY)<215)continue; if(x<400&&y>590)continue; if(x>480&&x<720&&y>600)continue;
+  let ok=true,dmin=1e9; for(const g of ARCH){const d=Math.hypot(x-g.a.center[0],(y-g.a.center[1])/.82);dmin=Math.min(dmin,d-g.R);if(d<g.R*1.75)ok=false;
+   const ly=g.a.center[1]+g.R*1.12+30; if(Math.abs(x-g.a.center[0])<190&&y>ly-34&&y<ly+34)ok=false;}
+  if(!ok)continue; el("text",{class:"sound",x:x.toFixed(0),y:y.toFixed(0)},so,String(Math.round(8+dmin/9+rr()*14))); placed++;}
+
+ /* Archipels */
+ for(const g of ARCH){
+  const G=el("g",{class:"g-"+g.a.hue},svg);
+  for(const shape of [g.main].concat(g.islets.map(i=>i.pts))){
+   const d=smooth(shape);
+   el("path",{class:"coast-halo",d},G); el("path",{class:"land",d},G); el("path",{class:"hatch",d,fill:`url(#h-${g.a.hue})`},G); el("path",{class:"coast",d},G);
+  }
+  el("path",{class:"cline",d:"M"+g.order.map(p=>p.x.toFixed(1)+" "+p.y.toFixed(1)).join(" L")},G);
+  for(const i of g.islets){el("path",{class:"minor",d:STAR4,transform:`translate(${i.x.toFixed(1)} ${i.y.toFixed(1)}) scale(.55)`},G);}
+  const [cx,cy]=g.a.center, ly=cy+g.R*1.12+30;
+  el("text",{class:"alab",x:cx,y:ly.toFixed(0),"text-anchor":"middle"},G,L(g.a.name));
+  el("text",{class:"asub",x:cx,y:(ly+21).toFixed(0),"text-anchor":"middle"},G,L(g.a.sub).toUpperCase());
+  for(const s of g.stars){
+   const A=el("a",{class:"st",href:s.res.href,"data-id":s.res.id,"aria-label":`${L(s.res.title)} · ${t(s.res.status)}`,transform:`translate(${s.x.toFixed(1)} ${s.y.toFixed(1)})`},G);
+   el("circle",{class:"hit",r:"20"},A);
+   const C=el("g",{class:"core"},A);
+   el("circle",{class:"halo",r:"15"},C); el("circle",{class:"ring day-only",r:"10"},C); el("path",{class:"s4",d:STAR4},C);
+   const right=s.x>=cx-4;
+   el("text",{class:"slabel",x:(s.x+(right?16:-16)).toFixed(1),y:(s.y+5).toFixed(1),"text-anchor":right?"start":"end"},G,L(s.res.short||s.res.title));
+  }
+ }
+
+ /* Emblème : rose des vents fondue dans un sextant */
+ const E=el("g",{transform:`translate(${CX} ${CY})`,"aria-hidden":"true"},svg);
+ el("circle",{class:"em-bg",r:"132"},E);
+ sxEl=el("g",{class:"sx"},E);
+ const a1=60*Math.PI/180, a2=120*Math.PI/180, RL=176;
+ const arc=(r)=>`M${(Math.cos(a1)*r).toFixed(1)} ${(Math.sin(a1)*r).toFixed(1)} A${r} ${r} 0 0 1 ${(Math.cos(a2)*r).toFixed(1)} ${(Math.sin(a2)*r).toFixed(1)}`;
+ el("path",{class:"frm",d:`M0 0 L${(Math.cos(a1)*170).toFixed(1)} ${(Math.sin(a1)*170).toFixed(1)} M0 0 L${(Math.cos(a2)*170).toFixed(1)} ${(Math.sin(a2)*170).toFixed(1)}`},sxEl);
+ el("path",{class:"frm",d:arc(96)},sxEl);
+ el("path",{class:"limb",d:arc(RL)},sxEl);
+ for(let d=60;d<=120;d+=2){const th=d*Math.PI/180,l=d%10===0?6.5:3.5;
+  el("line",{class:"limb-t",x1:(Math.cos(th)*(RL+6.5)).toFixed(1),y1:(Math.sin(th)*(RL+6.5)).toFixed(1),x2:(Math.cos(th)*(RL+6.5-l)).toFixed(1),y2:(Math.sin(th)*(RL+6.5-l)).toFixed(1)},sxEl);
+  if(d%10===0){const v=(120-d)*2;el("text",{class:"limb-n",x:(Math.cos(th)*(RL+17)).toFixed(1),y:(Math.sin(th)*(RL+17)+3).toFixed(1),"text-anchor":"middle"},sxEl,String(v));}}
+ el("rect",{class:"scope",x:"-30",y:"128",width:"36",height:"11",rx:"3",transform:"rotate(-30 0 133)"},sxEl);
+ el("line",{class:"arm",x1:"0",y1:"0",x2:"0",y2:String(RL+12)},sxEl);
+ el("rect",{class:"vern",x:"-9",y:String(RL-9),width:"18",height:"18",rx:"2"},sxEl);
+ el("line",{class:"arm",x1:"0",y1:String(RL-9),x2:"0",y2:String(RL+9),"stroke-width":"1.4"},sxEl);
+ el("rect",{class:"vern",x:"-9",y:"-4",width:"18",height:"8",rx:"1.5"},sxEl);
+
+ el("circle",{class:"em-ring",r:"124"},E); el("circle",{class:"em-ring",r:"117"},E);
+ for(let d=0;d<360;d+=5){const th=(d-90)*Math.PI/180,l=d%30===0?8:d%10===0?5:3;
+  el("line",{class:"tick",x1:(Math.cos(th)*124).toFixed(1),y1:(Math.sin(th)*124).toFixed(1),x2:(Math.cos(th)*(124-l)).toFixed(1),y2:(Math.sin(th)*(124-l)).toFixed(1)},E);
+  if(d%30===0&&d%90!==0)el("text",{class:"deg",x:(Math.cos(th)*106).toFixed(1),y:(Math.sin(th)*106+3).toFixed(1),"text-anchor":"middle"},E,String(d).padStart(3,"0"));}
+ const point=(ang,len,w,parent)=>{const th=(ang-90)*Math.PI/180,px=Math.cos(th),py=Math.sin(th),qx=-py,qy=px;
+  const tip=`${(px*len).toFixed(1)} ${(py*len).toFixed(1)}`, l=`${(qx*w).toFixed(1)} ${(qy*w).toFixed(1)}`, r=`${(-qx*w).toFixed(1)} ${(-qy*w).toFixed(1)}`;
+  el("path",{class:"rose-l",d:`M0 0 L${l} L${tip}Z`},parent); el("path",{class:"rose-d",d:`M0 0 L${r} L${tip}Z`},parent);};
+ for(let i=0;i<16;i++){if(i%2)point(i*22.5,46,5,E);}
+ for(let i=0;i<8;i++){if(i%2)point(i*45,72,10,E);}
+ for(let i=0;i<4;i++)point(i*90,104,13,E);
+ el("circle",{class:"hub",r:"6"},E);
+ [["N",0],["E",90],["S",180],["O",270]].forEach(([n,a])=>{const th=(a-90)*Math.PI/180;
+  el("text",{class:"card-n",x:(Math.cos(th)*146).toFixed(1),y:(Math.sin(th)*146+6).toFixed(1),"text-anchor":"middle"},E,lang==="en"&&n==="O"?"W":n);});
+ readEl=el("text",{class:"readout",x:CX,y:"662","text-anchor":"middle"},svg,t("readIdle"));
+ read2El=el("text",{class:"readout2",x:CX,y:"686","text-anchor":"middle"},svg,"");
+
+ /* Cartouche */
+ const K=el("g",{"aria-hidden":"true"},svg);
+ el("rect",{class:"cart",x:"36",y:"616",width:"350",height:"146",rx:"2"},K);
+ el("rect",{class:"cart2",x:"42",y:"622",width:"338",height:"134"},K);
+ el("text",{class:"ct1",x:"211",y:"656","text-anchor":"middle"},K,t("cart1"));
+ el("text",{class:"ct2",x:"211",y:"682","text-anchor":"middle"},K,t("cart2"));
+ for(let i=0;i<5;i++)el("rect",{class:i%2?"scale-b":"scale-a",x:String(101+i*44),y:"702",width:"44",height:"7"},K);
+ for(let i=0;i<=5;i++)el("text",{class:"scale-n",x:String(101+i*44),y:"723","text-anchor":"middle"},K,String(i));
+ el("text",{class:"scale-n",x:"211",y:"742","text-anchor":"middle"},K,t("scale"));
+
+ /* Bordure graduée */
+ const B=el("g",{"aria-hidden":"true"},svg);
+ el("rect",{class:"bord",x:"8",y:"8",width:String(W-16),height:String(H-16)},B);
+ el("rect",{class:"bord",x:"16",y:"16",width:String(W-32),height:String(H-32)},B);
+ for(let x=16,i=0;x<W-16;x+=40,i++){if(i%2===0){el("rect",{class:"bseg",x:String(x),y:"8",width:String(Math.min(40,W-16-x)),height:"8"},B);el("rect",{class:"bseg",x:String(x),y:String(H-16),width:String(Math.min(40,W-16-x)),height:"8"},B);}}
+ for(let y=16,i=0;y<H-16;y+=40,i++){if(i%2===0){el("rect",{class:"bseg",x:"8",y:String(y),width:"8",height:String(Math.min(40,H-16-y))},B);el("rect",{class:"bseg",x:String(W-16),y:String(y),width:"8",height:String(Math.min(40,H-16-y))},B);}}
+
+ sxEl.style.transform=`rotate(${sxAngle}deg)`;
+ bindStars();
+}
+
+/* Visée */
+const allStars=()=>ARCH.flatMap(g=>g.stars);
+const starById=id=>allStars().find(s=>s.res.id===id);
+const bearing=s=>(Math.round(Math.atan2(s.x-CX,-(s.y-CY))*180/Math.PI)+360)%360;
+function aim(s){
+ const target=bearing(s)-180;
+ let delta=((target-sxAngle)%360+540)%360-180; sxAngle+=delta;
+ sxEl.style.transform=`rotate(${sxAngle}deg)`;
+ readEl.textContent=`${t("bearing").toUpperCase()} ${String(bearing(s)).padStart(3,"0")}°`;
+ read2El.textContent=L(s.res.title);
+ document.querySelectorAll(".st").forEach(n=>n.classList.toggle("on",n.dataset.id===s.res.id));
+}
+function rest(){readEl.textContent=t("readIdle");read2El.textContent="";document.querySelectorAll(".st.on").forEach(n=>n.classList.remove("on"));}
+function pos(s){const lat=50-s.y/H*11, lon=-6+s.x/W*15;
+ const f=(v,p,n)=>{const a=Math.abs(v),d=Math.floor(a),m=Math.round((a-d)*60);return `${d}°${String(m).padStart(2,"0")}′ ${v>=0?p:n}`;};
+ return `${f(lat,"N","S")} · ${f(lon,"E",lang==="en"?"W":"O")}`;}
+const langsTxt=r=>(r.langs||["fr"]).map(x=>x.toUpperCase()).join(" · ");
+
+let cardFor=null, hideT=null;
+function showCard(s){
+ clearTimeout(hideT); cardFor=s.res.id;
+ const r=s.res, a=archById[r.arch], c=$("#card");
+ c.style.setProperty("--c",`var(--${a.hue})`);
+ c.innerHTML=`<p class="c-eye">${L(a.name)}</p><h3>${L(r.title)}</h3><p class="c-desc">${L(r.desc)}</p>
+  <dl><div><dt>${t("public")}</dt><dd>${L(r.audience)}</dd></div><div><dt>${t("duration")}</dt><dd>${L(r.duration)}</dd></div><div><dt>${t("langs")}</dt><dd>${langsTxt(r)}</dd></div></dl>
+  <p class="c-pos">${t("position")} ${pos(s)} · ${t("bearing")} ${String(bearing(s)).padStart(3,"0")}°</p>
+  <div class="c-foot"><span class="pill ${r.status}">${t(r.status)}</span><a class="go" href="${r.href}">${t("go")} →</a></div>`;
+ c.hidden=false;
+ const fr=$("#frame").getBoundingClientRect(), k=fr.width/W, cw=c.offsetWidth, ch=c.offsetHeight;
+ let x=s.x*k, y=s.y*k;
+ let left=x+(x<fr.width*.55?26:-26-cw); left=clamp(left,12,fr.width-cw-12);
+ let top=clamp(y-ch/2,12,Math.max(12,fr.height-ch-12));
+ c.style.left=left+"px"; c.style.top=top+"px";
+}
+function hideCard(delay){clearTimeout(hideT);hideT=setTimeout(()=>{$("#card").hidden=true;cardFor=null;rest();},delay||0);}
+function bindStars(){
+ document.querySelectorAll(".st").forEach(n=>{
+  const s=starById(n.dataset.id);
+  n.addEventListener("mouseenter",()=>{aim(s);showCard(s);});
+  n.addEventListener("mouseleave",()=>hideCard(260));
+  n.addEventListener("focus",()=>{aim(s);showCard(s);});
+  n.addEventListener("blur",()=>hideCard(400));
+  n.addEventListener("click",ev=>{if(touch&&cardFor!==s.res.id){ev.preventDefault();aim(s);showCard(s);}});
+ });
+}
+const card=$("#card");
+card.addEventListener("mouseenter",()=>clearTimeout(hideT));
+card.addEventListener("mouseleave",()=>hideCard(260));
+card.addEventListener("focusin",()=>clearTimeout(hideT));
+card.addEventListener("focusout",()=>hideCard(400));
+document.addEventListener("keydown",e=>{if(e.key==="Escape")hideCard(0);});
+document.addEventListener("click",e=>{if(touch&&!e.target.closest(".st")&&!e.target.closest("#card"))hideCard(0);});
+
+/* Registre */
+function buildRegister(){
+ $("#groups").innerHTML=ARCH.map(g=>`<section class="grp g-${g.a.hue}" aria-label="${L(g.a.name)}">
+  <header><svg class="gmark" viewBox="-10 -10 20 20" aria-hidden="true"><path d="${STAR4}"/></svg><div><h3>${L(g.a.name)}</h3><p>${L(g.a.sub)}</p></div></header>
+  <ul>${g.res.map(r=>`<li><a class="row" href="${r.href}" data-id="${r.id}"><span class="r-t">${L(r.title)}</span><span class="r-d">${L(r.desc)}</span><span class="r-m">${L(r.audience)} · ${L(r.duration)} · ${langsTxt(r)}</span><span class="pill ${r.status}">${t(r.status)}</span></a></li>`).join("")}</ul></section>`).join("");
+ document.querySelectorAll(".row").forEach(a=>{const s=starById(a.dataset.id);
+  a.addEventListener("mouseenter",()=>aim(s)); a.addEventListener("focus",()=>aim(s));
+  a.addEventListener("mouseleave",rest); a.addEventListener("blur",rest);});
+}
+
+/* Textes, langue, jour/nuit */
+function applyText(){
+ document.documentElement.lang=lang;
+ document.querySelectorAll("[data-i18n]").forEach(n=>{n.textContent=t(n.dataset.i18n);});
+ if(touch) document.querySelector('[data-i18n="hint"]').textContent=t("hintTouch");
+ $("#skip").textContent=t("skip");
+ document.querySelectorAll(".seg button").forEach(b=>b.setAttribute("aria-pressed",String(b.dataset.lang===lang)));
+ updateSky();
+}
+function updateSky(){
+ const night=isNight();
+ $("#skyT").textContent=night?t("readChart"):t("readSky");
+ $("#skyI").innerHTML=night
+  ?'<circle cx="12" cy="12" r="9.5" fill="none" stroke="currentColor" stroke-width="1.6"/><path d="M12 3.5 L14 12 L12 20.5 L10 12Z" fill="currentColor"/>'
+  :'<path d="M15.5 3.2A9 9 0 1 0 20.8 15 7.2 7.2 0 0 1 15.5 3.2Z" fill="currentColor"/><circle cx="19" cy="5" r="1" fill="currentColor"/>';
+}
+document.querySelectorAll(".seg button").forEach(b=>b.addEventListener("click",()=>{lang=b.dataset.lang;store.set("alidade-lang",lang);hideCard(0);applyText();build();buildRegister();}));
+$("#sky").addEventListener("click",()=>{const next=isNight()?"light":"dark";document.documentElement.setAttribute("data-theme",next);store.set("alidade-theme",next);updateSky();});
+window.matchMedia("(prefers-color-scheme: dark)").addEventListener("change",updateSky);
+window.addEventListener("resize",()=>hideCard(0));
+
+applyText(); build(); buildRegister();
+})();
+</script>
+</body>
+</html>

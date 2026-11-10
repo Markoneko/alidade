@@ -1,0 +1,844 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Courant de bord</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible:ital,wght@0,400;0,700;1,400&family=Barlow+Condensed:wght@500;600;700&family=Share+Tech+Mono&display=swap">
+<style>
+/* Mise en page : plaque de tableau électrique (consignes) · schéma quadrillé · carnet de bord crème aux couleurs du CNIF. */
+:root{
+  --bg:#D6DEE0; --paper:#F3F6F5; --grid:#DCE4E4; --line:#1F497D;
+  --ink:#14222D; --ink-2:#526470;
+  --plate:#22303B; --plate-2:#2C3C48; --plate-line:#435665; --plate-ink:#EAF0F2; --plate-dim:#A3B3BD;
+  --brass:#C08F2E; --brass-ink:#1E1606;
+  --club:#1F497D; --cream:#EEECE1; --cream-rule:#DAD6C3;
+  --w-service:#C93A2E; --w-moteur:#BE3388; --w-charge:#23914A; --w-masse:#1A2128;
+  --flow:#FFF4CC; --flow-m:#FFF4CC; --lamp:#F4B62F; --alarm:#E9A197;
+  --good-bg:#24463A; --bad-bg:#4A2A2A;
+  --f-label:"Barlow Condensed","Arial Narrow",Arial,sans-serif;
+  --f-body:"Atkinson Hyperlegible",system-ui,-apple-system,"Segoe UI",sans-serif;
+  --f-lcd:"Share Tech Mono",ui-monospace,Menlo,Consolas,monospace;
+}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
+  --bg:#0D151C; --paper:#14202A; --grid:#1D2C38; --line:#4F78AB;
+  --ink:#DCE5EA; --ink-2:#90A3AF;
+  --plate:#1B2832; --plate-2:#24343F; --plate-line:#3A4E5C; --plate-ink:#E6EDF0; --plate-dim:#98AAB5;
+  --brass:#D6A443; --brass-ink:#1E1606;
+  --w-service:#F0645A; --w-moteur:#EE6FBE; --w-charge:#4FCB76; --w-masse:#BFCAD1;
+  --flow:#FFF4CC; --flow-m:#0D151C; --lamp:#FFC845; --alarm:#B9473C;
+  --good-bg:#1F3D32; --bad-bg:#43262A; color-scheme:dark}}
+:root[data-theme="dark"]{
+  --bg:#0D151C; --paper:#14202A; --grid:#1D2C38; --line:#4F78AB;
+  --ink:#DCE5EA; --ink-2:#90A3AF;
+  --plate:#1B2832; --plate-2:#24343F; --plate-line:#3A4E5C; --plate-ink:#E6EDF0; --plate-dim:#98AAB5;
+  --brass:#D6A443; --brass-ink:#1E1606;
+  --w-service:#F0645A; --w-moteur:#EE6FBE; --w-charge:#4FCB76; --w-masse:#BFCAD1;
+  --flow:#FFF4CC; --flow-m:#0D151C; --lamp:#FFC845; --alarm:#B9473C;
+  --good-bg:#1F3D32; --bad-bg:#43262A; color-scheme:dark}
+
+*{box-sizing:border-box}
+[hidden]{display:none!important}
+body{background:var(--bg);color:var(--ink);font-family:var(--f-body);font-size:16px;line-height:1.5;
+  padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));padding-block:18px 28px}
+.wrap{max-width:1440px;margin:0 auto;display:flex;flex-direction:column;gap:14px}
+button{font:inherit;color:inherit}
+:focus-visible{outline:2px solid var(--brass);outline-offset:2px}
+
+/* En-tête */
+.top{display:flex;flex-wrap:wrap;align-items:flex-end;justify-content:space-between;gap:12px 24px}
+.brand{font-family:var(--f-label);font-weight:600;letter-spacing:.14em;font-size:.82rem;color:var(--ink-2);text-transform:uppercase}
+h1{font-family:var(--f-label);font-weight:700;font-size:clamp(2rem,4vw,2.9rem);line-height:1;margin:.15em 0 .1em;letter-spacing:.01em;text-transform:uppercase}
+.lede{margin:0;color:var(--ink-2);max-width:60ch}
+.status{display:flex;align-items:stretch;gap:10px;flex-wrap:wrap}
+.chip{display:flex;flex-direction:column;justify-content:center;background:var(--paper);border:1px solid var(--line);border-radius:4px;padding:6px 12px;min-width:0}
+.chip .lab{font-family:var(--f-label);font-weight:600;font-size:.72rem;letter-spacing:.12em;text-transform:uppercase;color:var(--ink-2)}
+.chip strong{font-family:var(--f-label);font-weight:700;font-size:1.3rem;line-height:1.05;text-transform:uppercase;letter-spacing:.03em}
+.chip.grade.final{border-color:var(--brass);box-shadow:inset 0 0 0 1px var(--brass)}
+.fuse-line{display:flex;align-items:center;gap:6px}
+.fuse-row{display:flex;gap:3px;color:var(--ink)}
+.fuse-row svg{width:10px;height:20px}
+.btn{font-family:var(--f-label);font-weight:600;letter-spacing:.06em;text-transform:uppercase;font-size:.95rem;
+  border:1px solid var(--line);background:var(--paper);color:var(--ink);border-radius:4px;padding:7px 12px;cursor:pointer}
+.btn:hover{border-color:var(--brass)}
+
+/* Bornier de progression */
+.rail{display:grid;grid-template-columns:repeat(13,minmax(0,1fr));gap:4px}
+.term{position:relative;height:44px;border:1px solid var(--line);background:var(--paper);border-radius:3px;cursor:pointer;padding:4px 0 0;
+  font-family:var(--f-label);font-weight:700;font-size:.95rem;color:var(--ink-2);display:flex;flex-direction:column;align-items:center}
+.term .stub{position:absolute;left:50%;bottom:0;width:6px;height:0;transform:translateX(-50%);border-radius:3px 3px 0 0;transition:height .4s}
+.term.done .stub{height:18px}
+.term.done{color:var(--ink)}
+.term.cur{border-color:var(--brass);box-shadow:inset 0 0 0 2px var(--brass);color:var(--ink)}
+.term .tn{line-height:1.1}
+.term.last{font-size:.72rem;letter-spacing:.08em}
+.s-service{background:var(--w-service)}.s-moteur{background:var(--w-moteur)}.s-charge{background:var(--w-charge)}.s-masse{background:var(--w-masse)}
+
+/* Disposition : consignes | schéma | carnet */
+.layout{display:grid;grid-template-columns:minmax(280px,340px) minmax(0,1fr) minmax(220px,270px);gap:16px;align-items:start}
+@media (max-width:1240px){.layout{grid-template-columns:minmax(280px,350px) minmax(0,1fr)}.journal{grid-column:1/-1}}
+@media (max-width:880px){.layout{grid-template-columns:minmax(0,1fr)}}
+
+/* Plaque de consignes */
+.panel{position:relative;background:var(--plate);color:var(--plate-ink);border-radius:6px;padding:22px 20px 20px;min-width:0;border:1px solid var(--plate-line)}
+.panel::before,.panel::after{content:"";position:absolute;top:9px;width:7px;height:7px;border-radius:50%;
+  background:radial-gradient(circle at 35% 35%,#d9dfe2,#7d8b94 70%);box-shadow:0 0 0 1px rgba(0,0,0,.35)}
+.panel::before{left:9px}.panel::after{right:9px}
+.eyebrow{font-family:var(--f-label);font-weight:600;letter-spacing:.12em;text-transform:uppercase;font-size:.8rem;color:var(--brass);margin:0 0 6px}
+.panel h2{font-family:var(--f-label);font-weight:700;text-transform:uppercase;font-size:1.65rem;line-height:1.05;margin:0 0 10px;letter-spacing:.02em;text-wrap:balance}
+.mission{margin:0 0 16px;color:var(--plate-ink)}
+.phase{font-family:var(--f-label);font-weight:600;letter-spacing:.1em;text-transform:uppercase;font-size:.85rem;color:var(--plate-dim);margin:0 0 8px}
+.locp{color:var(--brass);font-size:1rem;letter-spacing:.06em}
+.choices{display:flex;flex-direction:column;gap:8px}
+.choice{position:relative;text-align:left;display:flex;flex-direction:column;gap:2px;width:100%;cursor:pointer;
+  background:var(--plate-2);border:1px solid var(--plate-line);border-radius:4px;padding:11px 14px 11px 40px;color:var(--plate-ink);transition:border-color .15s,transform .15s}
+.choice::before{content:"";position:absolute;left:14px;top:50%;width:12px;height:12px;margin-top:-6px;border-radius:50%;
+  background:radial-gradient(circle at 35% 35%,#e2e6e8,#7d8b94 70%);box-shadow:0 0 0 1px rgba(0,0,0,.4)}
+.choice::after{content:"";position:absolute;left:16px;top:50%;width:8px;height:1.5px;background:#4b5860;transform:rotate(-35deg)}
+.choice:hover:not(:disabled){border-color:var(--brass);transform:translateX(2px)}
+.cn{font-family:var(--f-label);font-weight:600;font-size:1.15rem;letter-spacing:.03em;text-transform:uppercase;line-height:1.15}
+.cs{font-size:.88rem;color:var(--plate-dim)}
+.choice.burnt{opacity:.5;cursor:not-allowed}
+.choice.burnt .cn{text-decoration:line-through;text-decoration-thickness:2px}
+.tagb{position:absolute;right:10px;top:10px;font-family:var(--f-label);font-weight:700;font-size:.72rem;letter-spacing:.1em;text-transform:uppercase;
+  color:var(--plate-ink);background:#8f2f28;border-radius:2px;padding:1px 6px}
+.picked{font-family:var(--f-label);font-weight:600;text-transform:uppercase;letter-spacing:.04em;font-size:1.15rem;
+  background:var(--plate-2);border:1px solid var(--brass);border-radius:4px;padding:9px 12px;margin-bottom:12px}
+.picked .lab{display:block;font-size:.72rem;letter-spacing:.12em;color:var(--plate-dim)}
+.fb{border-radius:4px;padding:12px 14px;margin-top:12px}
+.fb p{margin:0}
+.fb.bad{background:var(--bad-bg);border:1px solid #8f3a33}
+.fb.good{background:var(--good-bg);border:1px solid #3d7b5c;margin-top:0}
+.fbl{font-family:var(--f-label);font-weight:700;letter-spacing:.12em;text-transform:uppercase;font-size:.8rem}
+.fb.bad .fbl{color:#ff9a8f}.fb.good .fbl{color:#8fe0b0}
+.memo{margin-top:10px;border:1px dashed var(--brass);border-radius:4px;padding:10px 14px}
+.memo .fbl{color:var(--brass)}
+.memo p{margin:0}
+.next{margin-top:14px;width:100%;background:var(--brass);color:var(--brass-ink);border:0;border-radius:4px;padding:12px 16px;cursor:pointer;
+  font-family:var(--f-label);font-weight:700;font-size:1.15rem;letter-spacing:.08em;text-transform:uppercase}
+.next:hover{filter:brightness(1.08)}
+
+/* Simulation (plaque) */
+.lcd{background:#9FB59A;color:#16220F;border-radius:4px;padding:9px 12px;font-family:var(--f-lcd);font-size:.98rem;box-shadow:inset 0 2px 6px rgba(0,0,0,.35);
+  border:3px solid #10171d;display:flex;flex-direction:column;gap:3px;font-variant-numeric:tabular-nums}
+.lcd-row{display:flex;flex-wrap:wrap;gap:2px 12px;align-items:baseline}
+.lcd-row span:first-child{min-width:7ch;opacity:.75}
+.lcd b{font-weight:400;font-size:1.3rem;min-width:4.5ch}
+.lcd .aut{font-size:.85rem;opacity:.85}
+.lcd-alarm{background:#16220F;color:#E3F0C8;padding:2px 6px;border-radius:2px;font-size:.9rem;animation:blink 1s steps(2,start) infinite}
+@keyframes blink{to{visibility:hidden}}
+.clock{display:flex;flex-wrap:wrap;align-items:center;gap:6px;margin:10px 0}
+.clock #clock{font-family:var(--f-lcd);font-size:1.05rem;margin-right:auto}
+.panel .btn{background:var(--plate-2);border-color:var(--plate-line);color:var(--plate-ink);padding:6px 10px}
+.panel .btn:hover{border-color:var(--brass)}
+.panel .btn.on{border-color:var(--brass);color:var(--brass)}
+.ctrl-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:5px}
+.tg{display:flex;justify-content:space-between;align-items:center;gap:6px;background:var(--plate-2);border:1px solid var(--plate-line);border-radius:4px;
+  padding:6px 8px;cursor:pointer;text-align:left;color:var(--plate-ink);font-size:.84rem;line-height:1.15}
+.tg-s{font-family:var(--f-label);font-weight:700;letter-spacing:.08em;font-size:.78rem;padding:2px 6px;border-radius:2px;background:#11181e;color:var(--plate-dim)}
+.tg[aria-pressed="true"] .tg-s{background:var(--w-charge);color:#08150d}
+.tg:hover{border-color:var(--brass)}
+.eng{width:100%;margin-top:8px;display:flex;align-items:center;justify-content:center;gap:10px;padding:10px!important;font-size:1.05rem!important}
+.eng svg{width:22px;height:22px;flex:none}
+.eng.run{background:var(--w-moteur)!important;color:#fff!important;border-color:transparent!important}
+.callout{margin-top:10px;border-radius:4px;padding:10px 13px;background:var(--plate-2);border:1px solid var(--brass);font-size:.93rem}
+.callout p{margin:0}.callout p+p,.callout ul{margin-top:5px}
+.callout ul{padding-left:1.2em;margin-bottom:0}
+.callout.warn{border-color:#d9705f;background:var(--bad-bg)}
+.callout.win{border-color:#3d7b5c;background:var(--good-bg)}
+
+/* Schéma */
+.board{position:relative;background:var(--paper);border:1px solid var(--line);border-radius:6px;min-width:0;overflow:hidden;transition:box-shadow .2s;container-type:inline-size}
+.board.zap{box-shadow:0 0 0 3px var(--w-service)}
+.board-scroll{overflow-x:auto}
+.board svg{display:block;width:100%;min-width:560px;height:auto}
+.legend{display:flex;flex-wrap:wrap;gap:4px 16px;padding:9px 14px 11px;border-top:1px solid var(--line);font-size:.82rem;color:var(--ink-2);align-items:center}
+.legend i{display:inline-block;width:20px;height:4px;border-radius:2px;vertical-align:middle;margin-right:5px}
+.legend .dotl{display:inline-block;width:8px;height:8px;border-radius:50%;background:var(--ink);margin-right:5px;vertical-align:middle}
+
+/* Défis, en haut à gauche du schéma */
+.defis-card{position:absolute;top:8px;left:8px;width:calc(44% - 12px);background:var(--paper);border:1px solid var(--line);border-radius:4px;padding:8px 10px 9px;z-index:2;
+  box-shadow:0 2px 0 rgba(31,73,125,.15)}
+@container (max-width:600px){.defis-card{position:static;width:auto;margin:8px 8px 0}}
+.defis-card h3{font-family:var(--f-label);font-weight:700;letter-spacing:.12em;text-transform:uppercase;font-size:.82rem;margin:0 0 5px;color:var(--club)}
+:root[data-theme="dark"] .defis-card h3{color:var(--line)}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]) .defis-card h3{color:var(--line)}}
+.defis{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:3px;font-size:.84rem;line-height:1.3}
+.defis li{display:grid;grid-template-columns:18px 1fr auto;gap:7px;align-items:start;padding:2px 0;border-radius:3px;transition:background .3s}
+.defis li.flash{background:var(--alarm)}
+.chk{width:15px;height:15px;border:1.5px solid var(--ink-2);border-radius:3px;margin-top:1px;display:grid;place-items:center;font-size:.7rem;font-weight:700;line-height:1}
+.defis li.ok .chk{background:var(--w-charge);border-color:var(--w-charge);color:#08150d}
+.defis li.ok .dt{color:var(--ink-2);text-decoration:line-through}
+.mini{font-family:var(--f-label);font-weight:600;font-size:.75rem;letter-spacing:.06em;text-transform:uppercase;border:1px solid var(--line);background:var(--paper);color:var(--ink);border-radius:3px;padding:1px 6px;cursor:pointer;white-space:nowrap}
+.mini:hover{border-color:var(--brass)}
+
+/* Carnet de bord : papier crème, encre bleue CNIF */
+.journal{background:var(--cream);color:var(--club);border:1px solid var(--line);border-radius:6px;padding:16px 16px 18px;min-width:0;
+  font-size:.92rem;line-height:26px}
+.journal h2{font-family:var(--f-label);font-weight:700;text-transform:uppercase;letter-spacing:.06em;font-size:1.3rem;line-height:1.1;margin:0 0 2px;color:var(--club)}
+.journal .sub{font-family:var(--f-label);font-weight:600;font-size:.75rem;letter-spacing:.12em;text-transform:uppercase;opacity:.75;margin:0 0 8px;line-height:1.2}
+.journal h3{font-family:var(--f-label);font-weight:700;text-transform:uppercase;letter-spacing:.12em;font-size:.8rem;margin:12px 0 0;line-height:26px;color:var(--club);border-bottom:1.5px solid var(--club)}
+.journal ol{margin:0;padding:0 0 0 1.5em;background-image:repeating-linear-gradient(to bottom,transparent 0 25px,var(--cream-rule) 25px 26px)}
+.journal ol.log{list-style:none;padding-left:0}
+.journal li::marker{font-family:var(--f-label);font-weight:700}
+.journal time{font-family:var(--f-lcd);margin-right:6px;opacity:.8}
+.journal .empty{margin:0;font-style:italic;opacity:.75}
+.journal .log li:first-child{font-weight:700}
+.foot{font-size:.82rem;color:var(--ink-2);margin:0;max-width:100ch}
+
+/* Dessin SVG */
+.gridl{fill:none;stroke:var(--grid);stroke-width:1}
+.wire{fill:none;stroke-width:4;stroke-linecap:round;stroke-linejoin:round}
+.w-service{stroke:var(--w-service)}.w-moteur{stroke:var(--w-moteur)}.w-charge{stroke:var(--w-charge)}.w-masse{stroke:var(--w-masse)}
+.w-mon{stroke:var(--ink-2);stroke-width:1.5;stroke-dasharray:4 4}
+.wire.draw{stroke-dasharray:1;stroke-dashoffset:1;animation:draw 1s ease-out forwards}
+@keyframes draw{to{stroke-dashoffset:0}}
+.flow{fill:none;stroke:var(--flow);stroke-width:2.2;stroke-linecap:round;stroke-dasharray:1.5 12;opacity:0;pointer-events:none}
+.flow.fm{stroke:var(--flow-m)}
+.flow.live{opacity:1;animation:flow .9s linear infinite}
+@keyframes flow{to{stroke-dashoffset:-13.5}}
+.dot{fill:var(--ink)}
+.box{fill:var(--paper);stroke:var(--ink);stroke-width:2}
+.lbl{font-family:var(--f-label);font-size:15px;font-weight:600;letter-spacing:.06em;fill:var(--ink)}
+.lbl-s{font-size:13px}.lbl-xs{font-size:11px}.dim{fill:var(--ink-2)}.big{font-size:22px;font-weight:700}
+.sym{font-family:var(--f-label);font-size:20px;font-weight:700;fill:var(--ink)}
+.pm{font-family:var(--f-label);font-size:15px;font-weight:700;fill:var(--ink)}
+.term-b{fill:var(--brass);stroke:var(--ink);stroke-width:1}
+.socbg{fill:var(--grid)}.soc{fill:var(--w-charge);transition:width .3s}.soc.low{fill:var(--brass)}.soc.crit{fill:var(--w-service)}
+.glow{fill:var(--lamp);opacity:0;filter:url(#glow);transition:opacity .3s}
+#lamp.lit .glow{opacity:.75}
+.lampc{fill:var(--paper);stroke:var(--ink);stroke-width:2;transition:fill .3s}
+#lamp.lit .lampc{fill:var(--lamp)}
+.lampx{stroke:var(--ink);stroke-width:1.8}
+.led{fill:var(--grid);stroke:var(--ink);stroke-width:1.5;transition:fill .3s}
+.led.on{fill:var(--w-charge)}
+.busbar{stroke:var(--w-service);stroke-width:2.5;fill:none}
+.brk-body{fill:var(--paper);stroke:var(--ink);stroke-width:1.5}
+.brk-lev{fill:var(--ink);transition:y .2s}
+.fuse{fill:var(--paper);stroke:var(--ink);stroke-width:1.5}
+.fuse-w{stroke:var(--ink);stroke-width:1.5;fill:none}
+.cc-body{fill:var(--paper);stroke:var(--ink);stroke-width:2.5}
+.cc-lev{transition:transform .25s ease}
+.cc-lev.s rect{fill:var(--w-service)}.cc-lev.m rect{fill:var(--w-moteur)}
+.cc-hub{fill:var(--ink)}
+.fins{stroke:var(--ink-2);stroke-width:2;fill:none}
+#eng-g.running .fins{stroke:var(--w-moteur);animation:shake .12s linear infinite}
+@keyframes shake{50%{transform:translateY(1px)}}
+.lcdbox{fill:#9FB59A;stroke:#10171d;stroke-width:2}
+.lcdbox.alarm{fill:var(--alarm);animation:blinkf 1s steps(2,start) infinite}
+@keyframes blinkf{50%{fill:#9FB59A}}
+.lcdt{font-family:var(--f-lcd);font-size:16px;fill:#16220F}
+.plug{fill:var(--grid);stroke:var(--ink);stroke-width:1.5}
+#quai.on .plug{fill:var(--w-charge)}
+.quai-cable{stroke:var(--ink);stroke-width:3;fill:none;stroke-dasharray:4 3}
+#quai.on .quai-cable{stroke-dasharray:none}
+.diode{fill:var(--ink);stroke:var(--ink);stroke-width:1.5}
+[data-act]{cursor:pointer}
+[data-act]:hover .cc-body,[data-act]:hover .brk-body,[data-act]:hover .plug{stroke:var(--brass)}
+.marker{cursor:pointer}
+.mk-ring{fill:none;stroke:var(--brass);stroke-width:3;animation:pulse 1.4s ease-in-out infinite;transform-box:fill-box;transform-origin:center}
+.mk-dot{fill:var(--brass)}
+.mk-t{font-family:var(--f-label);font-weight:700;font-size:13px;fill:var(--brass-ink)}
+.marker:hover .mk-dot,.marker:focus-visible .mk-dot{fill:var(--ink)}
+.marker:hover .mk-t,.marker:focus-visible .mk-t{fill:var(--paper)}
+@keyframes pulse{0%,100%{transform:scale(1);opacity:1}50%{transform:scale(1.35);opacity:.45}}
+.appear{animation:appear .55s cubic-bezier(.2,.8,.3,1.2) both;transform-box:fill-box;transform-origin:center}
+@keyframes appear{from{opacity:0;transform:scale(.6)}to{opacity:1;transform:none}}
+.spark path{fill:var(--lamp);stroke:var(--w-service);stroke-width:1.5}
+.spark{animation:spark .7s ease-out forwards;transform-box:fill-box;transform-origin:center}
+@keyframes spark{0%{opacity:1;transform:scale(.4)}60%{opacity:1;transform:scale(1.3)}100%{opacity:0;transform:scale(1.6)}}
+
+@media (prefers-reduced-motion:reduce){
+  *,*::before,*::after{animation-duration:.01ms!important;animation-iteration-count:1!important;transition-duration:.01ms!important}
+  .flow.live{opacity:1;animation:none}
+}
+@media (max-width:560px){
+  .term{height:38px;font-size:.8rem}.term.last{font-size:.55rem}
+  .panel{padding:22px 16px 18px}
+}
+</style>
+</head>
+<body>
+
+<div class="wrap">
+  <header class="top">
+    <div>
+      <div class="brand">CNIF · Formation croisière · Énergie à bord</div>
+      <h1>Courant de bord</h1>
+      <p class="lede">Câblez un voilier de croisière, un élément après l'autre. Chaque étape part d'un problème réel à bord. À la fin, mettez votre installation à l'épreuve.</p>
+    </div>
+    <div class="status">
+      <div class="chip grade" id="gradeChip"><span class="lab" id="gradeLab">Grade en jeu</span><strong id="gradeN">Chef électricien</strong></div>
+      <div class="chip" title="Chaque mauvaise réponse grille un fusible"><span class="lab">Fusibles grillés</span>
+        <div class="fuse-line"><strong id="fuseN">0</strong><span class="fuse-row" id="fuseRow"></span></div></div>
+      <button class="btn" id="reset">Recommencer</button>
+    </div>
+  </header>
+
+  <nav class="rail" id="rail" aria-label="Étapes"></nav>
+
+  <main class="layout">
+    <section class="panel" id="panel" aria-live="polite"></section>
+    <section class="board" id="board">
+      <div class="defis-card" id="defisCard" hidden>
+        <h3>Défis</h3>
+        <ul class="defis" id="defis"></ul>
+      </div>
+      <div class="board-scroll">
+        <svg id="svg" viewBox="0 -110 1000 740" role="img" aria-label="Schéma de principe de l'installation électrique du voilier"></svg>
+      </div>
+      <div class="legend">
+        <span><i class="s-service"></i>Service (+)</span>
+        <span><i class="s-moteur"></i>Moteur (+)</span>
+        <span><i class="s-charge"></i>Charge</span>
+        <span><i class="s-masse"></i>Masse (−, câble noir)</span>
+        <span><span class="dotl"></span>Point = connexion ; croisement sans point = pas de contact</span>
+        <span>Pointillés lumineux : le courant circule</span>
+      </div>
+    </section>
+    <aside class="journal" id="journal">
+      <h2>Journal de bord</h2>
+      <p class="sub">CNIF · carnet du stagiaire</p>
+      <div id="logWrap" hidden><h3>Événements</h3><ol class="log" id="log"></ol></div>
+      <h3>À retenir</h3>
+      <ol id="memos"></ol>
+      <p class="empty" id="memoEmpty">Chaque étape réussie inscrit ici sa règle.</p>
+    </aside>
+  </main>
+  <p class="foot">Schéma de principe simplifié, à but pédagogique : il ne remplace ni les normes d'installation (ISO 10133) ni les notices des fabricants. Formateurs : cliquez sur un numéro du bornier pour aller directement à une étape. Sur le schéma, les coupe-circuits, les interrupteurs du tableau et la prise de quai se manœuvrent d'un clic.</p>
+</div>
+
+<script>
+const STEPS=[
+{id:'bat',c:'service',tag:'Mouillage · 21 h',title:'Allumer le feu de mouillage',
+ mission:"Premier mouillage de la croisière. La nuit tombe : le feu de mouillage, en tête de mât, doit rester allumé jusqu'à l'aube. Le bateau est encore « nu ». Où trouver l'énergie ?",
+ choices:[
+  {name:'Prise de quai 230 V',sub:'Le courant du port',why:"Au mouillage, pas de quai. Et le 230 V alternatif n'alimente pas directement les appareils du bord : ils vivent en 12 V continu."},
+  {name:'Batterie 12 V',sub:"Une réserve d'énergie stockée",ok:true},
+  {name:'Alternateur',sub:'Entraîné par le moteur',why:"Il ne produit que moteur en marche. Faire tourner le diesel toute la nuit pour une ampoule : bruit, gasoil et voisins de mouillage furieux."}],
+ ok:"Moteur coupé, loin du port, seule une énergie stockée est disponible. Le bord vit en courant continu 12 V et la batterie en est le cœur. Un câble rouge relie déjà son + au feu…",
+ memo:"Le bord vit en 12 V continu, à partir de batteries."},
+{id:'masse',c:'masse',tag:'Mouillage · 21 h 05',title:'Le feu reste éteint',
+ mission:"Le câble rouge relie le + de la batterie au feu. Pourtant rien ne s'allume, et l'ampoule est neuve. Que manque-t-il ?",
+ choices:[
+  {name:'Un second câble rouge',sub:'Pour doubler le passage du courant',why:"Deux câbles du + vers le feu, c'est toujours un aller sans retour. Le courant ne circule que dans une boucle fermée."},
+  {name:'Relier le feu à la quille',sub:"Comme la carrosserie d'une voiture",why:"Sur une voiture, la carrosserie sert de retour. Sur un voilier, la coque polyester est isolante, et faire passer du courant par la quille ou les pièces immergées les ronge par électrolyse."},
+  {name:'Un câble de retour au −',sub:"Noir, du feu jusqu'à la batterie",ok:true}],
+ ok:"Le courant sort par le +, traverse l'appareil et revient au −. Il lui faut une boucle complète. À bord, chaque appareil a son propre câble de retour, noir, jusqu'au − des batteries. Le feu s'allume : les pointillés lumineux montrent le courant qui circule.",
+ memo:"Le courant fait une boucle : un câble aller (+, rouge), un câble retour (−, noir). Jamais de retour par la coque."},
+{id:'tableau',c:'service',tag:'Au chantier',title:'Brancher tout le reste',
+ mission:"Il faut aussi la VHF, le frigo, les feux de navigation, l'éclairage du carré… Tirer deux câbles par appareil depuis la batterie ? Et si un appareil fait un court-circuit ?",
+ choices:[
+  {name:'Multiprise 12 V',sub:'Tous les appareils sur la même ligne',why:"Rien ne protège les câbles : en cas de court-circuit, ils chauffent jusqu'au départ de feu. Et un seul défaut prive tout le bord de courant."},
+  {name:'Tableau électrique',sub:'Un interrupteur et un fusible par circuit',ok:true},
+  {name:'Un gros câble par appareil',sub:'Directement sur la batterie',why:"Des dizaines de cosses sur les bornes, aucune protection, impossible de couper un appareil seul. Un cauchemar à dépanner en mer."}],
+ ok:"Le tableau distribue le courant. Chaque circuit a son interrupteur et son fusible (ou un disjoncteur, qui fait les deux). Si la VHF fait un court-circuit, seul son fusible fond : les feux de navigation restent allumés. Le calibre du fusible (5 A, 10 A…) est choisi d'après la section du câble : c'est d'abord le câble qu'il protège. Essayez les interrupteurs du tableau.",
+ memo:"Le tableau distribue et protège : un interrupteur et un fusible par circuit. Le fusible protège le câble contre l'échauffement."},
+{id:'ccs',c:'service',tag:'Retour au bateau',title:'Isoler la batterie',
+ mission:"Retour au bateau après trois semaines : batterie à plat, un appareil est resté en veille. Et en cas de fumée, il faut pouvoir tout couper d'un seul geste. Que faut-il ajouter ?",
+ choices:[
+  {name:'Disjoncteur général au tableau',sub:'Tout couper au niveau du tableau',why:"Il coupe les appareils, mais le câble entre la batterie et le tableau reste sous tension. C'est justement lui qu'il faut pouvoir isoler en cas d'incendie."},
+  {name:'Coupe-circuit',sub:'Le gros interrupteur à manette',ok:true},
+  {name:'Débrancher la cosse',sub:'À la clé, à chaque départ',why:"Lent, impossible dans la fumée, et les cosses manipulées finissent par mal serrer : un mauvais contact chauffe."}],
+ locPrompt:"Touchez sur le schéma l'endroit où poser le coupe-circuit →",
+ locs:[
+  {x:600,y:300,ok:true},
+  {x:785,y:190,why:"Trop loin de la batterie : tout le câble en amont resterait sous tension. En cas de frottement ou d'incendie, c'est lui qui chauffe."},
+  {x:960,y:480,why:"Sur le retour, loin de la batterie, le câble + reste sous tension sur toute sa longueur. La règle à bord : on coupe le +, au plus près de la batterie."}],
+ ok:"Sur le +, au plus près de la batterie : quand on coupe, tout ce qui est en aval est hors tension, câbles compris. Essayez : cliquez sur le coupe-circuit dans le schéma.",
+ memo:"Coupe-circuit sur le +, au plus près de la batterie. On coupe en quittant le bord et en cas d'incendie."},
+{id:'bm',c:'moteur',tag:'Entrée de port',title:'Démarrer le moteur',
+ mission:"Pour entrer au port, il faut le moteur. Son démarreur appelle 150 à 300 A pendant quelques secondes. Sur quoi le brancher ?",
+ choices:[
+  {name:'Sur la batterie de service',sub:'Elle est déjà là',why:"Ça marche… jusqu'au matin où le frigo a vidé la batterie pendant la nuit. Plus de moteur, au moment précis où l'ancre chasse."},
+  {name:'Sur le tableau électrique',sub:'Avec son propre fusible',why:"200 A dans un tableau prévu pour 5 à 20 A par circuit : le fusible fond et les câbles chauffent. Le démarreur exige un câble gros et court (35 à 50 mm²)."},
+  {name:'Une batterie moteur dédiée',sub:'Un second parc, réservé au démarrage',ok:true}],
+ ok:"Deux parcs séparés : le parc de service pour la vie à bord, la batterie moteur pour démarrer. Le retour du démarreur passe par le bloc moteur, relié par un gros câble noir au − commun. Tous les − du bord sont reliés entre eux : c'est la masse commune.",
+ memo:"Deux parcs séparés : service (vie à bord) et moteur (démarrage). Le moteur doit toujours pouvoir démarrer."},
+{id:'ccm',c:'moteur',tag:'Entrée de port',title:'Et côté moteur ?',
+ mission:"Le gros câble entre la batterie moteur et le démarreur est sous tension en permanence. Que lui ajouter ?",
+ choices:[
+  {name:'Un coupe-circuit moteur',sub:'Même principe que côté service',ok:true},
+  {name:'Un fusible de 10 A',sub:'Pour protéger le démarreur',why:"Il fondrait au premier démarrage : le démarreur appelle des centaines d'ampères."},
+  {name:'Rien, la clé suffit',sub:'La clé coupe le démarreur',why:"La clé ne coupe que la commande du démarreur. Le gros câble, lui, reste sous tension jusqu'au démarreur."}],
+ ok:"Chaque parc a son coupe-circuit, au plus près de sa batterie. Quitter le bord, c'est deux manettes : service et moteur.",
+ memo:"Un coupe-circuit par parc. En quittant le bateau, on coupe les deux."},
+{id:'alt',c:'charge',tag:'Mouillage · jour 3',title:'Recharger en mer',
+ mission:"Trois jours de mouillage : le parc de service est presque vide, et pas de port avant demain. Comment produire de l'électricité ?",
+ choices:[
+  {name:'Chargeur 230 V',sub:'Branché sur le quai',why:"Parfait… au port. En pleine mer, il n'y a pas de quai où se brancher."},
+  {name:'Transvaser depuis la batterie moteur',sub:'Relier les deux parcs un moment',why:"On déplace le problème : l'énergie ne se crée pas. Et on finit avec un moteur qui ne démarre plus."},
+  {name:'Alternateur',sub:'Entraîné par le moteur',ok:true}],
+ ok:"Moteur en marche, l'alternateur fournit environ 14 V, un peu plus que la batterie (12,7 V au repos, pleine) : le courant entre dans la batterie et la recharge. Panneaux solaires, éolienne ou hydrogénérateur jouent le même rôle, sans moteur.",
+ memo:"L'alternateur recharge moteur en marche : environ 14 V, plus que la batterie pleine au repos (12,7 V)."},
+{id:'rep',c:'charge',tag:'Mouillage · jour 3',title:'Une sortie, deux parcs',
+ mission:"L'alternateur n'a qu'une sortie. Il doit charger les deux parcs, sans que le frigo puisse vider la batterie moteur. Que faut-il ?",
+ choices:[
+  {name:'Relier les deux parcs',sub:'Un câble entre les deux +',why:"Les deux parcs n'en font plus qu'un : le frigo viderait aussi la batterie moteur. On perd la séparation de l'étape 5."},
+  {name:'Répartiteur de charge',sub:'Laisse passer la charge, bloque le retour',ok:true},
+  {name:'Charger un parc à la fois',sub:'Basculer à la main',why:"Basculer à la main, c'est oublier un jour. Et couper la sortie d'un alternateur qui tourne peut griller ses diodes."}],
+ locPrompt:"Touchez sur le schéma l'endroit où poser le répartiteur →",
+ locs:[
+  {x:520,y:290,ok:true},
+  {x:700,y:190,why:"Entre le parc et le tableau, il ne voit pas passer la charge. Sa place est sur le trajet du courant de charge, entre l'alternateur et les parcs."},
+  {x:250,y:600,why:"Côté −, il ne peut rien répartir : la charge part de la sortie + de l'alternateur."}],
+ ok:"Le répartiteur agit comme un clapet anti-retour : le courant de charge va de l'alternateur vers chaque parc, mais un parc ne peut pas se vider dans l'autre.",
+ memo:"Le répartiteur charge plusieurs parcs depuis une seule source, sans qu'ils se vident l'un dans l'autre (clapet anti-retour)."},
+{id:'chg',c:'charge',tag:'Hivernage',title:'Hiver au ponton',
+ mission:"L'hiver, le bateau reste au ponton, branché au quai. On veut garder les batteries pleines sans faire tourner le moteur.",
+ choices:[
+  {name:'Chargeur de quai',sub:'230 V alternatif → 14 V continu',ok:true},
+  {name:'Le 230 V directement sur les batteries',sub:'Le câble de quai est déjà là',why:"Du 230 V alternatif sur une batterie 12 V continu : destruction immédiate, risque d'incendie et d'électrocution. Le 230 V à bord est mortel, surtout les pieds mouillés."},
+  {name:'Faire tourner le moteur au ponton',sub:'Une heure par semaine',why:"Du gasoil brûlé pour rien, un diesel qui tourne à froid et sans charge (il s'encrasse), et personne à bord en semaine."}],
+ ok:"Le chargeur transforme le 230 V alternatif du quai en 14 V continu, avec une sortie par parc. Branché directement sur les batteries, il les entretient même coupe-circuits ouverts. Côté 230 V, l'arrivée de quai a sa propre protection : un disjoncteur différentiel 30 mA protège les personnes, et un disjoncteur ou un fusible protège le câble.",
+ memo:"Au port, le chargeur transforme le 230 V du quai en 14 V continu. L'arrivée de quai est protégée (différentiel 30 mA + calibre adapté)."},
+{id:'bs2',c:'service',tag:'Préparation croisière',title:"Deux jours d'autonomie",
+ mission:"Bilan : le frigo et le reste consomment environ 50 Ah par jour. Une batterie au plomb ne doit pas descendre sous 50 % de sa capacité, soit environ 12 V au repos : une batterie de 100 Ah offre donc 50 Ah utilisables. On vise deux jours sans moteur et on ajoute une seconde batterie identique. Comment la relier ?",
+ choices:[
+  {name:'En série',sub:"Le + de l'une au − de l'autre",why:"En série, les tensions s'additionnent : 24 V. Tous les appareils 12 V du bord grilleraient, et la capacité ne double pas."},
+  {name:'En parallèle',sub:'+ avec +, − avec −',ok:true},
+  {name:'Sur le parc moteur',sub:'Elle aidera au démarrage',why:"Le parc moteur démarre déjà très bien. C'est le parc de service qui manque de réserve."}],
+ ok:"En parallèle, la tension reste 12 V et les capacités s'additionnent : 2 × 100 Ah = 200 Ah, soit 100 Ah utilisables avant les 12 V. Deux jours à 50 Ah : c'est juste. Les deux batteries doivent être identiques (même type, même âge).",
+ memo:"En parallèle, les capacités s'additionnent et la tension reste 12 V. Plomb : ne pas descendre sous 50 %, soit environ 12 V au repos."},
+{id:'shunt',c:'masse',tag:'Mouillage · jour 2',title:'Combien reste-t-il ?',
+ mission:"Au mouillage, la question revient sans cesse : combien d'énergie reste-t-il ? La tension seule trompe, elle chute dès que le frigo démarre. Il faut compter les ampères qui entrent et qui sortent.",
+ choices:[
+  {name:'Voltmètre au tableau',sub:'Lire la tension',why:"Utile mais imprécis : 12,2 V peut vouloir dire 60 % au repos ou une batterie bien chargée sous forte charge. Il ne compte pas l'énergie."},
+  {name:'Ampèremètre sur le frigo',sub:'Le plus gros consommateur',why:"Il ne voit que le frigo : ni les autres appareils, ni la charge. Impossible d'en déduire ce qui reste."},
+  {name:'Shunt et contrôleur de batterie',sub:'Compte les ampères-heures',ok:true}],
+ locPrompt:"Où poser le shunt pour qu'il voie tout le courant du parc de service ? →",
+ locs:[
+  {x:670,y:572,ok:true},
+  {x:710,y:190,why:"Il verrait ce que consomme le tableau, mais ni le pilote ni la charge de l'alternateur et du chargeur, qui arrive directement aux batteries. Le compteur ne ferait que descendre."},
+  {x:250,y:600,why:"Ici, il mesurerait le courant du moteur et du démarreur, pas celui du parc de service."}],
+ ok:"Tout le courant du parc de service passe par son câble − : la consommation du bord comme la charge de l'alternateur et du chargeur. Le shunt, une résistance calibrée, y mesure le courant, et le contrôleur additionne les ampères-heures entrés et sortis. Il sonne aussi l'alarme quand la batterie passe sous 12 V.",
+ memo:"Le shunt voit tout le courant du parc, et lui seul (sur le −). Le contrôleur compte les Ah et alerte sous 12 V."},
+{id:'pilote',c:'service',tag:'Traversée',title:'Le pilote automatique',
+ mission:"Le pilote tire de gros courants par à-coups quand son vérin corrige la barre. Il ne doit ni faire fondre les fusibles des autres circuits, ni être coupé par erreur au tableau. Que lui donner ?",
+ choices:[
+  {name:'Un circuit du tableau',sub:'À côté de la VHF',why:"Les à-coups du vérin feraient fondre le fusible partagé, et couper la VHF avec. Une ligne longue et fine fait aussi chuter la tension : le pilote décroche."},
+  {name:'Une ligne directe et son disjoncteur',sub:'Une protection dédiée',ok:true},
+  {name:'Un câble direct sur la batterie',sub:'Sans protection, pour ne rien perdre',why:"Un câble sans fusible ni disjoncteur, c'est un départ de feu au premier court-circuit."}],
+ locPrompt:"D'où doit partir la ligne du pilote ? →",
+ locs:[
+  {x:600,y:240,ok:true},
+  {x:600,y:390,why:"Avant le coupe-circuit : le pilote ne serait jamais coupé, ni en quittant le bord, ni en cas d'incendie."},
+  {x:390,y:395,why:"Sur le circuit moteur : le pilote viderait la batterie de démarrage. Les deux parcs doivent rester séparés."}],
+ ok:"Ligne dédiée, partie juste après le coupe-circuit de service, protégée par son propre disjoncteur. Un câble de bonne section limite la chute de tension : un pilote sous-alimenté décroche au pire moment.",
+ memo:"Un gros consommateur a sa ligne dédiée, après le coupe-circuit, avec sa propre protection."}
+];
+
+const KEY='courant-de-bord-v2';
+const ALARM_ON=47, ALARM_OFF=52, DEFI_SEUIL=55;
+const $=s=>document.querySelector(s);
+const freshSim=()=>({ccsOn:true,ccmOn:true,loads:{feux:true,vhf:true,frigo:true},pilotOn:true,quai:false,engine:false,starting:false,
+  socS:100,socM:100,t:18*60,playing:false,chargeH:0,alarm:false,defis:{vider:false,recharge:false,quitter:false,regle:false},log:[],callout:''});
+const S={step:0,phase:'choose',built:new Set(),errors:0,burnt:{},mode:'build',just:null,fb:'',sim:freshSim()};
+
+function save(){try{localStorage.setItem(KEY,JSON.stringify({step:S.step,phase:S.phase==='done'?'done':'choose',built:[...S.built],errors:S.errors,burnt:S.burnt,mode:S.mode}))}catch(e){}}
+function load(){try{const d=JSON.parse(localStorage.getItem(KEY)||'null');if(!d)return;
+  S.step=Math.min(d.step||0,STEPS.length-1);S.built=new Set(d.built||[]);S.errors=d.errors||0;S.burnt=d.burnt||{};S.mode=d.mode==='sim'?'sim':'build';
+  S.phase=(d.phase==='done'&&S.built.has(STEPS[S.step].id))?'done':'choose';}catch(e){}}
+
+/* ---------- Schéma ---------- */
+const has=id=>S.built.has(id);
+const WIRES=[
+ {id:'s1',c:'service',st:'bat',on:()=>has('bat'),d:()=>has('tableau')?'M600 430 V190 H815':'M600 430 V190 H909'},
+ {id:'neg',c:'masse',st:'masse',on:()=>has('masse'),d:()=>has('tableau')?'M945 320 H960 V600':'M941 190 H960 V600'},
+ {id:'busR',c:'masse',st:'masse',on:()=>has('masse'),d:()=>'M960 600 H670'},
+ {id:'sneg',c:'masse',st:'masse',on:()=>has('masse'),d:()=>'M670 600 V545 H600 V520'},
+ {id:'sneg2',c:'masse',st:'bs2',on:()=>has('bs2')&&has('masse'),d:()=>'M670 545 H740 V520'},
+ {id:'s2',c:'service',st:'bs2',on:()=>has('bs2'),d:()=>'M740 430 V410 H600'},
+ {id:'mot',c:'moteur',st:'bm',on:()=>has('bm'),d:()=>'M420 430 V395 H299'},
+ {id:'busL',c:'masse',st:'bm',on:()=>has('bm'),d:()=>'M670 600 H100 V420'},
+ {id:'bmneg',c:'masse',st:'bm',on:()=>has('bm'),d:()=>'M420 600 V520'},
+ {id:'alt',c:'charge',st:'alt',on:()=>has('alt'),d:()=>has('rep')?'M299 290 H480':'M299 290 H385'},
+ {id:'rep1',c:'charge',st:'rep',on:()=>has('rep'),d:()=>'M500 312 V415 H420'},
+ {id:'rep2',c:'charge',st:'rep',on:()=>has('rep'),d:()=>'M540 312 V370 H600'},
+ {id:'chg1',c:'charge',st:'chg',on:()=>has('chg'),d:()=>'M620 75 H450 V415'},
+ {id:'chg2',c:'charge',st:'chg',on:()=>has('chg'),d:()=>'M760 110 V370 H600'},
+ {id:'chgneg',c:'masse',st:'chg',on:()=>has('chg'),d:()=>'M780 95 H985 V600 H960'},
+ {id:'pil',c:'service',st:'pilote',on:()=>has('pilote'),d:()=>'M600 240 H800 V430 H820'},
+ {id:'pilneg',c:'masse',st:'pilote',on:()=>has('pilote'),d:()=>'M870 460 V600'},
+ {id:'mon',c:'mon',st:'shunt',on:()=>has('shunt'),d:()=>'M638 572 H555'}
+];
+const DOTS=[[600,410,()=>has('bs2')],[600,370,()=>has('rep')||has('chg')],[420,415,()=>has('rep')],[450,415,()=>has('chg')],
+ [600,240,()=>has('pilote')],[670,545,()=>has('bs2')],[670,600,()=>has('bm')],[420,600,()=>has('bm')],[870,600,()=>has('pilote')],[960,600,()=>has('chg')]];
+
+function battery(key,x,name,cap){return `
+ <rect class="box" x="${x-50}" y="430" width="100" height="90" rx="4"/>
+ <rect class="term-b" x="${x-9}" y="423" width="18" height="8" rx="1.5"/><rect class="term-b" x="${x-9}" y="519" width="18" height="8" rx="1.5"/>
+ <text class="pm" x="${x+14}" y="426">+</text><text class="pm" x="${x+14}" y="538">−</text>
+ <text class="lbl lbl-s" x="${x}" y="450" text-anchor="middle">${name}</text>
+ <text class="lbl lbl-xs dim" x="${x}" y="466" text-anchor="middle">${cap}</text>
+ <rect class="socbg" x="${x-38}" y="476" width="76" height="12" rx="2"/>
+ <rect class="soc" data-soc="${key}" x="${x-38}" y="476" width="76" height="12" rx="2"/>
+ <text class="lbl lbl-xs" data-socp="${key}" x="${x}" y="505" text-anchor="middle">100 %</text>`}
+function fuseSym(x,y,w,rating){return `<path class="fuse-w" d="M${x-4} ${y} H${x+w+4}"/><rect class="fuse" x="${x}" y="${y-5}" width="${w}" height="10" rx="1.5"/><path class="fuse-w" d="M${x} ${y} H${x+w}"/>
+ <text class="lbl lbl-xs dim" x="${x+w/2}" y="${y-9}" text-anchor="middle">${rating}</text>`}
+
+function g(id,inner){return `<g class="${S.just===id?'appear':''}">${inner}</g>`}
+
+function renderBoard(){
+ let o=`<defs><pattern id="grid" width="20" height="20" patternUnits="userSpaceOnUse"><path class="gridl" d="M20 0H0V20"/></pattern>
+  <filter id="glow" x="-50%" y="-50%" width="200%" height="200%"><feGaussianBlur stdDeviation="7"/></filter></defs>
+  <rect x="0" y="-110" width="1000" height="740" fill="url(#grid)"/>`;
+ for(const w of WIRES){ if(!w.on())continue; const d=w.d(), nw=S.just===w.st;
+  o+=`<path class="wire w-${w.c}${nw?' draw':''}" ${nw?'pathLength="1"':''} d="${d}"/>`;
+  if(w.c!=='mon') o+=`<path class="flow${w.c==='masse'?' fm':''}" id="f-${w.id}" d="${d}"/>`; }
+ for(const [x,y,c] of DOTS) if(c()) o+=`<circle class="dot" cx="${x}" cy="${y}" r="5"/>`;
+
+ if(has('tableau')){
+  o+=g('tableau',`<rect class="box" x="815" y="150" width="130" height="200" rx="4"/>
+   <text class="lbl lbl-s" x="880" y="141" text-anchor="middle">TABLEAU 12 V</text>
+   <path class="busbar" d="M821 190 V300"/>
+   ${[['feux','FEUX',190,'5 A'],['vhf','VHF',245,'5 A'],['frigo','FRIGO',300,'10 A']].map(([k,l,y,r])=>`
+   <g data-act="brk-${k}" role="button" tabindex="0" aria-label="Interrupteur ${l}">
+     <rect class="brk-body" x="826" y="${y-11}" width="16" height="22" rx="3"/>
+     <rect class="brk-lev" id="lev-${k}" data-y="${y}" x="829" y="${y-8}" width="10" height="8" rx="1.5"/></g>
+   <text class="lbl lbl-xs" x="847" y="${y+4}">${l}</text>
+   ${fuseSym(888,y,16,r)}
+   ${k!=='feux'?`<circle class="led" id="led-${k}" cx="925" cy="${y}" r="7"/>`:''}`).join('')}
+   <text class="lbl lbl-xs dim" x="880" y="338" text-anchor="middle">INTER. · FUSIBLE</text>`);
+ } else {
+  o+=`<text class="lbl lbl-s" x="920" y="160" text-anchor="middle">FEU DE MOUILLAGE</text>`;
+ }
+ o+=`<g id="lamp" transform="translate(925 190)"><circle class="glow" r="30"/><circle class="lampc" r="15"/><path class="lampx" d="M-10.6 -10.6 L10.6 10.6 M10.6 -10.6 L-10.6 10.6"/></g>`;
+
+ if(has('bat')) o+=g('bat',battery('S',600,'SERVICE 1','12 V · 100 AH'));
+ if(has('bs2')) o+=g('bs2',battery('S',740,'SERVICE 2','12 V · 100 AH'));
+ if(has('ccs')) o+=g('ccs',`<g data-act="ccs" role="button" tabindex="0" aria-label="Coupe-circuit service" transform="translate(600 300)">
+   <circle class="cc-body" r="24"/><g class="cc-lev s" id="ccs-lev"><rect x="-4" y="-21" width="8" height="42" rx="3"/></g><circle class="cc-hub" r="4"/></g>
+   <text class="lbl lbl-s" x="634" y="296">COUPE-CIRCUIT</text><text class="lbl lbl-s" id="ccs-st" x="634" y="313">SERVICE · ON</text>`);
+ if(has('bm')){
+  o+=g('bm',`<g id="eng-g" data-act="engine" role="button" tabindex="0" aria-label="Moteur">
+   <rect class="box" x="40" y="230" width="210" height="190" rx="14"/>
+   <path class="fins" d="M70 256 H220 M70 268 H220 M70 280 H220"/>
+   <text class="lbl big" x="145" y="338" text-anchor="middle">MOTEUR</text>
+   <text class="lbl lbl-s dim" id="rpm" x="145" y="360" text-anchor="middle">ARRÊTÉ</text></g>
+   <circle class="box" cx="275" cy="395" r="24"/><text class="sym" x="275" y="402" text-anchor="middle">M</text>
+   <text class="lbl lbl-s" x="303" y="424">DÉMARREUR</text>
+   ${battery('M',420,'MOTEUR','12 V · 70 AH')}`);
+ }
+ if(has('ccm')) o+=g('ccm',`<g data-act="ccm" role="button" tabindex="0" aria-label="Coupe-circuit moteur" transform="translate(345 395)">
+   <circle class="cc-body" r="20"/><g class="cc-lev m" id="ccm-lev"><rect x="-17" y="-3.5" width="34" height="7" rx="3"/></g><circle class="cc-hub" r="3.5"/></g>
+   <text class="lbl lbl-s" x="345" y="354" text-anchor="middle">COUPE-CIRCUIT</text><text class="lbl lbl-s" id="ccm-st" x="345" y="369" text-anchor="middle">MOTEUR · ON</text>`);
+ if(has('alt')) o+=g('alt',`<circle class="box" cx="275" cy="290" r="24"/><text class="sym" x="275" y="297" text-anchor="middle">G</text>
+   <text class="lbl lbl-s" x="303" y="278">ALTERNATEUR</text>`);
+ if(has('rep')) o+=g('rep',`<rect class="box" x="480" y="268" width="80" height="44" rx="4"/>
+   <path class="diode" d="M492 282 L506 290 L492 298 Z M507 281 V299"/><path class="diode" d="M532 282 L546 290 L532 298 Z M547 281 V299"/>
+   <text class="lbl lbl-s" x="520" y="259" text-anchor="middle">RÉPARTITEUR</text>`);
+ if(has('chg')) o+=g('chg',`<rect class="box" x="620" y="40" width="160" height="70" rx="4"/>
+   <text class="lbl" x="700" y="68" text-anchor="middle">CHARGEUR</text>
+   <text class="lbl lbl-xs dim" x="700" y="88" text-anchor="middle">230 V ~ → 14,4 V</text>
+   <g id="quai" data-act="quai" role="button" tabindex="0" aria-label="Prise de quai">
+     <path class="quai-cable" d="M660 40 V10 H556"/><rect class="plug" x="530" y="2" width="26" height="16" rx="3"/></g>
+   ${fuseSym(596,10,26,'')}
+   <text class="lbl lbl-xs" x="609" y="-8" text-anchor="middle">DIFF. 30 MA · 16 A</text>
+   <text class="lbl lbl-xs" x="524" y="14" text-anchor="end">QUAI 230 V</text>`);
+ if(has('shunt')) o+=g('shunt',`<rect class="box" x="638" y="562" width="64" height="20" rx="3"/>
+   <text class="lbl lbl-xs" x="670" y="576" text-anchor="middle">SHUNT</text>
+   <rect class="lcdbox" id="mon-box" x="470" y="552" width="85" height="34" rx="4"/><text class="lcdt" id="mon-txt" x="512" y="575" text-anchor="middle">100 %</text>
+   <text class="lbl lbl-xs" x="512" y="545" text-anchor="middle">CONTRÔLEUR</text>`);
+ if(has('pilote')) o+=g('pilote',`<rect class="box" x="705" y="230" width="30" height="20" rx="3"/><circle class="cc-hub" cx="720" cy="240" r="4"/>
+   <text class="lbl lbl-xs" x="720" y="222" text-anchor="middle">DISJ. PILOTE</text>
+   <g data-act="pilot" role="button" tabindex="0" aria-label="Pilote automatique"><rect class="box" x="820" y="400" width="100" height="60" rx="4"/>
+   <text class="lbl" x="862" y="427" text-anchor="middle">PILOTE</text><text class="lbl lbl-xs dim" x="862" y="445" text-anchor="middle">AUTO</text>
+   <circle class="led" id="led-pilot" cx="908" cy="412" r="5"/></g>`);
+
+ if(S.mode==='build'&&S.phase==='locate'){
+  const st=STEPS[S.step], burnt=S.burnt[st.id]||[];
+  st.locs.forEach((l,i)=>{ if(burnt.includes('l'+i))return;
+   o+=`<g class="marker" data-l="${i}" role="button" tabindex="0" aria-label="Emplacement ${'ABC'[i]}" transform="translate(${l.x} ${l.y})">
+    <circle class="mk-ring" r="17"/><circle class="mk-dot" r="11"/><text class="mk-t" y="4.5" text-anchor="middle">${'ABC'[i]}</text></g>`;});
+ }
+ o+=`<g id="fx"></g>`;
+ $('#svg').innerHTML=o;
+ updateLive();
+}
+function spark(x,y){
+ const fx=$('#fx'); if(!fx)return;
+ const el=document.createElementNS('http://www.w3.org/2000/svg','g');
+ el.setAttribute('transform',`translate(${x} ${y})`);
+ el.innerHTML=`<g class="spark"><path d="M0 -22 L5 -5 L22 0 L5 5 L0 22 L-5 5 L-22 0 L-5 -5Z"/></g>`;
+ fx.appendChild(el); setTimeout(()=>el.remove(),750);
+}
+function zap(){const b=$('#board');b.classList.add('zap');setTimeout(()=>b.classList.remove('zap'),450)}
+
+/* ---------- Électricité ---------- */
+function compute(){
+ const m=S.sim;
+ const sOn=has('bat')&&has('masse')&&(!has('ccs')||m.ccsOn)&&m.socS>3;
+ const feux=sOn&&(!has('tableau')||m.loads.feux), vhf=sOn&&has('tableau')&&m.loads.vhf, frigo=sOn&&has('tableau')&&m.loads.frigo;
+ const pil=sOn&&has('pilote')&&m.pilotOn;
+ const loadA=(feux?1:0)+(vhf?0.5:0)+(frigo?4:0)+(pil?4:0);
+ const altOn=m.engine&&has('alt');
+ const r1=altOn&&has('rep')&&m.socM<99.9, r2=altOn&&has('rep')&&m.socS<99.9;
+ const chgOn=m.quai&&has('chg'), c1=chgOn&&m.socM<99.9, c2=chgOn&&m.socS<99.9;
+ const taper=s=>s>90?0.35:1;
+ const inS=((r2?30:0)+(c2?15:0))*taper(m.socS), inM=((r1?10:0)+(c1?5:0))*taper(m.socM);
+ return {sOn,feux,vhf,frigo,pil,loadA,altOn,r1,r2,chgOn,c1,c2,inS,inM,net:inS-loadA,tab:feux||vhf||frigo};
+}
+/* Plomb : 12,7 V pleine au repos, 12,0 V vers 47 % (seuil d'alarme). */
+const vRest=soc=>11.4+0.013*soc;
+
+function updateLive(){
+ const m=S.sim,e=compute();
+ const anyS=e.loadA>0||e.r2||e.c2;
+ const live={s1:e.loadA>0,neg:e.tab,busR:e.tab||e.pil||e.chgOn,sneg:anyS,sneg2:anyS,s2:anyS,mot:m.starting,busL:e.altOn||m.starting,
+  bmneg:m.starting||e.r1||e.c1,alt:e.altOn,rep1:e.r1,rep2:e.r2,chg1:e.c1,chg2:e.c2,chgneg:e.chgOn,pil:e.pil,pilneg:e.pil};
+ for(const k in live){const f=document.getElementById('f-'+k); if(f) f.classList.toggle('live',!!live[k]);}
+ const lamp=$('#lamp'); if(lamp) lamp.classList.toggle('lit',e.feux);
+ for(const k of ['vhf','frigo']){const l=document.getElementById('led-'+k); if(l) l.classList.toggle('on',e[k]);}
+ const lp=$('#led-pilot'); if(lp) lp.classList.toggle('on',e.pil);
+ for(const k of ['feux','vhf','frigo']){const l=document.getElementById('lev-'+k); if(l){const y=+l.dataset.y; l.setAttribute('y',m.loads[k]?y-8:y);}}
+ const cl=$('#ccs-lev'); if(cl) cl.style.transform=m.ccsOn?'none':'rotate(90deg)';
+ const cs=$('#ccs-st'); if(cs) cs.textContent='SERVICE · '+(m.ccsOn?'ON':'OFF');
+ const ml=$('#ccm-lev'); if(ml) ml.style.transform=m.ccmOn?'none':'rotate(90deg)';
+ const ms=$('#ccm-st'); if(ms) ms.textContent='MOTEUR · '+(m.ccmOn?'ON':'OFF');
+ const eg=$('#eng-g'); if(eg) eg.classList.toggle('running',m.engine);
+ const rpm=$('#rpm'); if(rpm) rpm.textContent=m.starting?'DÉMARRAGE…':m.engine?'EN MARCHE · 1 800 TR/MIN':'ARRÊTÉ';
+ const q=$('#quai'); if(q) q.classList.toggle('on',m.quai);
+ document.querySelectorAll('[data-soc]').forEach(r=>{const s=r.dataset.soc==='S'?m.socS:m.socM;
+  r.setAttribute('width',(76*s/100).toFixed(1)); r.classList.toggle('low',s<55&&s>=ALARM_ON); r.classList.toggle('crit',s<ALARM_ON);});
+ document.querySelectorAll('[data-socp]').forEach(t=>{const s=t.dataset.socp==='S'?m.socS:m.socM; t.textContent=Math.round(s)+' %';});
+ const mt=$('#mon-txt'); if(mt) mt.textContent=(m.alarm?'⚠ ':'')+Math.round(m.socS)+' %';
+ const mb=$('#mon-box'); if(mb) mb.classList.toggle('alarm',m.alarm);
+}
+
+/* ---------- Panneau : construction ---------- */
+function renderPanel(){
+ if(S.mode==='sim'){renderSim();return;}
+ const st=STEPS[S.step], burnt=S.burnt[st.id]||[];
+ let h=`<p class="eyebrow">Étape ${S.step+1} / ${STEPS.length} · ${st.tag}</p><h2>${st.title}</h2><p class="mission">${st.mission}</p>`;
+ if(S.phase==='choose'){
+  h+=`<p class="phase">Quel élément ajouter ?</p><div class="choices">${st.choices.map((c,i)=>{const b=burnt.includes('c'+i);
+   return `<button class="choice${b?' burnt':''}" id="ch-${st.id}-${i}" data-i="${i}"${b?' disabled':''}><span class="cn">${c.name}</span><span class="cs">${c.sub}</span>${b?'<span class="tagb">Grillé</span>':''}</button>`}).join('')}</div>`;
+ } else if(S.phase==='locate'){
+  const c=st.choices.find(c=>c.ok);
+  h+=`<div class="picked"><span class="lab">Élément choisi</span>${c.name}</div><p class="phase locp">${st.locPrompt}</p>`;
+ } else {
+  h+=`<div class="fb good"><p class="fbl">Ça passe</p><p>${st.ok}</p></div>
+   <div class="memo"><p class="fbl">À retenir</p><p>${st.memo}</p></div>
+   <button class="next" id="next">${S.step<STEPS.length-1?'Étape suivante':"Mettre le bord à l'essai"} →</button>`;
+ }
+ if(S.fb) h+=S.fb;
+ $('#panel').innerHTML=h;
+ $('#panel').querySelectorAll('.choice').forEach(b=>b.addEventListener('click',()=>pickChoice(+b.dataset.i)));
+ const n=$('#next'); if(n) n.addEventListener('click',nextStep);
+}
+function badFb(title,text){return `<div class="fb bad"><p class="fbl">Fusible grillé</p><p><strong>${title}</strong> ${text}</p></div>`}
+function burn(key){const id=STEPS[S.step].id;(S.burnt[id]=S.burnt[id]||[]).push(key);S.errors++;renderHeader();}
+function pickChoice(i){
+ const st=STEPS[S.step],c=st.choices[i];
+ if(c.ok){ S.fb='';
+  if(st.locs){S.phase='locate';renderPanel();renderBoard();
+   if(window.innerWidth<880) $('#board').scrollIntoView({behavior:'smooth',block:'center'});}
+  else complete();
+ } else { burn('c'+i); S.fb=badFb(c.name+'.',c.why); zap(); renderPanel(); save(); }
+}
+function pickLoc(i){
+ const st=STEPS[S.step],l=st.locs[i];
+ if(l.ok){S.fb='';complete();}
+ else{burn('l'+i);S.fb=badFb(`Emplacement ${'ABC'[i]}.`,l.why);spark(l.x,l.y);setTimeout(renderBoard,700);zap();renderPanel();save();
+   if(window.innerWidth<880) $('#panel').scrollIntoView({behavior:'smooth',block:'start'});}
+}
+function complete(){
+ const st=STEPS[S.step]; S.built.add(st.id); S.just=st.id; S.phase='done';
+ if(st.id==='pilote') S.sim.pilotOn=true;
+ renderAll(); save();
+ if(window.innerWidth<880) $('#panel').scrollIntoView({behavior:'smooth',block:'start'});
+}
+function nextStep(){
+ S.just=null; S.fb='';
+ if(S.step<STEPS.length-1){S.step++;S.phase='choose';}
+ else enterSim();
+ renderAll(); save(); window.scrollTo({top:0,behavior:'smooth'});
+}
+
+/* ---------- Simulation ---------- */
+let timer=null;
+const POWER=`<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2.5v9" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round"/><path d="M6.6 6.2a8 8 0 1 0 10.8 0" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round"/></svg>`;
+function enterSim(){S.mode='sim';S.sim=freshSim();S.sim.pilotOn=false;
+ addLog("Mouillage dans une crique. Moteur coupé, feu de mouillage, VHF en veille et frigo en marche.");}
+function clockStr(t){const d=Math.floor(t/1440)+1,mm=Math.floor(t%1440),h=Math.floor(mm/60),mi=mm%60;return `Jour ${d} · ${String(h).padStart(2,'0')}:${String(mi).padStart(2,'0')}`}
+function addLog(txt){const m=S.sim;m.log.unshift({t:clockStr(m.t).replace('Jour ','J').replace(' · ',' '),txt});m.log=m.log.slice(0,8);}
+function fmt(n,d=1){return n.toFixed(d).replace('.',',')}
+function grade(e){
+ if(e<=2)return['Chef électricien','Installation propre, presque sans étincelle.'];
+ if(e<=5)return['Bosco','Solide. Quelques fusibles sacrifiés pour la bonne cause.'];
+ if(e<=9)return['Matelot','Le bateau est câblé. Relisez le journal de bord pour fixer les règles.'];
+ return['Mousse','Beaucoup d’étincelles, mais tout le monde commence ainsi. Refaites un tour.'];
+}
+const DEFIS=[
+ ['vider',`Service sous ${DEFI_SEUIL} %, puis démarrer`],
+ ['recharge','Recharger les 2 parcs au moteur (1 h)'],
+ ['quitter','Quitter le bord en sécurité'],
+ ['regle',null]
+];
+const TOGGLES=[['ccs','Coupe-circuit service'],['ccm','Coupe-circuit moteur'],['quai','Prise de quai 230 V'],['pilot','Pilote automatique'],['feux','Feu de mouillage'],['vhf','VHF'],['frigo','Frigo']];
+function renderSim(){
+ $('#panel').innerHTML=`<p class="eyebrow">Mise à l'épreuve · le temps défile</p>
+ <h2>Le bord sous tension</h2>
+ <div class="lcd" role="group" aria-label="Contrôleur de batterie">
+  <div class="lcd-row"><span>SERVICE</span><b id="l-socS">100%</b><span id="l-cur">0,0 A</span><span id="l-v">12,7 V</span></div>
+  <div class="lcd-row"><span>MOTEUR</span><b id="l-socM">100%</b><span class="aut" id="l-aut"></span></div>
+  <div class="lcd-row" id="l-alarmRow" hidden><span class="lcd-alarm">⚠ BATTERIE FAIBLE &lt; 12 V</span></div>
+ </div>
+ <div class="clock"><span id="clock"></span><button class="btn" id="play">▶ Lancer</button><button class="btn" id="ff">+6 h</button></div>
+ <div class="ctrl-grid">${TOGGLES.map(([k,l])=>`<button class="tg" id="tg-${k}" data-t="${k}" aria-pressed="false"><span>${l}</span><span class="tg-s">OFF</span></button>`).join('')}</div>
+ <button class="btn eng" id="eng">${POWER}<span id="engT">Démarrer le moteur</span></button>
+ <div id="callout"></div>`;
+ $('#panel').querySelectorAll('.tg').forEach(b=>b.addEventListener('click',()=>toggle(b.dataset.t)));
+ $('#play').addEventListener('click',()=>{S.sim.playing=!S.sim.playing;setTimer();updateSim();});
+ $('#ff').addEventListener('click',()=>{for(let i=0;i<24;i++)tick(.25);updateLive();updateSim();});
+ $('#eng').addEventListener('click',()=>S.sim.engine?stopEngine():startEngine());
+ updateSim();
+}
+function renderDefis(){
+ const card=$('#defisCard');
+ card.hidden=S.mode!=='sim';
+ if(S.mode!=='sim')return;
+ $('#defis').innerHTML=DEFIS.map(([k])=>`<li id="d-${k}"><span class="chk"></span><span class="dt"></span>${k==='quitter'?'<button class="mini" id="quit">Je pars</button>':'<span></span>'}</li>`).join('');
+ $('#quit').addEventListener('click',quit);
+}
+function updateDefis(){
+ if(S.mode!=='sim')return; const m=S.sim;
+ for(const [k,t] of DEFIS){const li=$('#d-'+k); if(!li)continue; const ok=m.defis[k];
+  li.classList.toggle('ok',ok); li.querySelector('.chk').textContent=ok?'✓':'';
+  li.querySelector('.dt').textContent=t||(ok?"Règle d'or découverte":"Défi secret : la règle d'or");}
+}
+function flashDefi(k){const li=$('#d-'+k); if(!li)return; li.classList.add('flash'); setTimeout(()=>li.classList.remove('flash'),900);}
+function setTimer(){clearInterval(timer);timer=null;if(S.mode==='sim'&&S.sim.playing)timer=setInterval(()=>{tick(.25);updateLive();updateSim();},250);}
+function updateSim(){
+ renderJournalLog();
+ if(S.mode!=='sim')return; const m=S.sim,e=compute(),cap=has('bs2')?200:100;
+ const v=Math.min(14.4,vRest(m.socS)-(e.loadA>0?0.1:0)+(e.inS>0?1.6:0));
+ $('#l-socS').textContent=Math.round(m.socS)+'%'; $('#l-socM').textContent=Math.round(m.socM)+'%';
+ $('#l-cur').textContent=(e.net>0.05?'+':e.net<-0.05?'−':'')+fmt(Math.abs(e.net))+' A'; $('#l-v').textContent=fmt(v)+' V';
+ let aut;
+ if(e.net<0){const h=(m.socS-50)/100*cap/(-e.net); aut=h>0?`Avant 12 V : ${h>=1?Math.floor(h)+' h':'< 1 h'}`:'Sous 12 V : la batterie souffre';}
+ else aut=e.net>0?'En charge':'Au repos';
+ $('#l-aut').textContent=aut;
+ $('#l-alarmRow').hidden=!m.alarm;
+ $('#clock').textContent=clockStr(m.t).replace('Jour ','J');
+ const p=$('#play'); p.textContent=m.playing?'❚❚ Pause':'▶ Lancer'; p.classList.toggle('on',m.playing);
+ const st={ccs:m.ccsOn,ccm:m.ccmOn,quai:m.quai,pilot:m.pilotOn,feux:m.loads.feux,vhf:m.loads.vhf,frigo:m.loads.frigo};
+ for(const k in st){const b=$('#tg-'+k); if(!b)continue; b.setAttribute('aria-pressed',st[k]?'true':'false'); b.querySelector('.tg-s').textContent=st[k]?'ON':'OFF';}
+ const eb=$('#eng'); $('#engT').textContent=m.starting?'Démarrage…':m.engine?'Arrêter le moteur':'Démarrer le moteur'; eb.classList.toggle('run',m.engine);
+ const co=$('#callout'); if(co.dataset.v!==m.callout){co.innerHTML=m.callout;co.dataset.v=m.callout;}
+ updateDefis();
+}
+function tick(dt){
+ const m=S.sim; if(m.starting)return; const e=compute(),cap=has('bs2')?200:100;
+ const before=m.socS;
+ m.socS=Math.max(0,Math.min(100,m.socS+e.net*dt/cap*100));
+ m.socM=Math.max(0,Math.min(100,m.socM+e.inM*dt/70*100));
+ if(before>=DEFI_SEUIL&&m.socS<DEFI_SEUIL) addLog(`Parc de service sous ${DEFI_SEUIL} %. La batterie moteur, elle, est intacte.`);
+ if(!m.alarm&&m.socS<ALARM_ON){m.alarm=true;addLog('Alarme batterie faible : le parc de service passe sous 12,0 V. Il faut recharger.');}
+ if(m.alarm&&m.socS>ALARM_OFF){m.alarm=false;addLog('Alarme levée : le parc de service repasse au-dessus de 12 V.');}
+ if(before>3&&m.socS<=3) addLog('Parc de service à plat : feu, VHF et frigo s’éteignent. La batterie est très abîmée.');
+ if(m.engine){m.chargeH+=dt; if(m.chargeH>=1&&!m.defis.recharge){m.defis.recharge=true;flashDefi('recharge');addLog('Une heure de moteur : le répartiteur a chargé les deux parcs.');checkAll();}}
+ m.t+=dt*60;
+}
+function startEngine(){
+ const m=S.sim; if(m.starting)return;
+ if(!m.ccmOn){addLog('Clic… rien. Le coupe-circuit moteur est ouvert.');updateSim();return;}
+ if(m.socM<25){addLog('Le démarreur grince et s’arrête : batterie moteur trop faible.');updateSim();return;}
+ m.starting=true; updateLive(); updateSim();
+ setTimeout(()=>{m.starting=false;m.engine=true;m.chargeH=0;m.socM=Math.max(0,m.socM-1.5);
+  if(m.socS<DEFI_SEUIL){addLog('Le moteur démarre alors que le parc de service est bien entamé : la batterie moteur était à l’abri.');
+   if(!m.defis.vider){m.defis.vider=true;flashDefi('vider');m.callout=`<div class="callout win"><p><strong>Défi relevé.</strong> Le parc de service est sous ${DEFI_SEUIL} %, mais la batterie moteur, séparée par le répartiteur, est restée pleine : le moteur démarre du premier coup.</p></div>`;checkAll();}}
+  else addLog('Moteur démarré. L’alternateur charge à travers le répartiteur.');
+  updateLive();updateSim();},1300);
+}
+function stopEngine(){const m=S.sim;m.engine=false;addLog('Moteur arrêté.');updateLive();updateSim();}
+function toggle(k){
+ const m=S.sim, sim=S.mode==='sim';
+ if(k==='ccs'){m.ccsOn=!m.ccsOn; if(sim)addLog('Coupe-circuit service '+(m.ccsOn?'fermé (ON).':'ouvert (OFF) : le bord est hors tension.'));}
+ else if(k==='ccm'){
+  if(m.ccmOn&&m.engine&&sim){
+   m.ccmOn=false; addLog('Coupe-circuit moteur ouvert moteur en marche !');
+   m.callout=`<div class="callout warn"><p><strong>Règle d'or des coupe-circuits.</strong> Le diesel continue de tourner, mais sur beaucoup de bateaux la charge de l'alternateur passe par ce coupe-circuit : l'ouvrir moteur en marche peut griller ses diodes.</p><p>On arrête d'abord le moteur, ensuite on coupe.</p></div>`;
+   if(!m.defis.regle){m.defis.regle=true;flashDefi('regle');checkAll();}
+  } else {m.ccmOn=!m.ccmOn; if(sim)addLog('Coupe-circuit moteur '+(m.ccmOn?'fermé (ON).':'ouvert (OFF).'));}
+ }
+ else if(k==='quai'){m.quai=!m.quai; if(sim)addLog(m.quai?'Câble de quai branché : le chargeur entretient les deux parcs.':'Câble de quai débranché.');}
+ else if(k==='pilot'){m.pilotOn=!m.pilotOn; if(sim)addLog('Pilote '+(m.pilotOn?'enclenché : 4 A en moyenne, plus par à-coups.':'débrayé.'));}
+ else if(k==='engine'){ if(sim){m.engine?stopEngine():startEngine();} return;}
+ else if(k in m.loads){m.loads[k]=!m.loads[k];}
+ updateLive(); updateSim();
+}
+function quit(){
+ const m=S.sim, pb=[];
+ if(m.engine) pb.push('Le moteur tourne encore : arrêtez-le d’abord.');
+ if(m.ccsOn) pb.push('Le coupe-circuit service est fermé : un appareil oublié en veille videra le parc, et rien n’est isolé en cas de défaut.');
+ if(m.ccmOn) pb.push('Le coupe-circuit moteur est fermé : le gros câble du démarreur reste sous tension.');
+ if(pb.length){
+  m.callout=`<div class="callout warn"><p><strong>Pas encore : installation pas en sécurité.</strong></p><ul>${pb.map(p=>`<li>${p}</li>`).join('')}</ul></div>`;
+  addLog('Départ refusé : installation pas en sécurité.'); flashDefi('quitter');
+ } else {
+  m.callout=`<div class="callout win"><p><strong>Bateau en sécurité.</strong> Moteur arrêté, les deux coupe-circuits ouverts.</p>${m.quai?'<p>Le chargeur, branché directement sur les batteries, continue de les entretenir pendant votre absence.</p>':'<p>Au ponton, pensez au câble de quai : le chargeur, branché directement sur les batteries, les entretiendra même coupe-circuits ouverts.</p>'}</div>`;
+  addLog('On quitte le bord : installation isolée.');
+  if(!m.defis.quitter){m.defis.quitter=true;flashDefi('quitter');checkAll();}
+ }
+ updateSim();
+}
+function checkAll(){const m=S.sim;if(Object.values(m.defis).every(Boolean)){addLog('Les quatre défis sont relevés. Bon vent !');
+ m.callout+=`<div class="callout win"><p><strong>Les quatre défis sont relevés.</strong> Vous savez lire et faire vivre l'installation électrique d'un voilier de croisière.</p></div>`;}}
+
+/* ---------- Commun ---------- */
+function renderHeader(){
+ $('#fuseN').textContent=S.errors;
+ const n=Math.min(S.errors,12);
+ $('#fuseRow').innerHTML=Array.from({length:n},()=>`<svg viewBox="0 0 12 24" aria-hidden="true"><rect x="1" y="1" width="10" height="22" rx="2" fill="none" stroke="currentColor" stroke-width="1.5"/><rect x="3" y="1" width="6" height="4" fill="currentColor"/><rect x="3" y="19" width="6" height="4" fill="currentColor"/><path d="M6 6 L4 11 L8 13 L6 18" fill="none" stroke="var(--w-service)" stroke-width="1.5"/></svg>`).join('');
+ const [gn,gt]=grade(S.errors), fin=S.mode==='sim';
+ $('#gradeN').textContent=gn; $('#gradeLab').textContent=fin?'Grade obtenu':'Grade en jeu';
+ const c=$('#gradeChip'); c.title=gt; c.classList.toggle('final',fin);
+}
+function renderRail(){
+ const r=$('#rail');
+ r.innerHTML=STEPS.map((s,i)=>`<button class="term${has(s.id)?' done':''}${S.mode==='build'&&i===S.step?' cur':''}" data-j="${i}" aria-label="Étape ${i+1} : ${s.title}" title="${i+1}. ${s.title}"><span class="tn">${i+1}</span><span class="stub s-${s.c}"></span></button>`).join('')
+  +`<button class="term last${S.mode==='sim'?' cur':''}" data-j="${STEPS.length}" aria-label="Mise à l'épreuve de l'installation" title="Mise à l'épreuve">ESSAI</button>`;
+ r.querySelectorAll('.term').forEach(b=>b.addEventListener('click',()=>jump(+b.dataset.j)));
+}
+function renderJournal(){
+ const done=STEPS.filter(s=>has(s.id));
+ $('#memos').innerHTML=done.map(s=>`<li>${s.memo}</li>`).join('');
+ $('#memoEmpty').hidden=done.length>0;
+ renderJournalLog();
+}
+function renderJournalLog(){
+ const w=$('#logWrap'); w.hidden=S.mode!=='sim';
+ if(S.mode!=='sim')return;
+ const html=S.sim.log.map(l=>`<li><time>${l.t}</time>${l.txt}</li>`).join('');
+ const lg=$('#log'); if(lg.dataset.v!==html){lg.innerHTML=html;lg.dataset.v=html;}
+}
+function jump(i){
+ S.sim.playing=false; setTimer(); S.just=null; S.fb='';
+ S.built=new Set(STEPS.slice(0,Math.min(i,STEPS.length)).map(s=>s.id));
+ if(i>=STEPS.length){enterSim();}
+ else {S.mode='build';S.step=i;S.phase='choose';S.sim=freshSim();S.sim.pilotOn=true;}
+ renderAll(); save();
+}
+function renderAll(){renderHeader();renderRail();renderBoard();renderPanel();renderDefis();renderJournal();updateSim();setTimer();}
+
+$('#svg').addEventListener('click',ev=>{
+ const mk=ev.target.closest('.marker'); if(mk){pickLoc(+mk.dataset.l);return;}
+ const a=ev.target.closest('[data-act]'); if(!a)return; act(a.dataset.act);
+});
+$('#svg').addEventListener('keydown',ev=>{
+ if(ev.key!=='Enter'&&ev.key!==' ')return;
+ const mk=ev.target.closest('.marker'); if(mk){ev.preventDefault();pickLoc(+mk.dataset.l);return;}
+ const a=ev.target.closest('[data-act]'); if(a){ev.preventDefault();act(a.dataset.act);}
+});
+function act(k){ if(k.startsWith('brk-')) toggle(k.slice(4)); else toggle(k); }
+$('#reset').addEventListener('click',()=>{S.errors=0;S.burnt={};jump(0);});
+
+load();
+if(S.mode==='sim'){S.sim=freshSim();S.sim.pilotOn=false;addLog("Mouillage dans une crique. Moteur coupé, feu de mouillage, VHF en veille et frigo en marche.");}
+renderAll();
+</script>
+</body>
+</html>
