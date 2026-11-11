@@ -85,7 +85,7 @@ window.ALIDADE = {
       duration: { fr: "10 à 15 min", en: "10 to 15 min" } },
 
 
-    { id: "courant-de-bord", arch: "associatif", status: "chantier", langs: ["fr"],
+    { id: "courant-de-bord", arch: "associatif", status: "publie", langs: ["fr"],
       href: "ressources/courant-de-bord/index.html",
       title: { fr: "Courant de bord", en: "Courant de bord: power on board" },
       short: { fr: "Courant de bord", en: "Courant de bord" },
