@@ -7,6 +7,7 @@ Site : **https://markoneko.github.io/alidade/** (une fois publié)
 ```
 alidade/
 ├── index.html                 la page d'entrée (carte jour / nuit, registre)
+├── escale.html                la fiche de chaque escale (escale.html#<id>)
 ├── assets/
 │   └── resources.js           LE fichier à modifier : la liste des escales
 ├── ressources/
@@ -35,19 +36,38 @@ alidade/
 
 > Astuce : l'application **GitHub Desktop** évite les glisser-déposer. Vous travaillez dans un dossier normal, puis « Commit » et « Push » publient.
 
-## 2. Déposer une ressource dans son escale
+## 2. La page d'escale et ses ressources
 
-Chaque ressource vit dans son dossier, par exemple `ressources/canopee/`. **Le nom du fichier est libre.**
+Un clic sur une étoile, ou sur une ligne du registre, ouvre toujours la **page d'escale** de la ressource : `escale.html#<id>`. C'est la fiche intermédiaire, avec titre, description, public, durée, langues, autonomie, statut, liste des ressources et crédits. Elle se remplit seule à partir de `assets/resources.js` : il n'y a aucune page à écrire.
 
-1. Ouvrez le dossier de l'escale sur GitHub, par exemple `ressources/canopee/`.
-2. **Add file** → **Upload files**, déposez votre page avec le nom de votre choix, par exemple `canopee-v2.html`.
-3. **Commit changes**.
-4. Ouvrez `assets/resources.js` (crayon pour modifier) et changez la ligne `href` de la ressource :
-   `href: "ressources/canopee/canopee-v2.html",`
-   Le lien peut aussi pointer vers une autre adresse : `href: "https://…"`.
-5. **Commit changes**. C'est en ligne une minute plus tard.
+**Déposer un fichier** : ouvrez le dossier de l'escale sur GitHub (par exemple `ressources/supports-firs/`), **Add file** → **Upload files**, déposez votre page sous le nom de votre choix, puis **Commit changes**.
 
-Si vous nommez votre fichier `index.html`, il remplace la page « en chantier » et l'étape 4 est inutile.
+**Une seule ressource** : mettez son adresse dans `href` et passez `status` à `"publie"`. La page d'escale montre alors un lien « Ouvrir la ressource ».
+
+**Plusieurs ressources du même type** (les TP d'un cours, une série de cours) : ajoutez une liste `liens` dans le bloc de la ressource.
+
+```js
+liens: [
+  { titre: { fr: "TP 1 — Prise en main", en: "Lab 1 — Getting started" },
+    href: "ressources/supports-firs/tp1.html",
+    desc: { fr: "Découvrir l'interface et les données.", en: "Get to know the interface and data." },
+    status: "publie", langs: ["fr"], duree: { fr: "2 h", en: "2 h" }, type: { fr: "TP", en: "Lab" } },
+  { titre: { fr: "TP 2 — Géotraitements", en: "Lab 2 — Geoprocessing" },
+    status: "chantier" }
+],
+```
+
+- `href` : le fichier ou une adresse extérieure, qui s'ouvre alors dans un nouvel onglet.
+- `status: "chantier"` : la ligne apparaît sans lien, avec le badge « En chantier ».
+- `desc`, `langs`, `duree` et `type` sont facultatifs.
+
+**Autres champs facultatifs de la fiche** :
+- `autonomie: "autoportant"`, `"accompagne"` ou `"mixte"` ;
+- `credits: { fr: "Conception : …\nIllustrations : …", en: "…" }`, où `\n` passe à la ligne.
+
+**Mise en valeur** : une escale `status: "publie"` palpite sur la carte, de jour comme de nuit.
+
+Les anciennes pages « en chantier » (`ressources/<id>/index.html`) ne servent plus : vous pouvez les supprimer ou les remplacer par vos fichiers.
 
 **Attention aux pages produites dans Claude.** Une page publiée comme artefact sur claude.ai n'a pas l'en-tête HTML complet (`<!doctype html>`, `<head>`…). Demandez simplement à Claude « la version autonome pour Alidade » : il vous rend le fichier prêt à déposer, comme pour Courant de bord.
 

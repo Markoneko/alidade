@@ -5,6 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>Alidade</title>
 <meta name="description" content="Alidade : les ressources pédagogiques interactives de Marc Poupée. Teaching resources by Marc Poupée.">
+<link rel="icon" href="assets/logo.svg" type="image/svg+xml">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@1,500;1,600&family=Cormorant+SC:wght@500;600;700&family=Karla:wght@400;500;700&family=Spline+Sans+Mono:wght@400;500&display=swap">
 <style>
@@ -60,7 +61,9 @@ a{color:inherit}
 /* Bandeau */
 .mast{display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:14px 24px;padding-block:22px 18px}
 .brand{display:flex;align-items:center;gap:14px;text-decoration:none}
-.logo{width:52px;height:52px;flex:none}
+.logo{width:52px;height:58px;flex:none}
+.logo-sx{fill:var(--brass)}
+.logo-disc{fill:var(--page);fill-opacity:.7;transition:fill 1.2s}
 .brand h1{font-family:var(--f-disp);font-weight:600;font-size:2.5rem;line-height:.9;margin:0;letter-spacing:.06em}
 .tag{margin:4px 0 0;font-family:var(--f-ital);font-style:italic;font-size:1.15rem;color:var(--ink-2);line-height:1.2}
 .controls{display:flex;gap:10px;align-items:center;flex-wrap:wrap}
@@ -104,6 +107,16 @@ a{color:inherit}
 .st .hit{fill:transparent}
 .st .core{transition:transform .25s ease;transform-box:fill-box;transform-origin:center}
 .st:hover .core,.st:focus-visible .core,.st.on .core{transform:scale(1.45)}
+/* Escale publiée : l'amer palpite (jour et nuit) */
+.st .ping{fill:none;stroke:var(--c);stroke-width:1.4;opacity:0;pointer-events:none;transform-box:fill-box;transform-origin:center}
+.st.pub .ping{animation:ping 3s ease-out infinite}
+.st.pub .ping.p2{animation-delay:1.5s}
+@keyframes ping{0%{transform:scale(1);opacity:.7}100%{transform:scale(2.7);opacity:0}}
+.st .beat{transform-box:fill-box;transform-origin:center}
+.st.pub .beat{animation:beat 3s ease-in-out infinite}
+@keyframes beat{0%,100%{transform:scale(1)}10%{transform:scale(1.16)}22%{transform:scale(1)}}
+.st.pub .halo{opacity:calc(var(--halo-op) + .28)}
+.st.pub .ring{stroke-width:2.2}
 .st:focus-visible .ring{stroke:var(--brass);stroke-width:2.5}
 .minor{fill:var(--star);opacity:.75}
 .iname{font-family:var(--f-disp);font-weight:600;font-size:13px;letter-spacing:.32em;fill:var(--ink-2);paint-order:stroke;stroke:var(--paper);stroke-width:4px}
@@ -187,7 +200,7 @@ a{color:inherit}
 .sig{font-family:var(--f-ital);font-style:italic;font-size:1.15rem;color:var(--ink)}
 
 @media (max-width:640px){
-  .brand h1{font-size:2rem}.logo{width:42px;height:42px}
+  .brand h1{font-size:2rem}.logo{width:44px;height:49px}
   .slabel{display:none}
   .about p.lead{font-size:1.25rem}
 }
@@ -203,12 +216,12 @@ a{color:inherit}
 <div class="wrap">
   <header class="mast">
     <a class="brand" href="./" aria-label="Alidade">
-      <svg class="logo" viewBox="-50 -50 100 100" aria-hidden="true">
-        <circle r="44" fill="none" stroke="currentColor" stroke-width="2.4"/>
-        <path d="M0 -40 L6 0 L0 40 L-6 0Z M-40 0 L0 -6 L40 0 L0 6Z" fill="currentColor"/>
-        <path d="M-27 33 A44 44 0 0 0 27 33" fill="none" stroke="var(--brass)" stroke-width="7"/>
-        <path d="M0 0 L10 47" stroke="var(--brass)" stroke-width="3.5" stroke-linecap="round"/>
-        <circle r="4.5" fill="var(--brass)" stroke="currentColor" stroke-width="1.5"/>
+      <svg class="logo" viewBox="-50 -48 100 112" aria-hidden="true">
+        <path class="logo-sx" transform="scale(.112) translate(-374 -182)" d=""/>
+        <circle class="logo-disc" r="33"/>
+        <circle r="33" fill="none" stroke="currentColor" stroke-width="2.2"/>
+        <path d="M0 -29 L4.6 0 L0 29 L-4.6 0Z M-29 0 L0 -4.6 L29 0 L0 4.6Z" fill="currentColor"/>
+        <circle r="3.6" fill="var(--brass)" stroke="currentColor" stroke-width="1.2"/>
       </svg>
       <div><h1>Alidade</h1><p class="tag" data-i18n="tagline"></p></div>
     </a>
@@ -239,6 +252,7 @@ a{color:inherit}
           <li><svg viewBox="-14 -9 28 18" aria-hidden="true"><circle r="7" fill="var(--paper)" stroke="var(--asso)" stroke-width="1.5"/><path d="M0 -6 L1.5 -1.5 L6 0 L1.5 1.5 L0 6 L-1.5 1.5 L-6 0 L-1.5 -1.5Z" fill="var(--star)"/></svg><span data-i18n="lg1"></span></li>
           <li><svg viewBox="0 0 28 18" aria-hidden="true"><path d="M2 9 H26" stroke="var(--ludo)" stroke-width="1.6" stroke-dasharray="2 4" stroke-linecap="round"/></svg><span data-i18n="lg2"></span></li>
           <li><svg viewBox="-14 -9 28 18" aria-hidden="true"><path d="M-12 -5 L-4 -1 L1 -4 L7 1 L12 -3" fill="none" stroke="var(--acad)" stroke-width="1.3"/><circle cx="-12" cy="-5" r="1.6" fill="var(--star)"/><circle cx="-4" cy="-1" r="1.6" fill="var(--star)"/><circle cx="1" cy="-4" r="1.6" fill="var(--star)"/><circle cx="7" cy="1" r="1.6" fill="var(--star)"/><circle cx="12" cy="-3" r="1.6" fill="var(--star)"/></svg><span data-i18n="lg4"></span></li>
+          <li><svg viewBox="-14 -9 28 18" aria-hidden="true"><circle r="8" fill="none" stroke="var(--acad)" stroke-width="1" opacity=".45"/><circle r="5.5" fill="var(--paper)" stroke="var(--acad)" stroke-width="1.8"/><path d="M0 -4 L1 -1 L4 0 L1 1 L0 4 L-1 1 L-4 0 L-1 -1Z" fill="var(--star)"/></svg><span data-i18n="lg5"></span></li>
           <li><svg viewBox="0 0 28 18" aria-hidden="true"><path d="M4 15 A14 14 0 0 1 24 15" fill="none" stroke="var(--brass)" stroke-width="4"/><path d="M14 16 L18 3" stroke="var(--ink)" stroke-width="2"/></svg><span data-i18n="lg3"></span></li>
         </ul>
       </div>
@@ -274,7 +288,7 @@ const T={
   hintTouch:"Touchez une étoile pour viser une escale. « Lire le ciel » change la carte en ciel nocturne : les îles deviennent des constellations.",
   readSky:"Lire le ciel",readChart:"Lire la carte",
   about:"Alidade rassemble mes ressources pédagogiques interactives : enseignements à Géodata Paris et dans le master FIRS, formations associatives au CNIF, projets ludo-éducatifs. Chaque ressource est une escale, et toutes sont en chantier : elles évoluent au fil des séances.",
-  legendT:"Lire la carte",lg1:"Une escale : une ressource. La nuit, elle devient une étoile.",lg2:"Les routes entre escales du même archipel, qui forment ses constellations.",lg3:"La lunette du sextant vise l'escale que vous survolez.",lg4:"Trois archipels réels : les Saintes, les îles Éoliennes et les Aléoutiennes. Une île, une escale.",island:"Île",
+  legendT:"Lire la carte",lg1:"Une escale : une ressource. La nuit, elle devient une étoile.",lg2:"Les routes entre escales du même archipel, qui forment ses constellations.",lg3:"La lunette du sextant vise l'escale que vous survolez.",lg5:"Une escale qui palpite : la ressource est en ligne.",lg4:"Trois archipels réels : les Saintes, les îles Éoliennes et les Aléoutiennes. Une île, une escale.",island:"Île",
   register:"Registre des escales",registerSub:"Toutes les ressources, archipel par archipel.",
   public:"Public",duration:"Durée",langs:"Langues",position:"Position",bearing:"Relèvement",go:"Accoster",
   chantier:"En chantier",publie:"En ligne",
@@ -288,7 +302,7 @@ const T={
   hintTouch:"Tap a star to sight a port. “Read the sky” turns the chart into a night sky: the islands become constellations.",
   readSky:"Read the sky",readChart:"Read the chart",
   about:"Alidade gathers my interactive teaching resources: courses at Géodata Paris and in the FIRS master's programme, sailing club training at the CNIF, and playful learning projects. Each resource is a port of call, and all of them are under construction: they evolve with every session.",
-  legendT:"Reading the chart",lg1:"A port of call is a resource. At night, it becomes a star.",lg2:"Routes between ports of the same archipelago, which draw its constellations.",lg3:"The sextant's telescope sights the port you hover.",lg4:"Three real archipelagos: Les Saintes, the Aeolian Islands and the Aleutians. One island, one port of call.",island:"Island",
+  legendT:"Reading the chart",lg1:"A port of call is a resource. At night, it becomes a star.",lg2:"Routes between ports of the same archipelago, which draw its constellations.",lg3:"The sextant's telescope sights the port you hover.",lg5:"A pulsing port: the resource is live.",lg4:"Three real archipelagos: Les Saintes, the Aeolian Islands and the Aleutians. One island, one port of call.",island:"Island",
   register:"Harbour register",registerSub:"Every resource, archipelago by archipelago.",
   public:"Audience",duration:"Duration",langs:"Languages",position:"Position",bearing:"Bearing",go:"Go ashore",
   chantier:"Under construction",publie:"Live",
@@ -386,10 +400,11 @@ let sxEl=null, sxAngle=0, sxMirror=1, sightEl=null, readEl=null, read2El=null;
    pivot = centre de la rotule, posé au centre du compas ; axisY = hauteur de l'axe de la lunette ;
    mirrorX = bout gauche de l'axe (petit miroir). On vise de l'oculaire (à droite) vers le petit miroir (à gauche). */
 const SEXTANT={pivot:[374,182],axisY:280,mirrorX:105,scale:.35,d:"M120.99,304.49c-1.27-6.36-4.17-16.7-5.63-23.03-.65.13-.5,2.67-.65,4.45,1.09,29.3,6.2,78.69,12.4,94.89,5.68-13.83-4.74-69.36-6.12-76.32ZM442.61,246.09c5.78-2.55,7.81-6.52,6.06-11.84-2.05-6.24-7.33-8.83-14.3-7.01-6.8,3.15-9.03,8.65-5.87,14.5,3.03,5.62,9.18,7.52,14.11,4.34ZM312.37,443.69c.37-5.63-2.62-8.36-7.65-9.75-24.08-6.63-46.92-16.22-68.5-28.83-7.55-4.41-11.82-3.13-15.86,4.56-9.08,17.28-18.17,34.55-27.14,51.88-3.46,6.68-8.82,12.93-5.53,21.43.3.77-.18,1.97-.55,2.86-1.4,3.36-.2,5.43,2.83,7.2,29.7,17.34,61.31,29.91,94.75,37.83,7.75,1.83,10.38-.09,11.91-7.84,3.2-16.22,6.29-32.47,9.49-48.7,2.02-10.23,4.16-20.43,6.25-30.64ZM477.16,421.17c-6.82,3.6-14.1,4.83-10.71,15.25,6.89,21.15,19.2,53.12,25.72,74.37,2.15,7.02,3.52,10.83,14.4,6.88,29.65-10.78,57.36-25.34,82.31-44.78,2.54-1.98,5.11-5.68,5.21-8.66.27-8.12.07-12.28-1.54-15.69-1.32-2.79-8.89-12.2-10.69-14.79-10.01-14.43-19.99-28.88-30.06-43.27-2.81-4.01-7.82-9.21-12.49-5.51-11.27,8.91-36.14,22.44-40.45,25.01-3.37,1.99-21.69,11.18-21.69,11.18ZM338.55,312.5c.21-4.26-1.81-6.29-5.61-8.07-11.19-5.26-22.32-10.73-33.1-16.79-8.02-4.51-12.9-3.73-17.33,4.59-14.28,26.77-28.5,53.57-42.69,80.38-3.71,7.01-2.55,10.44,4.34,14.55,19.05,11.37,39.36,19.81,60.53,26.3,9.7,2.97,13.46.86,15.5-9.01,3.63-17.52,7.2-35.05,10.71-52.59,2.62-13.1,5.09-26.24,7.63-39.36ZM106.07,472.52l23.12-25.2,12.51,12.5c2.73,2.26,5.51,4.46,8.32,6.63,6.01,4.66,15.72,4.07,19.5-2.38,7.26-12.4,13.85-25.23,20.08-38.19,2.7-5.6-2.02-11.59-8.31-11.34-15.37.61-30.69,1.52-47.37,2.08-1.53.05-22.17.76-22.17.76,0,0-4.84-.64-7.77-.38-1.89-.38-3.81-29.52-3.22-41.87l11.81-.06c-5.05-21.98-10.52-77.79-9.07-96.5.24-3.15.06-6.33.39-9.47.37-3.47,1.32-6.55,5.69-7.12,4.16-.53,6.49,1.52,7.56,5.05,2.33,7.72,4.72,15.45,6.44,23.32,2.27,10.4,4.03,20.92,5.73,31.43l1.4,9.51c2.46,16.96,3.12,25.38,5.36,41.5.01-.18,11.85-.46,11.85-.46l9.05,1.79s11.99,2.36,17.65-.76c4.1-2.26,4.85-6.42,3.43-10.36-6.73-18.7-13.75-37.3-20.86-56.47-4.05,1.18-7.66,2-11.09,3.3-3.06,1.16-4.82.55-5.92-2.59-1.49-4.26-3.2-8.45-5.1-13.4,7.2-3.25,14.13-6.38,20.57-9.29.2-1.58-.06-3.53.57-3.88,4.13-2.29.64-4.21-.08-6.26-1.25.69-2.46,1.5-3.77,2.05-3.22,1.36-6.47,2.67-9.76,3.86-2.77.99-5.61,1.77-9.13,2.87-2.13-5.39-4.19-10.6-6.49-16.43,7.87-3.41,15.21-6.59,22.88-9.92-2.17-6.12-4.05-11.89-6.28-17.53-1.66-4.19-.67-6.75,3.64-8.21s8.5-2.83,12.58-4.65c4.38-1.96,6.58-.52,8.21,3.62,5.65,14.37,11.49,28.66,17.27,42.98.44,1.08.94,2.13,1.58,3.56l7.56-1.9c7.63,19.58,15.46,39.48,23.11,59.44,1.76,4.58,3.97,8.12,9.44,8.29,5.21.16,8.28-2.52,10.63-6.96,10.05-19.01,20.16-37.99,30.52-56.84,2.5-4.54,2.65-7.76-.93-12.05-7.55-9.04-14.35-18.71-21.44-28.13-1.75-2.32-2.67-5.82-7.03-3.83-.6.27-2.44-2.17-3.92-3.56l-8.31-12.47c1.71-4.43,2.2-8.88,4.67-11.27,2.82-2.72,7.41-3.59,11.51-5.39-2.16-8.29-6.75-24.77-6.75-24.77,0,0,3.73-8.29,6.76-9.55,4.29,4.29,19.09,19.5,27.54,28.8,0,0,16.42,2.27,25.5,3.59,1.96-.24,4.47-.49,6.95-.88,4.26-.67,5.69-2.83,5.23-7.41-2.79-28.21,8.95-57.74,38.34-70.14,5.05-2.13,10.46-3.64,15.85-4.64,2.18-.4,8.76-.67,8.76-.67,1.41-11.4,2.75-22.05,4.05-32.7.48-3.92.41-7.98,1.53-11.7.53-1.79,1.21-4.44,2.96-4.47,5.09-.09,13.46.72,18.57,1.14,3.95.32,4.2,2.68,3.81,6.74-1.04,10.8-2.5,26.71-3.62,37.51,0,0,1.61,1.34,5.42,3.34,6.07,3.18,12.07,6.76,17.35,11.1,2.45,2.01,3.09,6.21,4.57,9.4.56,1.22.97,2.57,1.79,3.59,11.27,13.98,13.84,30.48,14.44,47.73.15,4.23,1.42,8.96,3.68,12.49,7.84,12.23,16.35,24.03,25.4,37.14-.16-4.51.68-9.31.68-9.31,0,0,6.33-.18,9.09.2,15.23,2.06,30.94,2.34,45.59,6.41,26.38,7.33,53.07,7.34,79.9,7.35,16.19,0,32.4-.07,48.56-.86,11.79-.58,23.84-1.18,35.17-4.11,7.43-1.92,14.61-3.94,22.28-3.99,12.42-.08,24.85.23,37.25-.31,4.14-.18,8.25-2.3,12.27-3.81,6.29-2.35,8.23-2.05,9.99,4.52,2.59,9.68,4.6,19.57,6.04,29.49,2.33,16.06,2.66,32.2-.46,48.25-.38,1.94-1.23,5.05-1.89,6.91-2.8,7.9-4.13,9.49-14.2,6.53-5.2-1.53-9.17-2.01-14.75-1.84-14.35.42-34.2,1.04-46.8,1.23,0,0-.19-1.71-.38-2.56-35.64-1.58-119.78,3.88-124.86,3.98-19.23.38-34.39,12.98-35.15,11.94,4.19,5.77,9.84,14.11,13.48,19.39,18.47,26.81,36.99,53.6,55.5,80.39,5.25,7.6,14.35,8.52,20.85,2.02,4.19-4.18,8.25-8.5,12.24-12.87,5.04-5.53,8.2-6.03,13.87-1.49,5.07,4.06,17.64,13.93,17.64,13.93-16.48,24.73-75.57,79.58-164.75,112.55,5.92,11.86.86,16.97-6.16,26.42-10.94,14.72-21.43,29.82-31.38,45.22-10.03,15.52-9.32,31.36,1.47,46.41,2.62,3.65,1.88,5.57-2.31,8.15-3.33,2.05-6.5,4.36-9.35,7.04-6.82,6.4-11.47,6.86-14.31-.96-3.39-9.37-5.65-19.17-7.97-28.89-1.05-4.38-1.36-8.99-1.48-13.52-.15-5.33-3.44-6.76-7.8-7.28-4.91-.58-5.59,2.39-6.19,6.44-2.38,16.07-6.3,31.69-15.21,45.64-6.39,10-6.71,10.14-16.99,4.02-1.35-.8-2.66-1.66-4.52-2.82,9.61-15.12,15.57-31.28,15.04-49.83-4.92.36-9.41,1.15-13.85.92-12.35-.63-24.69-1.52-37-2.69-3.2-.3-6.29-1.38-8.92-3.22-5.97-4.19-12.67-3.63-19.29-3.98-2.03-.11-4.05-.4-6.4-.64v5.16l.2,2.85c1.26,5.1,2.55,10.36,4.05,16.45-10.03,2.22-19.55,4.32-29.7,6.57-1.71-6.95-3.48-14.12-5.25-21.29-.45.06-.9.11-1.35.17.52,3.35.96,6.71,1.6,10.03.75,3.87,1.7,7.69,2.53,11.55.56,2.62,1.02,4.97-2.77,5.86-3.15.74-5.32.72-6.49-2.81-4.81-14.54-9.72-29.04-14.56-43.57-.37-1.11-.95-2.44-.65-3.45,3.33-11.33-1.34-22.21-1.66-33.32-.05-1.84.66-4.5,1.97-5.42,4.02-2.82,6.88-1.31,7.91,3.58,1.41,6.7,2.83,13.39,5.47,19.92-1.16-7.08-2.32-14.15-3.56-21.69,7.84-1.87,15.28-3.57,22.67-5.47,1.98-.51,3.81-1.62,5.71-2.45,1.3,4.46,3.31,8.86,3.68,13.39.33,4.02,1.66,4.84,5,3.88,2.44-.69,5.16-1.14,7.1-2.58,1.56-1.15,2.9-3.6,2.95-5.51l.76-8.41c-22.63-5.34-45.66-8.72-68.97-15.35-22.44-6.39-45.67-17.85-66.69-28.04-20.36-9.87-60.78-40.22-61.77-40.55-12.45-8.73-17.43-14.97-17.43-14.97ZM359.12,289.75c0-2.87.12-4.8-.02-6.72-.66-9.01-1.55-18.01-2.04-27.03-.25-4.61-.09-8.93-6.68-8.5-1.11.07-2.38-1.19-3.47-1.98-6.36-4.62-12.61-9.37-19.04-13.89-4.01-2.83-11.74-2.06-12.87.94-1.16,3.09-2.5,6.12-3.76,9.17-.74.11-1.49.23-2.23.34,3.2,4,6.49,7.94,9.56,12.04,1.36,1.82,2.82,3.86,3.28,6,1.15,5.36,1.63,10.86,2.66,16.25.29,1.49,1.22,3.46,2.44,4.08,9.86,5.03,20.33,8.07,32.17,9.29ZM476.31,349.93c-4.17-6.82-6.07-68.03-6.63-66.32-.3.93-5.49-12.11-5.68-11.18-.64,3.07-33.1,23.24-35.81,24.82-4.55,2.65-4.82,4.72-5.12,7.96-.05.55,31.77,95.38,32.4,96.25,2.46,3.41,9.28,4.2,10.61,3.41,14.79-8.77,47.48-24.81,62.02-33.97,5.29-3.33,5.31-7.36,1.8-12.67-2.17-3.28-4.45-7.37-6.41-10.77,0,0-2.59-4.75-6.25-3.6-6.23,1.95-26.91,5.12-40.93,6.06ZM364.26,356.34c-.95-12.47-1.89-24.94-2.84-37.41-.2,0-.07-5.95-1.46-8.1-.84.93-2.43,4.07-2.46,4.23-6.42,31.73-12.9,60.3-19.07,92.08-.48,2.47.04,8.28.76,10.99.67-.05,4.51,3.09,5.18,3.03,1.43,1.02,2.92.88,6.32,1.01,1.64.06,15.66.44,17.87.38-.44-6.32-2.72-44.28-2.72-45.98,0,0-1.87-20.2-1.58-20.23ZM473.65,519.03c.54-.53-25.43-81.51-28.33-83.46-4.07-2.75-7.58-2.18-14.31-1.42,1.24,1.79,7.48,57.79,7.39,57.51,0,0,5.02,5.12,12.41,10.61,0,0,18.64,13.6,22.83,16.77ZM371.05,499.23s-3.98-44.91-4.74-53.15c-.4-4.33-4.26-6.06-6.73-7.2-1.52-.15-17.24-.57-21.79-.76-3.24-.13-5.94,5.57-6.25,5.87-2.46,2.36-18.19,79.67-17.05,91.99,0,0,18.09,1.58,20.08.85,6.73-4.07,33.95-35.18,36.47-37.61ZM438.6,257.65c-12.51-1.52-16.67-8.15-21.98-17.43-.98-1.72-7.85-.03-10.23-.38-.69-.1,4.92,43.9,4.93,45.47,5.68.19,25.01-10.23,30.51-17.81,2.17-2.99-.15-9.28-3.22-9.85ZM428.56,416.24c6.44.38,10.52-7.8,10.23-9.47-.37-2.15-17.81-59.49-21.79-71.62,0,8.72,10.23,75.6,11.56,81.09ZM144.82,488.68l-.29-.2-.04.32.33-.12ZM201.52,510.23l.2-.3-.33-.04.13.33Z"};
+document.querySelectorAll(".logo-sx").forEach(n=>n.setAttribute("d",SEXTANT.d));
 fetch("assets/sextant.svg").then(r=>r.ok?r.text():null).then(txt=>{if(!txt)return;
  const doc=new DOMParser().parseFromString(txt,"image/svg+xml");
  const ds=[...doc.querySelectorAll("path")].filter(q=>!q.closest('[class*="cls-1"],[display="none"]')).map(q=>q.getAttribute("d")).filter(Boolean);
- if(ds.length){SEXTANT.d=ds.join(" ");document.querySelectorAll(".sx-body,.sx-glow").forEach(n=>n.setAttribute("d",SEXTANT.d));}}).catch(()=>{});
+ if(ds.length){SEXTANT.d=ds.join(" ");document.querySelectorAll(".sx-body,.sx-glow,.logo-sx").forEach(n=>n.setAttribute("d",SEXTANT.d));}}).catch(()=>{});
 
 function build(){
  const svg=$("#map"); svg.innerHTML="";
@@ -415,12 +430,14 @@ function build(){
 
  const nearRose=b=>{const x=clamp(CX,b.x0,b.x1),y=clamp(CY,b.y0,b.y1);return Math.hypot(x-CX,y-CY)<168;};
  /* Côté des étiquettes d'escale, calculé avant les sondes pour qu'elles s'en écartent */
- const starBoxes=[];
+ const starBoxes=[], allSt=ARCH.flatMap(g=>g.stars);
  for(const g of ARCH)for(const st of g.stars){
   st.lbl=L(st.res.short||st.res.title); const w=st.lbl.length*8.3+16;
   const box=side=>side==="r"?{x0:st.x-12,y0:st.y-14,x1:st.x+w,y1:st.y+12}:side==="l"?{x0:st.x-w,y0:st.y-14,x1:st.x+12,y1:st.y+12}
    :side==="t"?{x0:st.x-w/2,y0:st.y-34,x1:st.x+w/2,y1:st.y+12}:{x0:st.x-w/2,y0:st.y-12,x1:st.x+w/2,y1:st.y+32};
-  const bad=b=>b.x0<30||b.x1>W-30||b.y0<24||b.y1>H-24||nearRose(b);
+  const hit=(b,c)=>b.x0<c.x1&&b.x1>c.x0&&b.y0<c.y1&&b.y1>c.y0;
+  const onStar=b=>allSt.some(o=>o!==st&&o.x>b.x0-11&&o.x<b.x1+11&&o.y>b.y0-11&&o.y<b.y1+11);
+  const bad=b=>b.x0<30||b.x1>W-30||b.y0<24||b.y1>H-24||nearRose(b)||onStar(b)||starBoxes.some(c=>hit(b,c));
   let side=st.lab;
   if(!side){const first=st.x>=g.cx-2?"r":"l";side=[first,first==="r"?"l":"r","t","b"].find(k=>!bad(box(k)))||first;}
   st.side=side; starBoxes.push(box(side));
@@ -492,10 +509,11 @@ function build(){
   el("text",{class:"asub",x:lx.toFixed(0),y:(ly+48).toFixed(0),"text-anchor":"middle"},G,L(g.a.sub).toUpperCase());
   for(const s of g.stars){
    const k=s.extra?.82:1;
-   const A=el("a",{class:"st",href:s.res.href,"data-id":s.res.id,"aria-label":`${L(s.res.title)} · ${t(s.res.status)}`,transform:`translate(${s.x.toFixed(1)} ${s.y.toFixed(1)})`},G);
+   const A=el("a",{class:"st"+(s.res.status==="publie"?" pub":""),href:escaleHref(s.res),"data-id":s.res.id,"aria-label":`${L(s.res.title)} · ${t(s.res.status)}`,transform:`translate(${s.x.toFixed(1)} ${s.y.toFixed(1)})`},G);
    el("circle",{class:"hit",r:"18"},A);
-   const C=el("g",{class:"core"},A);
-   el("circle",{class:"halo",r:(14*k).toFixed(1)},C); el("circle",{class:"ring day-only",r:(9.5*k).toFixed(1)},C); el("path",{class:"s4",d:STAR4,transform:`scale(${k})`},C);
+   if(s.res.status==="publie"){el("circle",{class:"ping",r:(10*k).toFixed(1)},A);el("circle",{class:"ping p2",r:(10*k).toFixed(1)},A);}
+   const C=el("g",{class:"core"},A), B=el("g",{class:"beat"},C);
+   el("circle",{class:"halo",r:(14*k).toFixed(1)},B); el("circle",{class:"ring day-only",r:(9.5*k).toFixed(1)},B); el("path",{class:"s4",d:STAR4,transform:`scale(${k})`},B);
    const lbl=s.lbl, sd=s.side;
    el("text",{class:"slabel",x:(s.x+(sd==="r"?15:sd==="l"?-15:0)).toFixed(1),y:(s.y+(sd==="t"?-17:sd==="b"?27:5)).toFixed(1),"text-anchor":sd==="r"?"start":sd==="l"?"end":"middle"},G,lbl);
   }
@@ -539,6 +557,7 @@ function rest(){sightEl.classList.remove("on");readEl.textContent=t("readIdle");
 function pos(s){const g=ARCH.find(q=>q.stars.includes(s));const ll=g&&g.lonlat?g.lonlat(s.x,s.y):[50-s.y/H*11,-6+s.x/W*15].reverse();const lat=ll[1],lon=ll[0];
  const f=(v,p,n)=>{const tm=Math.round(Math.abs(v)*60),d=Math.floor(tm/60),m=tm%60;return `${d}°${String(m).padStart(2,"0")}′ ${v>=0?p:n}`;};
  return `${f(lat,"N","S")} · ${f(lon,"E",lang==="en"?"W":"O")}`;}
+const escaleHref=r=>"escale.html#"+encodeURIComponent(r.id);
 const langsTxt=r=>(r.langs||["fr"]).map(x=>x.toUpperCase()).join(" · ");
 
 let cardFor=null, hideT=null;
@@ -550,7 +569,7 @@ function showCard(s){
   <dl><div><dt>${t("public")}</dt><dd>${L(r.audience)}</dd></div><div><dt>${t("duration")}</dt><dd>${L(r.duration)}</dd></div><div><dt>${t("langs")}</dt><dd>${langsTxt(r)}</dd></div></dl>
   ${s.island&&s.island.name?`<p class="c-star">${t("island")} <b>${s.island.name}</b> · ${L(GEO[a.geo].name)}</p>`:""}
   <p class="c-pos">${t("position")} ${pos(s)} · ${t("bearing")} ${String(bearing(s)).padStart(3,"0")}°</p>
-  <div class="c-foot"><span class="pill ${r.status}">${t(r.status)}</span><a class="go" href="${r.href}">${t("go")} →</a></div>`;
+  <div class="c-foot"><span class="pill ${r.status}">${t(r.status)}</span><a class="go" href="${escaleHref(r)}">${t("go")} →</a></div>`;
  c.hidden=false;
  const fr=$("#frame").getBoundingClientRect(), k=fr.width/W, cw=c.offsetWidth, ch=c.offsetHeight;
  let x=s.x*k, y=s.y*k;
@@ -581,7 +600,7 @@ document.addEventListener("click",e=>{if(touch&&!e.target.closest(".st")&&!e.tar
 function buildRegister(){
  $("#groups").innerHTML=ARCH.map(g=>`<section class="grp g-${g.a.hue}" aria-label="${L(g.a.name)}">
   <header><svg class="gmark" viewBox="-10 -10 20 20" aria-hidden="true"><path d="${STAR4}"/></svg><div><h3>${L(g.a.name)}</h3><p>${L(g.a.sub)}</p>${g.geo?`<p class="gsky">${L(g.geo.name)} · ${L(g.geo.where)}</p>`:""}</div></header>
-  <ul>${g.res.map(r=>`<li><a class="row" href="${r.href}" data-id="${r.id}"><span class="r-t">${L(r.title)}</span><span class="r-d">${L(r.desc)}</span><span class="r-m">${L(r.audience)} · ${L(r.duration)} · ${langsTxt(r)}</span><span class="pill ${r.status}">${t(r.status)}</span></a></li>`).join("")}</ul></section>`).join("");
+  <ul>${g.res.map(r=>`<li><a class="row" href="${escaleHref(r)}" data-id="${r.id}"><span class="r-t">${L(r.title)}</span><span class="r-d">${L(r.desc)}</span><span class="r-m">${L(r.audience)} · ${L(r.duration)} · ${langsTxt(r)}</span><span class="pill ${r.status}">${t(r.status)}</span></a></li>`).join("")}</ul></section>`).join("");
  document.querySelectorAll(".row").forEach(a=>{const s=starById(a.dataset.id);
   a.addEventListener("mouseenter",()=>aim(s)); a.addEventListener("focus",()=>aim(s));
   a.addEventListener("mouseleave",rest); a.addEventListener("blur",rest);});

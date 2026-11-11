@@ -1,0 +1,161 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Escale · Alidade</title>
+<link rel="icon" href="assets/logo.svg" type="image/svg+xml">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@1,500;1,600&family=Cormorant+SC:wght@500;600;700&family=Karla:wght@400;500;700&family=Spline+Sans+Mono:wght@400;500&display=swap">
+<script>try{var t=localStorage.getItem("alidade-theme");if(t==="light"||t==="dark")document.documentElement.setAttribute("data-theme",t)}catch(e){}</script>
+<style>
+/* Page d'escale : la fiche d'une ressource, entre la carte et la ressource elle-même.
+   Même papier que la carte ; contenu lu dans assets/resources.js, d'après l'adresse escale.html#<id>. */
+:root{
+  --page:#D8E1DB; --paper:#E8EEE9; --paper-2:#DCE4DE; --line:#AFBDB5; --ink:#1B2340; --ink-2:#4A5574; --brass:#9A7420;
+  --acad:#2E3387; --asso:#1F497D; --ludo:#A9501B; --ok:#2E6E5B;
+  --f-disp:"Cormorant SC","Cormorant Garamond",Garamond,"Times New Roman",serif;
+  --f-ital:"Cormorant Garamond",Garamond,"Times New Roman",serif;
+  --f-body:"Karla",system-ui,-apple-system,"Segoe UI",sans-serif;
+  --f-mono:"Spline Sans Mono",ui-monospace,Menlo,Consolas,monospace;
+}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
+  --page:#090F26; --paper:#0E1532; --paper-2:#161F45; --line:#2C386A; --ink:#E9E3CC; --ink-2:#A1AACA; --brass:#E2BE68;
+  --acad:#A8ADF4; --asso:#EEECE1; --ludo:#F3A766; --ok:#7FCDB4; color-scheme:dark}}
+:root[data-theme="dark"]{
+  --page:#090F26; --paper:#0E1532; --paper-2:#161F45; --line:#2C386A; --ink:#E9E3CC; --ink-2:#A1AACA; --brass:#E2BE68;
+  --acad:#A8ADF4; --asso:#EEECE1; --ludo:#F3A766; --ok:#7FCDB4; color-scheme:dark}
+*{box-sizing:border-box}
+[hidden]{display:none!important}
+body{margin:0;min-height:100vh;display:grid;place-items:start center;background:var(--page);color:var(--ink);font-family:var(--f-body);font-size:16.5px;line-height:1.55;
+  padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));padding-block:32px 40px}
+a{color:inherit}
+:focus-visible{outline:2px solid var(--brass);outline-offset:3px}
+main{width:min(700px,100%);background:var(--paper);border:1px solid var(--line);border-radius:4px;padding:28px 30px 26px;position:relative}
+main::before{content:"";position:absolute;inset:6px;border:1px solid var(--line);pointer-events:none;border-radius:2px}
+@media (max-width:520px){main{padding:24px 20px 22px}}
+.top{display:flex;justify-content:space-between;align-items:flex-start;gap:12px}
+.home{display:flex;align-items:center;gap:10px;text-decoration:none}
+.home svg{width:52px;height:58px;color:var(--ink);flex:none}
+.home span{font-family:var(--f-disp);font-weight:600;font-size:1.25rem;letter-spacing:.08em}
+.logo-sx{fill:var(--brass)}.logo-disc{fill:var(--paper);fill-opacity:.7}
+.seg{display:flex;border:1px solid var(--line);border-radius:999px;padding:3px;background:var(--page);position:relative;z-index:1}
+.seg button{border:0;background:none;font:inherit;font-family:var(--f-mono);font-size:.78rem;letter-spacing:.08em;color:var(--ink-2);padding:4px 11px;border-radius:999px;cursor:pointer}
+.seg button[aria-pressed="true"]{background:var(--ink);color:var(--paper)}
+.eye{font-family:var(--f-disp);font-weight:600;letter-spacing:.12em;color:var(--c,var(--ink-2));margin:16px 0 2px}
+h1{font-family:var(--f-ital);font-style:italic;font-weight:600;font-size:2.3rem;line-height:1.05;margin:0;text-wrap:balance}
+.alt{font-family:var(--f-ital);font-style:italic;font-size:1.3rem;color:var(--ink-2);margin:4px 0 14px}
+.desc{margin:0 0 14px;max-width:62ch}
+.facts{display:grid;grid-template-columns:auto 1fr;gap:3px 16px;margin:0 0 14px;font-size:.93rem}
+.facts div{display:contents}.facts dt{color:var(--ink-2)}.facts dd{margin:0}
+.pill{display:inline-block;font-family:var(--f-mono);font-size:.72rem;letter-spacing:.06em;text-transform:uppercase;border:1px dashed var(--brass);color:var(--brass);border-radius:3px;padding:2px 7px;white-space:nowrap}
+.pill.publie{border-style:solid;color:var(--ok);border-color:var(--ok)}
+h2{font-family:var(--f-disp);font-weight:600;font-size:1.05rem;letter-spacing:.14em;margin:22px 0 6px;padding-top:10px;border-top:1px solid var(--ink)}
+.links{list-style:none;margin:0;padding:0}
+.lk{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:2px 14px;padding:11px 6px;border-bottom:1px solid var(--line);text-decoration:none;align-items:baseline}
+a.lk:hover,a.lk:focus-visible{background:var(--paper-2)}
+.lk-t{font-family:var(--f-disp);font-weight:600;font-size:1.15rem;letter-spacing:.03em;line-height:1.2}
+a.lk .lk-t::after{content:" →";color:var(--brass)}
+.lk-d{grid-column:1;font-size:.93rem;max-width:62ch}
+.lk-m{grid-column:1;font-family:var(--f-mono);font-size:.72rem;color:var(--ink-2)}
+.lk .pill{grid-column:2;grid-row:1}
+.lk.off{opacity:.75}
+.note{margin:6px 0 0;font-family:var(--f-ital);font-style:italic;font-size:1.1rem;color:var(--ink-2)}
+.credits{margin:0;font-size:.93rem;white-space:pre-line}
+.back{display:inline-block;margin-top:22px;font-family:var(--f-disp);font-weight:600;font-size:1.1rem;letter-spacing:.06em;text-decoration:none;border-bottom:1.5px solid var(--brass)}
+.back:hover{color:var(--brass)}
+</style>
+</head>
+<body>
+<main>
+  <div class="top">
+    <a class="home" href="index.html" aria-label="Alidade">
+      <svg viewBox="-50 -48 100 112" aria-hidden="true">
+        <path class="logo-sx" transform="scale(.112) translate(-374 -182)" d=""/>
+        <circle class="logo-disc" r="33"/>
+        <circle r="33" fill="none" stroke="currentColor" stroke-width="2.2"/>
+        <path d="M0 -29 L4.6 0 L0 29 L-4.6 0Z M-29 0 L0 -4.6 L29 0 L0 4.6Z" fill="currentColor"/>
+        <circle r="3.6" fill="var(--brass)" stroke="currentColor" stroke-width="1.2"/>
+      </svg>
+      <span>Alidade</span>
+    </a>
+    <div class="seg" role="group" aria-label="Langue · Language">
+      <button type="button" data-lang="fr" aria-pressed="false">FR</button>
+      <button type="button" data-lang="en" aria-pressed="false">EN</button>
+    </div>
+  </div>
+  <div id="content"></div>
+  <a class="back" href="index.html" id="back"></a>
+</main>
+<script src="assets/geo.js"></script>
+<script src="assets/resources.js"></script>
+<script>
+(function(){
+"use strict";
+const D=window.ALIDADE||{archipelagos:[],resources:[]}, GEO=window.ALIDADE_GEO||{};
+const T={
+ fr:{back:"← Retour à la carte",public:"Public",duration:"Durée",langs:"Langues",autonomy:"Autonomie",
+  chantier:"En chantier",publie:"En ligne",resources:"Ressources",credits:"Crédits",
+  open:"Ouvrir la ressource",soon:"Cette escale est en chantier : ses ressources arrivent bientôt.",
+  none:"Aucune ressource n'est encore déposée ici.",missing:"Escale introuvable",missingTxt:"Cette escale n'existe pas, ou plus. Revenez à la carte pour choisir une autre escale.",
+  autoportant:"Autoportant : se suit seul",accompagne:"Accompagné : avec un formateur",mixte:"Mixte : seul ou accompagné"},
+ en:{back:"← Back to the chart",public:"Audience",duration:"Duration",langs:"Languages",autonomy:"Autonomy",
+  chantier:"Under construction",publie:"Live",resources:"Resources",credits:"Credits",
+  open:"Open the resource",soon:"This port is under construction: its resources are on their way.",
+  none:"No resource has been uploaded here yet.",missing:"Port not found",missingTxt:"This port of call does not exist, or no longer does. Go back to the chart to pick another one.",
+  autoportant:"Self-standing: can be followed alone",accompagne:"Guided: with a trainer",mixte:"Mixed: alone or guided"}
+};
+const store={get(k){try{return localStorage.getItem(k)}catch(e){return null}},set(k,v){try{localStorage.setItem(k,v)}catch(e){}}};
+let lang=store.get("alidade-lang")||((navigator.language||"fr").toLowerCase().startsWith("fr")?"fr":"en");
+const t=k=>(T[lang]&&T[lang][k])||T.fr[k]||k;
+const other=()=>lang==="fr"?"en":"fr";
+const L=o=>o==null?"":typeof o==="string"?o:(o[lang]||o.fr||o.en||"");
+const Lo=o=>o==null||typeof o==="string"?"":(o[other()]||"");
+const esc=s=>String(s).replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
+const langsTxt=l=>(l||["fr"]).map(x=>String(x).toUpperCase()).join(" · ");
+const ext=h=>/^https?:/i.test(h||"");
+
+/* Les liens de l'escale : la liste « liens » si elle existe, sinon le lien principal d'une ressource publiée */
+function linksOf(r){
+ if(Array.isArray(r.liens)&&r.liens.length)return r.liens.map(l=>({title:l.titre||l.title,desc:l.desc,href:l.href,status:l.status||l.statut||(l.href?"publie":"chantier"),langs:l.langs,duration:l.duree||l.duration,type:l.type}));
+ if(r.status==="publie"&&r.href)return [{title:{fr:T.fr.open,en:T.en.open},href:r.href,status:"publie",langs:r.langs,duration:r.duration}];
+ return [];
+}
+function render(){
+ document.documentElement.lang=lang;
+ document.querySelectorAll(".seg button").forEach(b=>b.setAttribute("aria-pressed",String(b.dataset.lang===lang)));
+ document.getElementById("back").textContent=t("back");
+ const id=decodeURIComponent((location.hash||"").slice(1));
+ const r=D.resources.find(x=>x.id===id), box=document.getElementById("content");
+ if(!r){box.innerHTML=`<h1 style="margin-top:16px">${t("missing")}</h1><p class="desc" style="margin-top:10px">${t("missingTxt")}</p>`;document.title="Alidade";return;}
+ const a=D.archipelagos.find(x=>x.id===r.arch)||{}, g=GEO[a.geo];
+ document.querySelector("main").style.setProperty("--c",a.hue?`var(--${a.hue})`:"var(--ink-2)");
+ document.title=`${L(r.title)} · Alidade`;
+ const facts=[[t("public"),L(r.audience)],[t("duration"),L(r.duration)],[t("langs"),langsTxt(r.langs)],
+  [t("autonomy"),r.autonomie?(T[lang][r.autonomie]||L(r.autonomie)):""]].filter(f=>f[1]);
+ const links=linksOf(r);
+ let list;
+ if(links.length) list=`<ul class="links">${links.map(l=>{
+   const live=l.status!=="chantier"&&l.href, meta=[l.type?L(l.type):"",l.langs?langsTxt(l.langs):"",l.duration?L(l.duration):""].filter(Boolean).join(" · ");
+   const inner=`<span class="lk-t">${esc(L(l.title))}</span>${l.desc?`<span class="lk-d">${esc(L(l.desc))}</span>`:""}${meta?`<span class="lk-m">${esc(meta)}</span>`:""}<span class="pill ${live?"publie":"chantier"}">${t(live?"publie":"chantier")}</span>`;
+   return `<li>${live?`<a class="lk" href="${esc(l.href)}"${ext(l.href)?' target="_blank" rel="noopener"':""}>${inner}</a>`:`<div class="lk off">${inner}</div>`}</li>`;}).join("")}</ul>`;
+ else list=`<p class="note">${r.status==="chantier"?t("soon"):t("none")}</p>`;
+ box.innerHTML=`<p class="eye">${esc(L(a.name))}${g?` · ${esc(L(g.name))}`:""}</p>
+  <h1>${esc(L(r.title))}</h1>${Lo(r.title)&&Lo(r.title)!==L(r.title)?`<p class="alt" lang="${other()}">${esc(Lo(r.title))}</p>`:`<div style="height:12px"></div>`}
+  <p class="desc">${esc(L(r.desc))}</p>
+  <dl class="facts">${facts.map(f=>`<div><dt>${f[0]}</dt><dd>${esc(f[1])}</dd></div>`).join("")}</dl>
+  <span class="pill ${r.status}">${t(r.status)}</span>
+  <h2>${t("resources")}</h2>${list}
+  ${r.credits?`<h2>${t("credits")}</h2><p class="credits">${esc(L(r.credits))}</p>`:""}`;
+}
+document.querySelectorAll(".seg button").forEach(b=>b.addEventListener("click",()=>{lang=b.dataset.lang;store.set("alidade-lang",lang);render();}));
+window.addEventListener("hashchange",render);
+render();
+fetch("assets/sextant.svg").then(r=>r.ok?r.text():null).then(txt=>{if(!txt)return;
+ const doc=new DOMParser().parseFromString(txt,"image/svg+xml");
+ const ds=[...doc.querySelectorAll("path")].map(q=>q.getAttribute("d")).filter(Boolean);
+ if(ds.length)document.querySelectorAll(".logo-sx").forEach(n=>n.setAttribute("d",ds.join(" ")));}).catch(()=>{});
+})();
+</script>
+</body>
+</html>

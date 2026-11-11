@@ -8,8 +8,24 @@
    langs  : ["fr"], ["en"] ou ["fr","en"]
    ile    : (facultatif) le nom d'une île pour y poser l'étoile,
             par exemple ile: "Stromboli"
-   cote   : (facultatif) "gauche" ou "droite" pour placer le nom
-            de la ressource de ce côté de son étoile
+   cote   : (facultatif) "gauche", "droite", "haut" ou "bas" pour
+            placer le nom de la ressource de ce côté de son étoile
+
+   PAGE D'ESCALE — un clic sur une étoile ouvre escale.html#<id>,
+   la fiche de la ressource. Champs facultatifs pour la remplir :
+   autonomie : "autoportant", "accompagne" ou "mixte"
+   credits   : { fr: "…", en: "…" }  (retours à la ligne : \n)
+   liens     : plusieurs ressources du même type, par exemple :
+     liens: [
+       { titre: { fr: "TP 1 — Prise en main", en: "Lab 1 — Getting started" },
+         href: "ressources/supports-firs/tp1.html",
+         desc: { fr: "…", en: "…" },          (facultatif)
+         status: "publie",                    ("chantier" : affiché sans lien)
+         langs: ["fr"], duree: { fr: "2 h", en: "2 h" }, type: { fr: "TP", en: "Lab" } }
+     ]
+   Sans « liens », une ressource publiée montre un seul lien vers
+   son href ; une ressource en chantier affiche « en chantier ».
+   Une ressource publiée palpite sur la carte.
    Par défaut, une île = une escale : la première ressource d'un
    archipel va sur la plus grande île, les suivantes sur les îles
    les plus éloignées des précédentes. Quand toutes les îles sont
