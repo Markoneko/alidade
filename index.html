@@ -14,7 +14,10 @@
   --page:#D8E1DB; --paper:#E8EEE9; --paper-2:#DCE4DE; --card:#F2F5F1; --line:#AFBDB5;
   --ink:#1B2340; --ink-2:#4A5574;
   --rh-a:#1B2340; --rh-b:#3B7A66; --rh-c:#A33240; --rh-op:.3;
-  --acad:#2E6E5B; --asso:#1F497D; --ludo:#8F6B0E; --brass:#8F6B0E;
+  --acad:#2E3387; --acad-land:#2E3387; --acad-coast:#232968; --acad-hatch:#F4F5FB;
+  --asso:#1F497D; --asso-land:#EEECE1; --asso-coast:#1F497D; --asso-hatch:#1F497D;
+  --ludo:#A9501B; --ludo-land:#DD7A31; --ludo-coast:#8A3E12; --ludo-hatch:#FBEBDD;
+  --brass:#9A7420; --limb:#EEF0EC;
   --star:#1B2340; --halo-op:0; --cdash:2 5; --cop:.75; --coast-dash:none; --land-op:1;
   --day:1; --night:0;
   --f-disp:"Cormorant SC","Cormorant Garamond",Garamond,"Times New Roman",serif;
@@ -26,14 +29,20 @@
   --page:#090F26; --paper:#0E1532; --paper-2:#161F45; --card:#131B3D; --line:#2C386A;
   --ink:#E9E3CC; --ink-2:#A1AACA;
   --rh-a:#3D4A86; --rh-b:#3D4A86; --rh-c:#3D4A86; --rh-op:.5;
-  --acad:#7FCDB4; --asso:#97BCEF; --ludo:#E8C670; --brass:#E8C670;
+  --acad:#A8ADF4; --acad-land:#2E3387; --acad-coast:#A8ADF4; --acad-hatch:#A8ADF4;
+  --asso:#EEECE1; --asso-land:#EEECE1; --asso-coast:#EEECE1; --asso-hatch:#EEECE1;
+  --ludo:#F3A766; --ludo-land:#DD7A31; --ludo-coast:#F3A766; --ludo-hatch:#F3A766;
+  --brass:#E2BE68; --limb:#1E2850;
   --star:#FFF5D8; --halo-op:.6; --cdash:none; --cop:.85; --coast-dash:2 6; --land-op:.12;
   --day:0; --night:1; color-scheme:dark}}
 :root[data-theme="dark"]{
   --page:#090F26; --paper:#0E1532; --paper-2:#161F45; --card:#131B3D; --line:#2C386A;
   --ink:#E9E3CC; --ink-2:#A1AACA;
   --rh-a:#3D4A86; --rh-b:#3D4A86; --rh-c:#3D4A86; --rh-op:.5;
-  --acad:#7FCDB4; --asso:#97BCEF; --ludo:#E8C670; --brass:#E8C670;
+  --acad:#A8ADF4; --acad-land:#2E3387; --acad-coast:#A8ADF4; --acad-hatch:#A8ADF4;
+  --asso:#EEECE1; --asso-land:#EEECE1; --asso-coast:#EEECE1; --asso-hatch:#EEECE1;
+  --ludo:#F3A766; --ludo-land:#DD7A31; --ludo-coast:#F3A766; --ludo-hatch:#F3A766;
+  --brass:#E2BE68; --limb:#1E2850;
   --star:#FFF5D8; --halo-op:.6; --cdash:none; --cop:.85; --coast-dash:2 6; --land-op:.12;
   --day:0; --night:1; color-scheme:dark}
 
@@ -79,12 +88,14 @@ a{color:inherit}
 .sf{fill:var(--star)}
 .tw{animation:tw 3.6s ease-in-out infinite}
 @keyframes tw{50%{opacity:.25}}
-.g-acad{--c:var(--acad)}.g-asso{--c:var(--asso)}.g-ludo{--c:var(--ludo)}
-.land{fill:var(--c);opacity:calc(.13 * var(--land-op));transition:opacity 1.2s}
-.hatch{opacity:calc(.9 * var(--land-op));transition:opacity 1.2s}
-.hl{stroke:var(--c);stroke-width:1.1}
-.coast-halo{fill:none;stroke:var(--c);stroke-width:8;opacity:.2;stroke-linejoin:round}
-.coast{fill:none;stroke:var(--ink);stroke-width:1.5;stroke-dasharray:var(--coast-dash);stroke-linejoin:round;transition:stroke 1.2s}
+.g-acad{--c:var(--acad);--land:var(--acad-land);--coastc:var(--acad-coast);--hatchc:var(--acad-hatch)}
+.g-asso{--c:var(--asso);--land:var(--asso-land);--coastc:var(--asso-coast);--hatchc:var(--asso-hatch)}
+.g-ludo{--c:var(--ludo);--land:var(--ludo-land);--coastc:var(--ludo-coast);--hatchc:var(--ludo-hatch)}
+.land{fill:var(--land);opacity:calc(.94 * var(--land-op) + .1 * var(--night));transition:opacity 1.2s}
+.hatch{opacity:calc(.3 * var(--land-op));transition:opacity 1.2s}
+.hl{stroke:var(--hatchc);stroke-width:1.1}
+.coast-halo{fill:none;stroke:var(--coastc);opacity:.16;stroke-linejoin:round}
+.coast{fill:none;stroke:var(--coastc);stroke-width:1.3;stroke-dasharray:var(--coast-dash);stroke-linejoin:round;transition:stroke 1.2s}
 .cline{fill:none;stroke:var(--c);stroke-width:1.4;stroke-dasharray:var(--cdash);opacity:var(--cop);stroke-linecap:round}
 .st{cursor:pointer;outline:none}
 .st .halo{fill:var(--c);opacity:var(--halo-op);filter:url(#blur);transition:opacity 1.2s}
@@ -94,31 +105,33 @@ a{color:inherit}
 .st .core{transition:transform .25s ease;transform-box:fill-box;transform-origin:center}
 .st:hover .core,.st:focus-visible .core,.st.on .core{transform:scale(1.45)}
 .st:focus-visible .ring{stroke:var(--brass);stroke-width:2.5}
-.minor{fill:var(--star);opacity:.7}
+.minor{fill:var(--star);opacity:.75}
+.iname{font-family:var(--f-disp);font-weight:600;font-size:13px;letter-spacing:.32em;fill:var(--ink-2);paint-order:stroke;stroke:var(--paper);stroke-width:4px}
 .slabel{font-family:var(--f-disp);font-weight:600;font-size:15px;letter-spacing:.04em;fill:var(--ink);paint-order:stroke;stroke:var(--paper);stroke-width:4px;stroke-linejoin:round;pointer-events:none;transition:fill 1.2s}
 .alab{font-family:var(--f-ital);font-style:italic;font-weight:600;font-size:27px;fill:var(--c);paint-order:stroke;stroke:var(--paper);stroke-width:5px}
 .asub{font-family:var(--f-disp);font-size:13px;letter-spacing:.14em;fill:var(--ink-2);paint-order:stroke;stroke:var(--paper);stroke-width:4px}
 .em-bg{fill:var(--paper);transition:fill 1.2s}
 .em-ring{fill:none;stroke:var(--ink);stroke-width:1.2}
 .tick{stroke:var(--ink);stroke-width:1}
-.deg{font-family:var(--f-mono);font-size:9.5px;fill:var(--ink-2)}
+.deg{font-family:var(--f-mono);font-size:9.5px;fill:var(--ink-2);paint-order:stroke;stroke:var(--paper);stroke-width:3.5px}
 .card-n{font-family:var(--f-disp);font-weight:700;font-size:17px;fill:var(--ink)}
 .rose-d{fill:var(--ink);transition:fill 1.2s}
 .rose-l{fill:var(--paper);stroke:var(--ink);stroke-width:.9;transition:fill 1.2s}
 .hub{fill:var(--brass);stroke:var(--ink);stroke-width:1}
 .sx{transition:transform 1s cubic-bezier(.3,.7,.2,1)}
-.limb{fill:none;stroke:var(--brass);stroke-width:13;opacity:.9}
-.limb-t{stroke:var(--paper);stroke-width:1}
-.limb-n{font-family:var(--f-mono);font-size:9px;fill:var(--ink-2)}
-.frm{fill:none;stroke:var(--brass);stroke-width:3;stroke-linecap:round}
-.arm{stroke:var(--ink);stroke-width:3.2;stroke-linecap:round}
-.vern{fill:var(--paper);stroke:var(--ink);stroke-width:1.4}
-.scope{fill:var(--paper-2);stroke:var(--ink);stroke-width:1.2}
+.sx-frame{fill:var(--brass);stroke:var(--ink);stroke-width:1.3;stroke-linejoin:round;transition:fill 1.2s}
+.sx-limb{fill:none;stroke:var(--limb);stroke-width:17;transition:stroke 1.2s}
+.limb-t{stroke:var(--ink);stroke-width:.9}
+.limb-n{font-family:var(--f-mono);font-size:9.5px;fill:var(--ink);paint-order:stroke;stroke:var(--paper);stroke-width:3px}
+.sx-part{fill:var(--paper-2);stroke:var(--ink);stroke-width:1.2}
+.sx-arm{fill:var(--ink);transition:fill 1.2s}
+.sx-vern{fill:var(--paper);fill-opacity:.85;stroke:var(--ink);stroke-width:1.3}
+.sx-index{stroke:var(--brass);stroke-width:1.6}
 .readout{font-family:var(--f-mono);font-size:13px;letter-spacing:.08em;fill:var(--ink)}
 .readout2{font-family:var(--f-ital);font-style:italic;font-size:19px;fill:var(--ink-2)}
 .cart{fill:var(--paper);stroke:var(--ink);stroke-width:1.2}
 .cart2{fill:none;stroke:var(--ink);stroke-width:.6}
-.ct1{font-family:var(--f-disp);font-weight:600;font-size:19px;letter-spacing:.16em;fill:var(--ink)}
+.ct1{font-family:var(--f-disp);font-weight:600;font-size:16px;letter-spacing:.12em;fill:var(--ink)}
 .ct2{font-family:var(--f-ital);font-style:italic;font-size:17px;fill:var(--ink-2)}
 .scale-a{fill:var(--ink)}.scale-b{fill:var(--paper);stroke:var(--ink);stroke-width:.8}
 .scale-n{font-family:var(--f-mono);font-size:9.5px;fill:var(--ink-2)}
@@ -134,6 +147,7 @@ a{color:inherit}
 .card dl{margin:0 0 8px;display:grid;grid-template-columns:auto 1fr;gap:2px 12px;font-size:.86rem}
 .card dl div{display:contents}
 .card dt{color:var(--ink-2)}.card dd{margin:0}
+.c-star{margin:0 0 4px;font-size:.88rem;color:var(--ink-2)}.c-star b{color:var(--ink);font-weight:700}
 .c-pos{margin:0 0 10px;font-family:var(--f-mono);font-size:.74rem;color:var(--ink-2);letter-spacing:.02em}
 .c-foot{display:flex;align-items:center;justify-content:space-between;gap:10px}
 .pill{font-family:var(--f-mono);font-size:.72rem;letter-spacing:.06em;text-transform:uppercase;border:1px dashed var(--brass);color:var(--brass);border-radius:3px;padding:2px 7px;white-space:nowrap}
@@ -161,6 +175,7 @@ a{color:inherit}
 .gmark{width:22px;height:22px;flex:none;margin-top:4px}
 .gmark path{fill:var(--c)}
 .grp h3{margin:0;font-family:var(--f-ital);font-style:italic;font-weight:600;font-size:1.5rem;line-height:1.1;color:var(--c)}
+.grp header p.gsky{font-family:var(--f-ital);font-style:italic;font-size:1rem;letter-spacing:0;margin-top:4px}
 .grp header p{margin:2px 0 0;font-family:var(--f-disp);font-size:.9rem;letter-spacing:.1em;color:var(--ink-2)}
 .grp ul{list-style:none;margin:0;padding:0}
 .row{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:2px 16px;padding:11px 4px;border-bottom:1px solid var(--line);text-decoration:none;align-items:baseline;transition:background-color .2s}
@@ -225,6 +240,7 @@ a{color:inherit}
         <ul>
           <li><svg viewBox="-14 -9 28 18" aria-hidden="true"><circle r="7" fill="var(--paper)" stroke="var(--asso)" stroke-width="1.5"/><path d="M0 -6 L1.5 -1.5 L6 0 L1.5 1.5 L0 6 L-1.5 1.5 L-6 0 L-1.5 -1.5Z" fill="var(--star)"/></svg><span data-i18n="lg1"></span></li>
           <li><svg viewBox="0 0 28 18" aria-hidden="true"><path d="M2 9 H26" stroke="var(--ludo)" stroke-width="1.6" stroke-dasharray="2 4" stroke-linecap="round"/></svg><span data-i18n="lg2"></span></li>
+          <li><svg viewBox="-14 -9 28 18" aria-hidden="true"><path d="M-12 -5 L-4 -1 L1 -4 L7 1 L12 -3" fill="none" stroke="var(--acad)" stroke-width="1.3"/><circle cx="-12" cy="-5" r="1.6" fill="var(--star)"/><circle cx="-4" cy="-1" r="1.6" fill="var(--star)"/><circle cx="1" cy="-4" r="1.6" fill="var(--star)"/><circle cx="7" cy="1" r="1.6" fill="var(--star)"/><circle cx="12" cy="-3" r="1.6" fill="var(--star)"/></svg><span data-i18n="lg4"></span></li>
           <li><svg viewBox="0 0 28 18" aria-hidden="true"><path d="M4 15 A14 14 0 0 1 24 15" fill="none" stroke="var(--brass)" stroke-width="4"/><path d="M14 16 L18 3" stroke="var(--ink)" stroke-width="2"/></svg><span data-i18n="lg3"></span></li>
         </ul>
       </div>
@@ -244,12 +260,13 @@ a{color:inherit}
   </footer>
 </div>
 
+<script src="assets/geo.js"></script>
 <script src="assets/resources.js"></script>
 <script>
 (function(){
 "use strict";
 const D=window.ALIDADE||{archipelagos:[],resources:[]};
-const W=1200,H=800,CX=600,CY=410;
+const W=1200,H=800,CX=600,CY=338;
 const SVGNS="http://www.w3.org/2000/svg";
 const $=s=>document.querySelector(s);
 
@@ -259,7 +276,7 @@ const T={
   hintTouch:"Touchez une étoile pour viser une escale. « Lire le ciel » change la carte en ciel nocturne : les îles deviennent des constellations.",
   readSky:"Lire le ciel",readChart:"Lire la carte",
   about:"Alidade rassemble mes ressources pédagogiques interactives : enseignements à Géodata Paris et dans le master FIRS, formations associatives au CNIF, projets ludo-éducatifs. Chaque ressource est une escale, et toutes sont en chantier : elles évoluent au fil des séances.",
-  legendT:"Lire la carte",lg1:"Une escale : une ressource. La nuit, elle devient une étoile.",lg2:"Les routes entre escales du même archipel, qui forment ses constellations.",lg3:"L'alidade du sextant vise l'escale que vous survolez.",
+  legendT:"Lire la carte",lg1:"Une escale : une ressource. La nuit, elle devient une étoile.",lg2:"Les routes entre escales du même archipel, qui forment ses constellations.",lg3:"L'alidade du sextant vise l'escale que vous survolez.",lg4:"Trois archipels réels : les Saintes, les îles Éoliennes et les Aléoutiennes. Une île, une escale.",island:"Île",
   register:"Registre des escales",registerSub:"Toutes les ressources, archipel par archipel.",
   public:"Public",duration:"Durée",langs:"Langues",position:"Position",bearing:"Relèvement",go:"Accoster",
   chantier:"En chantier",publie:"En ligne",
@@ -273,7 +290,7 @@ const T={
   hintTouch:"Tap a star to sight a port. “Read the sky” turns the chart into a night sky: the islands become constellations.",
   readSky:"Read the sky",readChart:"Read the chart",
   about:"Alidade gathers my interactive teaching resources: courses at Géodata Paris and in the FIRS master's programme, sailing club training at the CNIF, and playful learning projects. Each resource is a port of call, and all of them are under construction: they evolve with every session.",
-  legendT:"Reading the chart",lg1:"A port of call is a resource. At night, it becomes a star.",lg2:"Routes between ports of the same archipelago, which draw its constellations.",lg3:"The sextant's alidade sights the port you hover.",
+  legendT:"Reading the chart",lg1:"A port of call is a resource. At night, it becomes a star.",lg2:"Routes between ports of the same archipelago, which draw its constellations.",lg3:"The sextant's alidade sights the port you hover.",lg4:"Three real archipelagos: Les Saintes, the Aeolian Islands and the Aleutians. One island, one port of call.",island:"Island",
   register:"Harbour register",registerSub:"Every resource, archipelago by archipelago.",
   public:"Audience",duration:"Duration",langs:"Languages",position:"Position",bearing:"Bearing",go:"Go ashore",
   chantier:"Under construction",publie:"Live",
@@ -307,36 +324,66 @@ function smooth(p){const n=p.length;let d="";for(let i=0;i<n;i++){const a=p[(i-1
 const clamp=(v,a,b)=>Math.max(a,Math.min(b,v));
 const STAR4="M0 -9 L2.3 -2.3 L9 0 L2.3 2.3 L0 9 L-2.3 2.3 L-9 0 L-2.3 -2.3Z";
 
-/* Géométrie des archipels */
+/* Géométrie : trois archipels réels, une île = une escale */
+const GEO=window.ALIDADE_GEO||{};
 const archById={};
+function bboxOf(pts){let x0=1e9,y0=1e9,x1=-1e9,y1=-1e9;for(const [x,y] of pts){x0=Math.min(x0,x);y0=Math.min(y0,y);x1=Math.max(x1,x);y1=Math.max(y1,y);}return {x0,y0,x1,y1};}
+function inPoly(x,y,P){let c=false;for(let i=0,j=P.length-1;i<P.length;j=i++){const [xi,yi]=P[i],[xj,yj]=P[j];if((yi>y)!==(yj>y)&&x<(xj-xi)*(y-yi)/(yj-yi)+xi)c=!c;}return c;}
+function edgeDist(x,y,P){let m=1e9;for(let i=0,j=P.length-1;i<P.length;j=i++){const [ax,ay]=P[j],[bx,by]=P[i],dx=bx-ax,dy=by-ay,l=dx*dx+dy*dy||1e-9,t=clamp(((x-ax)*dx+(y-ay)*dy)/l,0,1);m=Math.min(m,Math.hypot(ax+t*dx-x,ay+t*dy-y));}return m;}
+/* Le point le plus « intérieur » d'une île, loin des côtes et des étoiles déjà posées */
+function spot(isl,taken){
+ const b=isl.bbox,n=26;let best=null,bs=-1;
+ for(let i=0;i<=n;i++)for(let j=0;j<=n;j++){const x=b.x0+(b.x1-b.x0)*i/n,y=b.y0+(b.y1-b.y0)*j/n;
+  if(!inPoly(x,y,isl.pts))continue;let sc=edgeDist(x,y,isl.pts);for(const q of taken)sc=Math.min(sc,.55*Math.hypot(x-q.x,y-q.y));if(sc>bs){bs=sc;best={x,y};}}
+ return best||{x:(b.x0+b.x1)/2,y:(b.y0+b.y1)/2};
+}
+function geoArch(a,res,geo){
+ const [cx,cy]=a.center,S=a.size,MIN=7;
+ const islands=geo.islands.map(i=>{
+  let pts=i.pts.map(q=>[cx+q[0]*S,cy+q[1]*S]);let b=bboxOf(pts);const m=Math.max(b.x1-b.x0,b.y1-b.y0);
+  if(m<MIN){const ox=(b.x0+b.x1)/2,oy=(b.y0+b.y1)/2,k=MIN/Math.max(m,.5);pts=pts.map(([x,y])=>[ox+(x-ox)*k,oy+(y-oy)*k]);b=bboxOf(pts);}
+  return {name:i.name,km2:i.km2,pts,bbox:b,stars:[]};
+ });
+ const big=islands[0].km2, cand=islands.filter(i=>i.km2>=big*.01);
+ cand.forEach(i=>{i.home=spot(i,[]);});
+ /* Ordre par défaut : la plus grande île, puis toujours la plus éloignée des îles déjà prises */
+ const order=[cand[0]];
+ while(order.length<cand.length){let best=null,bd=-1;for(const i of cand){if(order.includes(i))continue;let d=1e9;for(const o of order)d=Math.min(d,Math.hypot(i.home.x-o.home.x,i.home.y-o.home.y));if(d>bd){bd=d;best=i;}}order.push(best);}
+ const stars=[], placeOn=(isl,r)=>{const pt=isl.stars.length?spot(isl,isl.stars):isl.home;const st={res:r,x:pt.x,y:pt.y,island:isl,extra:isl.stars.length>0};isl.stars.push(st);stars.push(st);};
+ const free=order.slice(), rest=[];
+ for(const r of res){const want=r.ile&&islands.find(i=>i.name&&i.name.toLowerCase()===String(r.ile).toLowerCase());
+  if(want){if(!want.home)want.home=spot(want,[]);placeOn(want,r);const k=free.indexOf(want);if(k>=0)free.splice(k,1);}else rest.push(r);}
+ for(const r of rest){if(free.length)placeOn(free.shift(),r);else{const isl=cand.slice().sort((p,q)=>p.stars.length/p.km2-q.stars.length/q.km2)[0];placeOn(isl,r);}}
+ const minors=cand.filter(i=>!i.stars.length).map(i=>({x:i.home.x,y:i.home.y,island:i}));
+ /* Constellation : l'arbre le plus court qui relie toutes les étoiles de l'archipel */
+ const nodes=stars.concat(minors), lines=[];
+ if(nodes.length>1){const inT=[nodes[0]],out=nodes.slice(1);
+  while(out.length){let bd=1e9,bi=0,bj=null;out.forEach((o,k)=>{for(const t of inT){const d=Math.hypot(o.x-t.x,o.y-t.y);if(d<bd){bd=d;bi=k;bj=t;}}});lines.push([bj,out[bi]]);inT.push(out.splice(bi,1)[0]);}}
+ const bbox=bboxOf([].concat(...islands.map(i=>i.pts)));
+ return {a,res,geo,islands,stars,minors,lines,bbox,real:true,cx:(bbox.x0+bbox.x1)/2,
+  lonlat:(x,y)=>{const pj=geo.proj,xn=(x-cx)/S,yn=(y-cy)/S;let lon=(xn*pj.S+pj.mx)/pj.c;if(lon>180)lon-=360;return [lon,-(yn*pj.S+pj.my)];}};
+}
+function blobArch(a,res){
+ const n=res.length,R=62+12*Math.max(n,1),[cx,cy]=a.center,r=rng(977);
+ const pts=blob(cx,cy,R,5);const isl={name:null,pts,bbox:bboxOf(pts),stars:[]};
+ const stars=res.map((x,i)=>{const th=i/Math.max(n,1)*6.2832,rr=n>1?R*.5:0;const st={res:x,x:cx+Math.cos(th)*rr,y:cy+Math.sin(th)*rr*.82,island:isl};isl.stars.push(st);return st;});
+ const lines=[];for(let i=1;i<stars.length;i++)lines.push([stars[i-1],stars[i]]);
+ return {a,res,geo:null,islands:[isl],stars,minors:[],lines,bbox:isl.bbox,real:false,cx,lonlat:null};
+}
 const ARCH=D.archipelagos.map(a=>{
  archById[a.id]=a;
- const res=D.resources.filter(x=>x.arch===a.id), n=res.length;
- const R=62+12*Math.max(n,1), [cx,cy]=a.center, r=rng(a.seed*977+13);
- const main=blob(cx,cy,R,a.seed);
- const start=r()*6.2832;
- const stars=res.map((x,i)=>{
-  if(n===1) return {res:x,x:cx+R*.12,y:cy-R*.08};
-  const th=start+i/n*6.2832+(r()-.5)*.45, rr=R*(.4+r()*.22);
-  return {res:x,x:cx+Math.cos(th)*rr,y:cy+Math.sin(th)*rr*.82};
- });
- const m=n>=3?2:3, islets=[];
- for(let i=0;i<m;i++){
-  const th=start+(i+.5)/m*6.2832+(r()-.5)*.7, d=R*(1.28+r()*.22);
-  const ix=clamp(cx+Math.cos(th)*d,50,W-50), iy=clamp(cy+Math.sin(th)*d*.82,50,H-50), rs=9+r()*11;
-  islets.push({x:ix,y:iy,rs,pts:blob(ix,iy,rs,a.seed*31+i*7,28)});
- }
- const pts=stars.map(s=>({x:s.x,y:s.y})).concat(islets.map(s=>({x:s.x,y:s.y})));
- pts.sort((p,q)=>Math.atan2(p.y-cy,p.x-cx)-Math.atan2(q.y-cy,q.x-cx));
- let worst=0,wi=pts.length-1;
- for(let i=0;i<pts.length;i++){const p=pts[i],q=pts[(i+1)%pts.length];const dd=Math.hypot(p.x-q.x,p.y-q.y);if(dd>worst){worst=dd;wi=i;}}
- const order=pts.slice(wi+1).concat(pts.slice(0,wi+1));
- return {a,res,n,R,main,stars,islets,order};
+ const res=D.resources.filter(x=>x.arch===a.id), geo=GEO[a.geo];
+ return geo?geoArch(a,res,geo):blobArch(a,res);
 });
+ARCH.forEach(g=>{const b=g.bbox;g.lab=g.a.label||[(b.x0+b.x1)/2,b.y1+26];g.labelBox={x0:g.lab[0]-175,y0:g.lab[1]-16,x1:g.lab[0]+175,y1:g.lab[1]+54};
+ g.stars.forEach(st=>{const c=st.res.cote;st.lab=c==="gauche"?"l":c==="droite"?"r":null;});});
+const poly=pts=>"M"+pts.map(p=>p[0].toFixed(1)+" "+p[1].toFixed(1)).join("L")+"Z";
+/* Zones à garder libres pour les sondes */
+const keepOut=[{x0:438,y0:24,x1:762,y1:126}];
 
 /* Construction du SVG */
 function el(tag,attrs,parent,text){const e=document.createElementNS(SVGNS,tag);for(const k in attrs)e.setAttribute(k,attrs[k]);if(text!=null)e.textContent=text;if(parent)parent.appendChild(e);return e;}
-let sxEl=null, sxAngle=0, readEl=null, read2El=null;
+let sxEl=null, sxAngle=0, readEl=null, read2El=null, limbLo=null, limbHi=null;
 
 function build(){
  const svg=$("#map"); svg.innerHTML="";
@@ -359,58 +406,87 @@ function build(){
  el("circle",{class:"rcircle",cx:CX,cy:CY,r:"330"},rc);
  for(let i=0;i<16;i++){const th=i*Math.PI/8;el("circle",{class:"rnode",cx:(CX+Math.cos(th)*330).toFixed(1),cy:(CY+Math.sin(th)*330).toFixed(1),r:"3"},rc);}
 
+ /* Côté des étiquettes d'escale, calculé avant les sondes pour qu'elles s'en écartent */
+ const starBoxes=[];
+ for(const g of ARCH)for(const st of g.stars){
+  st.lbl=L(st.res.short||st.res.title); const w=st.lbl.length*8.3+16;
+  let right=st.lab?st.lab==="r":st.x>=g.cx-2;
+  if(!st.lab){if(right&&st.x+w>W-30)right=false;else if(!right&&st.x-w<30)right=true;}
+  st.right=right; starBoxes.push({x0:right?st.x-12:st.x-w,y0:st.y-14,x1:right?st.x+w:st.x+12,y1:st.y+12});
+ }
  /* Sondes (jour) */
- const so=el("g",{class:"day-only","aria-hidden":"true"},svg), rr=rng(42); let placed=0;
- for(let k=0;k<600&&placed<70;k++){const x=40+rr()*(W-80), y=40+rr()*(H-80);
-  if(Math.hypot(x-CX,y-CY)<215)continue; if(x<400&&y>590)continue; if(x>480&&x<720&&y>600)continue;
-  let ok=true,dmin=1e9; for(const g of ARCH){const d=Math.hypot(x-g.a.center[0],(y-g.a.center[1])/.82);dmin=Math.min(dmin,d-g.R);if(d<g.R*1.75)ok=false;
-   const ly=g.a.center[1]+g.R*1.12+30; if(Math.abs(x-g.a.center[0])<190&&y>ly-34&&y<ly+34)ok=false;}
-  if(!ok)continue; el("text",{class:"sound",x:x.toFixed(0),y:y.toFixed(0)},so,String(Math.round(8+dmin/9+rr()*14))); placed++;}
+ const so=el("g",{class:"day-only","aria-hidden":"true"},svg), rr=rng(42); let placed=0; const soundPts=[];
+ const boxes=keepOut.concat(starBoxes,...ARCH.map(g=>g.islands.map(i=>i.bbox)),ARCH.map(g=>g.labelBox).filter(Boolean));
+ for(let k=0;k<900&&placed<80;k++){const x=40+rr()*(W-80), y=40+rr()*(H-80);
+  if(Math.hypot(x-CX,y-CY)<236)continue; if(Math.abs(x-CX)<170&&y>CY+232&&y<CY+290)continue;
+  let ok=true,dmin=1e9; for(const b of boxes){const dx=Math.max(b.x0-x,0,x-b.x1),dy=Math.max(b.y0-y,0,y-b.y1),d=Math.hypot(dx,dy);dmin=Math.min(dmin,d);if(d<18)ok=false;}
+  for(const q of soundPts)if(Math.hypot(q[0]-x,q[1]-y)<30)ok=false;
+  if(!ok)continue; soundPts.push([x,y]); el("text",{class:"sound",x:x.toFixed(0),y:y.toFixed(0)},so,String(Math.round(6+dmin/6+rr()*12))); placed++;}
 
  /* Archipels */
  for(const g of ARCH){
   const G=el("g",{class:"g-"+g.a.hue},svg);
-  for(const shape of [g.main].concat(g.islets.map(i=>i.pts))){
-   const d=smooth(shape);
-   el("path",{class:"coast-halo",d},G); el("path",{class:"land",d},G); el("path",{class:"hatch",d,fill:`url(#h-${g.a.hue})`},G); el("path",{class:"coast",d},G);
+  for(const i of g.islands){
+   const d=g.real?poly(i.pts):smooth(i.pts), small=Math.max(i.bbox.x1-i.bbox.x0,i.bbox.y1-i.bbox.y0)<24;
+   el("path",{class:"coast-halo",d,"stroke-width":small?"4":"7"},G); el("path",{class:"land",d},G);
+   if(!small)el("path",{class:"hatch",d,fill:`url(#h-${g.a.hue})`},G);
+   el("path",{class:"coast",d},G);
   }
-  el("path",{class:"cline",d:"M"+g.order.map(p=>p.x.toFixed(1)+" "+p.y.toFixed(1)).join(" L")},G);
-  for(const i of g.islets){el("path",{class:"minor",d:STAR4,transform:`translate(${i.x.toFixed(1)} ${i.y.toFixed(1)}) scale(.55)`},G);}
-  const [cx,cy]=g.a.center, ly=cy+g.R*1.12+30;
-  el("text",{class:"alab",x:cx,y:ly.toFixed(0),"text-anchor":"middle"},G,L(g.a.name));
-  el("text",{class:"asub",x:cx,y:(ly+21).toFixed(0),"text-anchor":"middle"},G,L(g.a.sub).toUpperCase());
+  el("path",{class:"cline",d:g.lines.map(([p,q])=>`M${p.x.toFixed(1)} ${p.y.toFixed(1)}L${q.x.toFixed(1)} ${q.y.toFixed(1)}`).join("")},G);
+  for(const m of g.minors){const mi=el("path",{class:"minor",d:STAR4,transform:`translate(${m.x.toFixed(1)} ${m.y.toFixed(1)}) scale(.42)`},G);
+   if(m.island.name)el("title",{},mi,m.island.name);}
+  const [lx,ly]=g.lab;
+  if(g.geo)el("text",{class:"iname",x:lx.toFixed(0),y:ly.toFixed(0),"text-anchor":"middle"},G,L(g.geo.name).toUpperCase());
+  el("text",{class:"alab",x:lx.toFixed(0),y:(ly+28).toFixed(0),"text-anchor":"middle"},G,L(g.a.name));
+  el("text",{class:"asub",x:lx.toFixed(0),y:(ly+48).toFixed(0),"text-anchor":"middle"},G,L(g.a.sub).toUpperCase());
   for(const s of g.stars){
+   const k=s.extra?.82:1;
    const A=el("a",{class:"st",href:s.res.href,"data-id":s.res.id,"aria-label":`${L(s.res.title)} · ${t(s.res.status)}`,transform:`translate(${s.x.toFixed(1)} ${s.y.toFixed(1)})`},G);
-   el("circle",{class:"hit",r:"20"},A);
+   el("circle",{class:"hit",r:"18"},A);
    const C=el("g",{class:"core"},A);
-   el("circle",{class:"halo",r:"15"},C); el("circle",{class:"ring day-only",r:"10"},C); el("path",{class:"s4",d:STAR4},C);
-   const right=s.x>=cx-4;
-   el("text",{class:"slabel",x:(s.x+(right?16:-16)).toFixed(1),y:(s.y+5).toFixed(1),"text-anchor":right?"start":"end"},G,L(s.res.short||s.res.title));
+   el("circle",{class:"halo",r:(14*k).toFixed(1)},C); el("circle",{class:"ring day-only",r:(9.5*k).toFixed(1)},C); el("path",{class:"s4",d:STAR4,transform:`scale(${k})`},C);
+   const lbl=s.lbl, right=s.right;
+   el("text",{class:"slabel",x:(s.x+(right?15:-15)).toFixed(1),y:(s.y+5).toFixed(1),"text-anchor":right?"start":"end"},G,lbl);
   }
  }
 
- /* Emblème : rose des vents fondue dans un sextant */
+ /* Emblème : un sextant stylisé (un sixième de cercle), la rose des vents posée sur son pivot */
  const E=el("g",{transform:`translate(${CX} ${CY})`,"aria-hidden":"true"},svg);
- el("circle",{class:"em-bg",r:"132"},E);
  sxEl=el("g",{class:"sx"},E);
- const a1=60*Math.PI/180, a2=120*Math.PI/180, RL=176;
- const arc=(r)=>`M${(Math.cos(a1)*r).toFixed(1)} ${(Math.sin(a1)*r).toFixed(1)} A${r} ${r} 0 0 1 ${(Math.cos(a2)*r).toFixed(1)} ${(Math.sin(a2)*r).toFixed(1)}`;
- el("path",{class:"frm",d:`M0 0 L${(Math.cos(a1)*170).toFixed(1)} ${(Math.sin(a1)*170).toFixed(1)} M0 0 L${(Math.cos(a2)*170).toFixed(1)} ${(Math.sin(a2)*170).toFixed(1)}`},sxEl);
- el("path",{class:"frm",d:arc(96)},sxEl);
- el("path",{class:"limb",d:arc(RL)},sxEl);
- for(let d=60;d<=120;d+=2){const th=d*Math.PI/180,l=d%10===0?6.5:3.5;
-  el("line",{class:"limb-t",x1:(Math.cos(th)*(RL+6.5)).toFixed(1),y1:(Math.sin(th)*(RL+6.5)).toFixed(1),x2:(Math.cos(th)*(RL+6.5-l)).toFixed(1),y2:(Math.sin(th)*(RL+6.5-l)).toFixed(1)},sxEl);
-  if(d%10===0){const v=(120-d)*2;el("text",{class:"limb-n",x:(Math.cos(th)*(RL+17)).toFixed(1),y:(Math.sin(th)*(RL+17)+3).toFixed(1),"text-anchor":"middle"},sxEl,String(v));}}
- el("rect",{class:"scope",x:"-30",y:"128",width:"36",height:"11",rx:"3",transform:"rotate(-30 0 133)"},sxEl);
- el("line",{class:"arm",x1:"0",y1:"0",x2:"0",y2:String(RL+12)},sxEl);
- el("rect",{class:"vern",x:"-9",y:String(RL-9),width:"18",height:"18",rx:"2"},sxEl);
- el("line",{class:"arm",x1:"0",y1:String(RL-9),x2:"0",y2:String(RL+9),"stroke-width":"1.4"},sxEl);
- el("rect",{class:"vern",x:"-9",y:"-4",width:"18",height:"8",rx:"1.5"},sxEl);
+ const RO=208,RI=182,P=(a,r)=>[Math.cos(a*Math.PI/180)*r,Math.sin(a*Math.PI/180)*r],F=q=>q[0].toFixed(1)+" "+q[1].toFixed(1);
+ /* Cadre : bords incurvés, oreilles arrondies aux extrémités du limbe, fenêtre évidée */
+ const frame=`M${F(P(54,RO))}A${RO} ${RO} 0 0 1 ${F(P(126,RO))}A13 13 0 0 1 ${F(P(126,RI))}Q${F(P(117,118))} ${F(P(150,30))}A30 30 0 1 1 ${F(P(30,30))}Q${F(P(63,118))} ${F(P(54,RI))}A13 13 0 0 1 ${F(P(54,RO))}Z`;
+ const win=`M${F(P(69,168))}A168 168 0 0 1 ${F(P(111,168))}A12 12 0 0 1 ${F(P(111,144))}A144 144 0 0 0 ${F(P(69,144))}A12 12 0 0 1 ${F(P(69,168))}Z`;
+ el("path",{class:"sx-frame",d:frame+win,"fill-rule":"evenodd"},sxEl);
+ el("path",{class:"sx-limb",d:`M${F(P(58,RO-11))}A${RO-11} ${RO-11} 0 0 1 ${F(P(122,RO-11))}`},sxEl);
+ for(let d=60;d<=120;d++){const l=d%10===0?9:d%5===0?6:3.5;
+  el("line",{class:"limb-t",x1:F(P(d,RO-2)).split(" ")[0],y1:F(P(d,RO-2)).split(" ")[1],x2:F(P(d,RO-2-l)).split(" ")[0],y2:F(P(d,RO-2-l)).split(" ")[1]},sxEl);}
+ /* Graduation doublée : un sextant porte 120° sur un arc de 60°, car un miroir qui tourne de θ dévie le rayon de 2θ */
+ const pa=(deg,r)=>F(P(deg,r));
+ el("path",{id:"limbLoP",d:`M${pa(125,RO+16)} A${RO+16} ${RO+16} 0 0 0 ${pa(55,RO+16)}`,fill:"none"},sxEl);
+ el("path",{id:"limbHiP",d:`M${pa(55,RO+9)} A${RO+9} ${RO+9} 0 0 1 ${pa(125,RO+9)}`,fill:"none"},sxEl);
+ limbLo=el("g",{},sxEl); limbHi=el("g",{},sxEl);
+ for(let d=60;d<=120;d+=10){const v=String((120-d)*2);
+  const t1=el("text",{class:"limb-n"},limbLo); el("textPath",{href:"#limbLoP",startOffset:((125-d)/70*100).toFixed(2)+"%","text-anchor":"middle"},t1,v);
+  const t2=el("text",{class:"limb-n"},limbHi); el("textPath",{href:"#limbHiP",startOffset:((d-55)/70*100).toFixed(2)+"%","text-anchor":"middle"},t2,v);}
+ el("rect",{class:"sx-part",x:"-23",y:"-6.5",width:"46",height:"13",rx:"6.5",transform:`translate(${F(P(62,150))}) rotate(-30)`},sxEl);
+ el("rect",{class:"sx-part",x:"-7",y:"-11",width:"14",height:"22",rx:"3",transform:`translate(${F(P(119,152))}) rotate(30)`},sxEl);
+ el("path",{class:"sx-arm",d:`M-6 0L6 0L3.2 ${RO+6}Q0 ${RO+11} -3.2 ${RO+6}Z`},sxEl);
+ el("rect",{class:"sx-vern",x:"-12",y:String(RI-4),width:"24",height:String(RO-RI+6),rx:"5"},sxEl);
+ el("line",{class:"sx-index",x1:"0",y1:String(RI-2),x2:"0",y2:String(RO)},sxEl);
+ el("circle",{class:"sx-vern",cx:"22",cy:String(RI-14),r:"8"},sxEl);
 
+ el("circle",{class:"em-bg",r:"132"},E);
  el("circle",{class:"em-ring",r:"124"},E); el("circle",{class:"em-ring",r:"117"},E);
  for(let d=0;d<360;d+=5){const th=(d-90)*Math.PI/180,l=d%30===0?8:d%10===0?5:3;
   el("line",{class:"tick",x1:(Math.cos(th)*124).toFixed(1),y1:(Math.sin(th)*124).toFixed(1),x2:(Math.cos(th)*(124-l)).toFixed(1),y2:(Math.sin(th)*(124-l)).toFixed(1)},E);
-  if(d%30===0&&d%90!==0)el("text",{class:"deg",x:(Math.cos(th)*106).toFixed(1),y:(Math.sin(th)*106+3).toFixed(1),"text-anchor":"middle"},E,String(d).padStart(3,"0"));}
+  }
+ const bp=(b,r)=>`${(Math.sin(b*Math.PI/180)*r).toFixed(2)} ${(-Math.cos(b*Math.PI/180)*r).toFixed(2)}`;
+ el("path",{id:"degUp",d:`M${bp(275,104)} A104 104 0 0 1 ${bp(85,104)}`,fill:"none"},E);
+ el("path",{id:"degLo",d:`M${bp(265,111)} A111 111 0 0 0 ${bp(95,111)}`,fill:"none"},E);
+ for(let d=30;d<360;d+=30){if(d%90===0)continue;const up=d<90||d>270;
+  const tx=el("text",{class:"deg"},E);
+  el("textPath",{href:up?"#degUp":"#degLo",startOffset:((up?((d-275+360)%360):(265-d))/170*100).toFixed(2)+"%","text-anchor":"middle"},tx,String(d).padStart(3,"0"));}
  const point=(ang,len,w,parent)=>{const th=(ang-90)*Math.PI/180,px=Math.cos(th),py=Math.sin(th),qx=-py,qy=px;
   const tip=`${(px*len).toFixed(1)} ${(py*len).toFixed(1)}`, l=`${(qx*w).toFixed(1)} ${(qy*w).toFixed(1)}`, r=`${(-qx*w).toFixed(1)} ${(-qy*w).toFixed(1)}`;
   el("path",{class:"rose-l",d:`M0 0 L${l} L${tip}Z`},parent); el("path",{class:"rose-d",d:`M0 0 L${r} L${tip}Z`},parent);};
@@ -420,18 +496,17 @@ function build(){
  el("circle",{class:"hub",r:"6"},E);
  [["N",0],["E",90],["S",180],["O",270]].forEach(([n,a])=>{const th=(a-90)*Math.PI/180;
   el("text",{class:"card-n",x:(Math.cos(th)*146).toFixed(1),y:(Math.sin(th)*146+6).toFixed(1),"text-anchor":"middle"},E,lang==="en"&&n==="O"?"W":n);});
- readEl=el("text",{class:"readout",x:CX,y:"662","text-anchor":"middle"},svg,t("readIdle"));
- read2El=el("text",{class:"readout2",x:CX,y:"686","text-anchor":"middle"},svg,"");
+ readEl=el("text",{class:"readout",x:CX,y:String(CY+252),"text-anchor":"middle"},svg,t("readIdle"));
+ read2El=el("text",{class:"readout2",x:CX,y:String(CY+276),"text-anchor":"middle"},svg,"");
 
  /* Cartouche */
  const K=el("g",{"aria-hidden":"true"},svg);
- el("rect",{class:"cart",x:"36",y:"616",width:"350",height:"146",rx:"2"},K);
- el("rect",{class:"cart2",x:"42",y:"622",width:"338",height:"134"},K);
- el("text",{class:"ct1",x:"211",y:"656","text-anchor":"middle"},K,t("cart1"));
- el("text",{class:"ct2",x:"211",y:"682","text-anchor":"middle"},K,t("cart2"));
- for(let i=0;i<5;i++)el("rect",{class:i%2?"scale-b":"scale-a",x:String(101+i*44),y:"702",width:"44",height:"7"},K);
- for(let i=0;i<=5;i++)el("text",{class:"scale-n",x:String(101+i*44),y:"723","text-anchor":"middle"},K,String(i));
- el("text",{class:"scale-n",x:"211",y:"742","text-anchor":"middle"},K,t("scale"));
+ el("rect",{class:"cart",x:"446",y:"30",width:"308",height:"90",rx:"2"},K);
+ el("rect",{class:"cart2",x:"452",y:"36",width:"296",height:"78"},K);
+ el("text",{class:"ct1",x:"600",y:"62","text-anchor":"middle"},K,t("cart1"));
+ el("text",{class:"ct2",x:"600",y:"84","text-anchor":"middle"},K,t("cart2"));
+ for(let i=0;i<5;i++)el("rect",{class:i%2?"scale-b":"scale-a",x:String(530+i*28),y:"93",width:"28",height:"5"},K);
+ for(let i=0;i<=5;i++)el("text",{class:"scale-n",x:String(530+i*28),y:"108","text-anchor":"middle"},K,i===5?"5 h":String(i));
 
  /* Bordure graduée */
  const B=el("g",{"aria-hidden":"true"},svg);
@@ -440,25 +515,26 @@ function build(){
  for(let x=16,i=0;x<W-16;x+=40,i++){if(i%2===0){el("rect",{class:"bseg",x:String(x),y:"8",width:String(Math.min(40,W-16-x)),height:"8"},B);el("rect",{class:"bseg",x:String(x),y:String(H-16),width:String(Math.min(40,W-16-x)),height:"8"},B);}}
  for(let y=16,i=0;y<H-16;y+=40,i++){if(i%2===0){el("rect",{class:"bseg",x:"8",y:String(y),width:"8",height:String(Math.min(40,H-16-y))},B);el("rect",{class:"bseg",x:String(W-16),y:String(y),width:"8",height:String(Math.min(40,H-16-y))},B);}}
 
- sxEl.style.transform=`rotate(${sxAngle}deg)`;
+ sxEl.style.transform=`rotate(${sxAngle}deg)`; limbOrient();
  bindStars();
 }
 
 /* Visée */
+function limbOrient(){const low=Math.sin((90+sxAngle)*Math.PI/180)>-.2;limbLo.setAttribute("display",low?"inline":"none");limbHi.setAttribute("display",low?"none":"inline");}
 const allStars=()=>ARCH.flatMap(g=>g.stars);
 const starById=id=>allStars().find(s=>s.res.id===id);
 const bearing=s=>(Math.round(Math.atan2(s.x-CX,-(s.y-CY))*180/Math.PI)+360)%360;
 function aim(s){
  const target=bearing(s)-180;
  let delta=((target-sxAngle)%360+540)%360-180; sxAngle+=delta;
- sxEl.style.transform=`rotate(${sxAngle}deg)`;
+ sxEl.style.transform=`rotate(${sxAngle}deg)`; limbOrient();
  readEl.textContent=`${t("bearing").toUpperCase()} ${String(bearing(s)).padStart(3,"0")}°`;
- read2El.textContent=L(s.res.title);
+ read2El.textContent=L(s.res.title)+(s.island&&s.island.name?` · ${s.island.name}`:"");
  document.querySelectorAll(".st").forEach(n=>n.classList.toggle("on",n.dataset.id===s.res.id));
 }
 function rest(){readEl.textContent=t("readIdle");read2El.textContent="";document.querySelectorAll(".st.on").forEach(n=>n.classList.remove("on"));}
-function pos(s){const lat=50-s.y/H*11, lon=-6+s.x/W*15;
- const f=(v,p,n)=>{const a=Math.abs(v),d=Math.floor(a),m=Math.round((a-d)*60);return `${d}°${String(m).padStart(2,"0")}′ ${v>=0?p:n}`;};
+function pos(s){const g=ARCH.find(q=>q.stars.includes(s));const ll=g&&g.lonlat?g.lonlat(s.x,s.y):[50-s.y/H*11,-6+s.x/W*15].reverse();const lat=ll[1],lon=ll[0];
+ const f=(v,p,n)=>{const tm=Math.round(Math.abs(v)*60),d=Math.floor(tm/60),m=tm%60;return `${d}°${String(m).padStart(2,"0")}′ ${v>=0?p:n}`;};
  return `${f(lat,"N","S")} · ${f(lon,"E",lang==="en"?"W":"O")}`;}
 const langsTxt=r=>(r.langs||["fr"]).map(x=>x.toUpperCase()).join(" · ");
 
@@ -469,6 +545,7 @@ function showCard(s){
  c.style.setProperty("--c",`var(--${a.hue})`);
  c.innerHTML=`<p class="c-eye">${L(a.name)}</p><h3>${L(r.title)}</h3><p class="c-desc">${L(r.desc)}</p>
   <dl><div><dt>${t("public")}</dt><dd>${L(r.audience)}</dd></div><div><dt>${t("duration")}</dt><dd>${L(r.duration)}</dd></div><div><dt>${t("langs")}</dt><dd>${langsTxt(r)}</dd></div></dl>
+  ${s.island&&s.island.name?`<p class="c-star">${t("island")} <b>${s.island.name}</b> · ${L(GEO[a.geo].name)}</p>`:""}
   <p class="c-pos">${t("position")} ${pos(s)} · ${t("bearing")} ${String(bearing(s)).padStart(3,"0")}°</p>
   <div class="c-foot"><span class="pill ${r.status}">${t(r.status)}</span><a class="go" href="${r.href}">${t("go")} →</a></div>`;
  c.hidden=false;
@@ -500,7 +577,7 @@ document.addEventListener("click",e=>{if(touch&&!e.target.closest(".st")&&!e.tar
 /* Registre */
 function buildRegister(){
  $("#groups").innerHTML=ARCH.map(g=>`<section class="grp g-${g.a.hue}" aria-label="${L(g.a.name)}">
-  <header><svg class="gmark" viewBox="-10 -10 20 20" aria-hidden="true"><path d="${STAR4}"/></svg><div><h3>${L(g.a.name)}</h3><p>${L(g.a.sub)}</p></div></header>
+  <header><svg class="gmark" viewBox="-10 -10 20 20" aria-hidden="true"><path d="${STAR4}"/></svg><div><h3>${L(g.a.name)}</h3><p>${L(g.a.sub)}</p>${g.geo?`<p class="gsky">${L(g.geo.name)} · ${L(g.geo.where)}</p>`:""}</div></header>
   <ul>${g.res.map(r=>`<li><a class="row" href="${r.href}" data-id="${r.id}"><span class="r-t">${L(r.title)}</span><span class="r-d">${L(r.desc)}</span><span class="r-m">${L(r.audience)} · ${L(r.duration)} · ${langsTxt(r)}</span><span class="pill ${r.status}">${t(r.status)}</span></a></li>`).join("")}</ul></section>`).join("");
  document.querySelectorAll(".row").forEach(a=>{const s=starById(a.dataset.id);
   a.addEventListener("mouseenter",()=>aim(s)); a.addEventListener("focus",()=>aim(s));

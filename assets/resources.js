@@ -1,20 +1,29 @@
 /* ============================================================
    ALIDADE — registre des escales
    Pour ajouter une ressource : copiez un bloc de "resources",
-   changez ses champs, et posez son fichier dans
-   ressources/<id>/index.html. La carte se redessine seule.
+   changez ses champs, et posez son fichier dans ressources/.
+   href   : n'importe quel chemin ou adresse, par exemple
+            "ressources/canopee/canopee.html" ou "https://…"
    status : "chantier" (en chantier) ou "publie" (en ligne)
    langs  : ["fr"], ["en"] ou ["fr","en"]
+   ile    : (facultatif) le nom d'une île pour y poser l'étoile,
+            par exemple ile: "Stromboli"
+   cote   : (facultatif) "gauche" ou "droite" pour placer le nom
+            de la ressource de ce côté de son étoile
+   Par défaut, une île = une escale : la première ressource d'un
+   archipel va sur la plus grande île, les suivantes sur les îles
+   les plus éloignées des précédentes. Quand toutes les îles sont
+   prises, les grandes îles accueillent plusieurs étoiles.
    ============================================================ */
 window.ALIDADE = {
   archipelagos: [
-    { id: "academique", hue: "acad", center: [270, 300], seed: 7,
+    { id: "academique", hue: "acad", geo: "saintes", center: [226, 200], size: 312,
       name: { fr: "Archipel académique", en: "Academic archipelago" },
       sub:  { fr: "Master FIRS · Géodata Paris", en: "FIRS master's · Géodata Paris" } },
-    { id: "associatif", hue: "asso", center: [950, 205], seed: 3,
+    { id: "associatif", hue: "asso", geo: "eoliennes", center: [962, 196], size: 400,
       name: { fr: "Archipel associatif", en: "Club archipelago" },
       sub:  { fr: "CNIF · formation croisière", en: "CNIF · cruising school" } },
-    { id: "ludo", hue: "ludo", center: [870, 575], seed: 11,
+    { id: "ludo", hue: "ludo", geo: "aleoutiennes", center: [604, 640], size: 1010, label: [250, 554],
       name: { fr: "Archipel ludo-éducatif", en: "Playful learning archipelago" },
       sub:  { fr: "AWA · jeux et récits", en: "AWA · games and stories" } }
   ],
@@ -56,8 +65,8 @@ window.ALIDADE = {
       audience: { fr: "Étudiants et équipe FIRS", en: "FIRS students and staff" },
       duration: { fr: "Toute la formation", en: "Whole programme" } },
 
-    { id: "boussole-ia", arch: "academique", status: "chantier", langs: ["fr"],
-      href: "ressources/boussole-ia/index.html",
+    { id: "boussole-ia", arch: "academique", status: "publie", langs: ["fr"],
+      href: "https://dfi.ensg.eu/BoussoleIA/",
       title: { fr: "Boussole IA", en: "AI Compass" },
       short: { fr: "Boussole IA", en: "AI Compass" },
       desc:  { fr: "Déclarer en toute transparence la part de l'IA dans un document produit.",
@@ -65,20 +74,31 @@ window.ALIDADE = {
       audience: { fr: "Étudiants et enseignants", en: "Students and teachers" },
       duration: { fr: "10 min", en: "10 min" } },
 
+
+    { id: "lune-et-marees", arch: "associatif", status: "publie", langs: ["fr"],
+      href: "ressources/lune-et-marees/Lune_sur_Cherbourg.html",
+      title: { fr: "Lune, soleil et marées", en: "Moon, sun and tides" },
+      short: { fr: "Lune et marées", en: "Moon and tides" },
+      desc:  { fr: "Identifier les phases de la lune et leur relation avec les marées maritimes terrestres.",
+               en: "Identify the phases of the moon and their relationship to the tides on Earth." },
+      audience: { fr: "Stagiaires voile", en: "Cruising trainees" },
+      duration: { fr: "10 à 15 min", en: "10 to 15 min" } },
+
+
     { id: "courant-de-bord", arch: "associatif", status: "chantier", langs: ["fr"],
       href: "ressources/courant-de-bord/index.html",
       title: { fr: "Courant de bord", en: "Courant de bord: power on board" },
       short: { fr: "Courant de bord", en: "Courant de bord" },
       desc:  { fr: "Câbler pas à pas l'installation électrique d'un voilier de croisière, puis la mettre à l'épreuve.",
                en: "Wire a cruising yacht's electrical system step by step, then put it to the test." },
-      audience: { fr: "Stagiaires croisière", en: "Cruising trainees" },
+      audience: { fr: "Stagiaires voile", en: "Cruising trainees" },
       duration: { fr: "30 à 45 min", en: "30 to 45 min" } },
 
-    { id: "mousse-en-herbe", arch: "ludo", status: "chantier", langs: ["fr"],
-      href: "ressources/mousse-en-herbe/index.html",
+    { id: "mousse-en-herbe", arch: "ludo", status: "publie", langs: ["fr"],
+      href: "https://markoneko.github.io/mousse-en-herbe/",
       title: { fr: "Mousse en herbe", en: "Mousse en herbe: budding deckhand" },
       short: { fr: "Mousse en herbe", en: "Budding deckhand" },
-      desc:  { fr: "Les fondamentaux de la voile pour les nouveaux membres d'AWA, compétence par compétence.",
+      desc:  { fr: "Les fondamentaux de la voile, surtout le vocabulaire, pour les nouveaux membres d'AWA, base par base.",
                en: "Sailing fundamentals for new AWA members, one skill at a time." },
       audience: { fr: "Nouveaux équipiers", en: "New crew" },
       duration: { fr: "À son rythme", en: "Self-paced" } },
@@ -101,8 +121,8 @@ window.ALIDADE = {
       audience: { fr: "Étudiants, curieux", en: "Students, curious minds" },
       duration: { fr: "30 min", en: "30 min" } },
 
-    { id: "dont-vous-etes-le-heros", arch: "ludo", status: "chantier", langs: ["fr"],
-      href: "ressources/dont-vous-etes-le-heros/index.html",
+    { id: "vous-etes-le-heros", arch: "ludo", status: "chantier", langs: ["fr"],
+      href: "ressources/vous-etes-le-heros/index.html",
       title: { fr: "Cours dont vous êtes le héros", en: "Choose-your-own-adventure courses" },
       short: { fr: "Vous êtes le héros", en: "Your own adventure" },
       desc:  { fr: "Des cours à embranchements, où chaque choix mène à une autre escale. Premiers récits en préparation.",

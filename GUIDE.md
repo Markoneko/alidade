@@ -37,11 +37,17 @@ alidade/
 
 ## 2. Déposer une ressource dans son escale
 
-Chaque ressource vit dans `ressources/<identifiant>/index.html`.
+Chaque ressource vit dans son dossier, par exemple `ressources/canopee/`. **Le nom du fichier est libre.**
 
 1. Ouvrez le dossier de l'escale sur GitHub, par exemple `ressources/canopee/`.
-2. **Add file** → **Upload files**, déposez votre page en la nommant **`index.html`** (elle remplace la page « en chantier »).
-3. **Commit changes**. C'est en ligne une minute plus tard.
+2. **Add file** → **Upload files**, déposez votre page avec le nom de votre choix, par exemple `canopee-v2.html`.
+3. **Commit changes**.
+4. Ouvrez `assets/resources.js` (crayon pour modifier) et changez la ligne `href` de la ressource :
+   `href: "ressources/canopee/canopee-v2.html",`
+   Le lien peut aussi pointer vers une autre adresse : `href: "https://…"`.
+5. **Commit changes**. C'est en ligne une minute plus tard.
+
+Si vous nommez votre fichier `index.html`, il remplace la page « en chantier » et l'étape 4 est inutile.
 
 **Attention aux pages produites dans Claude.** Une page publiée comme artefact sur claude.ai n'a pas l'en-tête HTML complet (`<!doctype html>`, `<head>`…). Demandez simplement à Claude « la version autonome pour Alidade » : il vous rend le fichier prêt à déposer, comme pour Courant de bord.
 
@@ -58,9 +64,25 @@ Ouvrez `assets/resources.js` sur GitHub (icône crayon pour modifier), copiez un
 | `href` | `ressources/<id>/index.html` |
 | `title`, `short`, `desc`, `audience`, `duration` | textes en `fr` et `en` ; `short` est le nom court écrit sur la carte |
 
-Puis créez le dossier `ressources/<id>/` avec son `index.html`. L'île grandit et l'étoile se place toute seule. La carte est dessinée à partir de nombres fixes : elle est identique à chaque visite, et ne change que si vous ajoutez ou retirez des escales.
+Puis déposez le fichier de la ressource. L'étoile se place toute seule.
 
-**Nouvel archipel** : ajoutez un bloc dans `archipelagos` avec un `id`, un `center` (position sur la carte, entre 0 et 1200 en x, 0 et 800 en y, loin du centre 600 × 410) et une couleur `hue`. Les couleurs disponibles sont `acad`, `asso` et `ludo` ; pour une quatrième, demandez à Claude d'ajouter la teinte dans `index.html`.
+**Comment les étoiles sont attribuées.** Chaque archipel est un vrai archipel, et par défaut une île porte une escale :
+
+| Archipel | Îles | Couleur |
+|---|---|---|
+| Académique | Les Saintes (Guadeloupe) : Terre-de-Bas, Terre-de-Haut, Grand Îlet, Îlet à Cabrit, La Coche | bleu Géodata #2E3387 |
+| Associatif | Îles Éoliennes : Lipari, Salina, Vulcano, Stromboli, Filicudi, Alicudi, Panarea | crème CNIF #EEECE1, côtes en bleu CNIF #1F497D |
+| Ludo-éducatif | Îles Aléoutiennes : Unimak, Unalaska, Umnak, Atka, Attu, Adak… (30 îles) | orange, complémentaire des deux autres |
+
+- La première ressource d'un archipel va sur la plus grande île ; chaque suivante va sur l'île la plus éloignée de celles déjà prises. Les ressources se répartissent ainsi sur tout l'archipel.
+- Pour choisir l'île vous-même, ajoutez `ile: "Stromboli"` dans le bloc de la ressource (nom exact, accents compris).
+- Quand toutes les îles sont prises (les Saintes en ont cinq), les suivantes se posent sur les plus grandes îles, plusieurs étoiles par île.
+- Si le nom d'une ressource déborde ou chevauche, ajoutez `cote: "gauche"` ou `cote: "droite"`.
+- La nuit, les étoiles d'un archipel sont reliées par le chemin le plus court qui les rassemble : c'est sa constellation. Les îles sans ressource y figurent en petites étoiles.
+
+**Position et taille d'un archipel** : dans `archipelagos`, `center` est le centre de l'archipel sur la carte (x de 0 à 1200, y de 0 à 800) et `size` sa plus grande dimension en pixels ; `label` (facultatif) place son nom ailleurs que sous l'archipel.
+
+**Autre archipel réel** : les contours sont dans `assets/geo.js`, produit par `tools/archis.py` (sources : IGN pour les Saintes, ISTAT pour les Éoliennes, Natural Earth pour les Aléoutiennes). Demandez à Claude de le régénérer avec le nouvel archipel.
 
 ## 4. Bon à savoir
 
