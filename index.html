@@ -17,7 +17,7 @@
   --acad:#2E3387; --acad-land:#2E3387; --acad-coast:#232968; --acad-hatch:#F4F5FB;
   --asso:#1F497D; --asso-land:#EEECE1; --asso-coast:#1F497D; --asso-hatch:#1F497D;
   --ludo:#A9501B; --ludo-land:#DD7A31; --ludo-coast:#8A3E12; --ludo-hatch:#FBEBDD;
-  --brass:#9A7420; --limb:#EEF0EC;
+  --brass:#9A7420; --sx-fill:#1B2340; --sx-op:.2; --sx-edge:#9A7420; --sx-edge-op:0; --sx-glow:0; --rose-op:1; --disc-op:.62;
   --star:#1B2340; --halo-op:0; --cdash:2 5; --cop:.75; --coast-dash:none; --land-op:1;
   --day:1; --night:0;
   --f-disp:"Cormorant SC","Cormorant Garamond",Garamond,"Times New Roman",serif;
@@ -32,7 +32,7 @@
   --acad:#A8ADF4; --acad-land:#2E3387; --acad-coast:#A8ADF4; --acad-hatch:#A8ADF4;
   --asso:#EEECE1; --asso-land:#EEECE1; --asso-coast:#EEECE1; --asso-hatch:#EEECE1;
   --ludo:#F3A766; --ludo-land:#DD7A31; --ludo-coast:#F3A766; --ludo-hatch:#F3A766;
-  --brass:#E2BE68; --limb:#1E2850;
+  --brass:#E2BE68; --sx-fill:#03050F; --sx-op:.92; --sx-edge:#E2BE68; --sx-edge-op:.85; --sx-glow:.35; --rose-op:.5; --disc-op:0;
   --star:#FFF5D8; --halo-op:.6; --cdash:none; --cop:.85; --coast-dash:2 6; --land-op:.12;
   --day:0; --night:1; color-scheme:dark}}
 :root[data-theme="dark"]{
@@ -42,7 +42,7 @@
   --acad:#A8ADF4; --acad-land:#2E3387; --acad-coast:#A8ADF4; --acad-hatch:#A8ADF4;
   --asso:#EEECE1; --asso-land:#EEECE1; --asso-coast:#EEECE1; --asso-hatch:#EEECE1;
   --ludo:#F3A766; --ludo-land:#DD7A31; --ludo-coast:#F3A766; --ludo-hatch:#F3A766;
-  --brass:#E2BE68; --limb:#1E2850;
+  --brass:#E2BE68; --sx-fill:#03050F; --sx-op:.92; --sx-edge:#E2BE68; --sx-edge-op:.85; --sx-glow:.35; --rose-op:.5; --disc-op:0;
   --star:#FFF5D8; --halo-op:.6; --cdash:none; --cop:.85; --coast-dash:2 6; --land-op:.12;
   --day:0; --night:1; color-scheme:dark}
 
@@ -118,15 +118,13 @@ a{color:inherit}
 .rose-d{fill:var(--ink);transition:fill 1.2s}
 .rose-l{fill:var(--paper);stroke:var(--ink);stroke-width:.9;transition:fill 1.2s}
 .hub{fill:var(--brass);stroke:var(--ink);stroke-width:1}
-.sx{transition:transform 1s cubic-bezier(.3,.7,.2,1)}
-.sx-frame{fill:var(--brass);stroke:var(--ink);stroke-width:1.3;stroke-linejoin:round;transition:fill 1.2s}
-.sx-limb{fill:none;stroke:var(--limb);stroke-width:17;transition:stroke 1.2s}
-.limb-t{stroke:var(--ink);stroke-width:.9}
-.limb-n{font-family:var(--f-mono);font-size:9.5px;fill:var(--ink);paint-order:stroke;stroke:var(--paper);stroke-width:3px}
-.sx-part{fill:var(--paper-2);stroke:var(--ink);stroke-width:1.2}
-.sx-arm{fill:var(--ink);transition:fill 1.2s}
-.sx-vern{fill:var(--paper);fill-opacity:.85;stroke:var(--ink);stroke-width:1.3}
-.sx-index{stroke:var(--brass);stroke-width:1.6}
+.sx{transition:transform 1.1s cubic-bezier(.3,.7,.2,1);pointer-events:none}
+.sx-body{fill:var(--sx-fill);opacity:var(--sx-op);stroke:var(--sx-edge);stroke-width:1;vector-effect:non-scaling-stroke;stroke-opacity:var(--sx-edge-op);transition:fill 1.2s,opacity 1.2s,stroke-opacity 1.2s}
+.sx-glow{fill:none;stroke:var(--brass);stroke-width:5;vector-effect:non-scaling-stroke;opacity:var(--sx-glow);filter:url(#sxglow);transition:opacity 1.2s}
+.rose{opacity:var(--rose-op);transition:opacity 1.2s}
+.em-bg{fill-opacity:var(--disc-op)}
+.sight{stroke:var(--brass);stroke-width:1.6;stroke-dasharray:3 5;stroke-linecap:round;opacity:0;transition:opacity .3s;pointer-events:none}
+.sight.on{opacity:.9}
 .readout{font-family:var(--f-mono);font-size:13px;letter-spacing:.08em;fill:var(--ink)}
 .readout2{font-family:var(--f-ital);font-style:italic;font-size:19px;fill:var(--ink-2)}
 .cart{fill:var(--paper);stroke:var(--ink);stroke-width:1.2}
@@ -276,7 +274,7 @@ const T={
   hintTouch:"Touchez une étoile pour viser une escale. « Lire le ciel » change la carte en ciel nocturne : les îles deviennent des constellations.",
   readSky:"Lire le ciel",readChart:"Lire la carte",
   about:"Alidade rassemble mes ressources pédagogiques interactives : enseignements à Géodata Paris et dans le master FIRS, formations associatives au CNIF, projets ludo-éducatifs. Chaque ressource est une escale, et toutes sont en chantier : elles évoluent au fil des séances.",
-  legendT:"Lire la carte",lg1:"Une escale : une ressource. La nuit, elle devient une étoile.",lg2:"Les routes entre escales du même archipel, qui forment ses constellations.",lg3:"L'alidade du sextant vise l'escale que vous survolez.",lg4:"Trois archipels réels : les Saintes, les îles Éoliennes et les Aléoutiennes. Une île, une escale.",island:"Île",
+  legendT:"Lire la carte",lg1:"Une escale : une ressource. La nuit, elle devient une étoile.",lg2:"Les routes entre escales du même archipel, qui forment ses constellations.",lg3:"La lunette du sextant vise l'escale que vous survolez.",lg4:"Trois archipels réels : les Saintes, les îles Éoliennes et les Aléoutiennes. Une île, une escale.",island:"Île",
   register:"Registre des escales",registerSub:"Toutes les ressources, archipel par archipel.",
   public:"Public",duration:"Durée",langs:"Langues",position:"Position",bearing:"Relèvement",go:"Accoster",
   chantier:"En chantier",publie:"En ligne",
@@ -290,7 +288,7 @@ const T={
   hintTouch:"Tap a star to sight a port. “Read the sky” turns the chart into a night sky: the islands become constellations.",
   readSky:"Read the sky",readChart:"Read the chart",
   about:"Alidade gathers my interactive teaching resources: courses at Géodata Paris and in the FIRS master's programme, sailing club training at the CNIF, and playful learning projects. Each resource is a port of call, and all of them are under construction: they evolve with every session.",
-  legendT:"Reading the chart",lg1:"A port of call is a resource. At night, it becomes a star.",lg2:"Routes between ports of the same archipelago, which draw its constellations.",lg3:"The sextant's alidade sights the port you hover.",lg4:"Three real archipelagos: Les Saintes, the Aeolian Islands and the Aleutians. One island, one port of call.",island:"Island",
+  legendT:"Reading the chart",lg1:"A port of call is a resource. At night, it becomes a star.",lg2:"Routes between ports of the same archipelago, which draw its constellations.",lg3:"The sextant's telescope sights the port you hover.",lg4:"Three real archipelagos: Les Saintes, the Aeolian Islands and the Aleutians. One island, one port of call.",island:"Island",
   register:"Harbour register",registerSub:"Every resource, archipelago by archipelago.",
   public:"Audience",duration:"Duration",langs:"Languages",position:"Position",bearing:"Bearing",go:"Go ashore",
   chantier:"Under construction",publie:"Live",
@@ -376,19 +374,28 @@ const ARCH=D.archipelagos.map(a=>{
  return geo?geoArch(a,res,geo):blobArch(a,res);
 });
 ARCH.forEach(g=>{const b=g.bbox;g.lab=g.a.label||[(b.x0+b.x1)/2,b.y1+26];g.labelBox={x0:g.lab[0]-175,y0:g.lab[1]-16,x1:g.lab[0]+175,y1:g.lab[1]+54};
- g.stars.forEach(st=>{const c=st.res.cote;st.lab=c==="gauche"?"l":c==="droite"?"r":null;});});
+ g.stars.forEach(st=>{const c=st.res.cote;st.lab={gauche:"l",droite:"r",haut:"t",bas:"b"}[c]||null;});});
 const poly=pts=>"M"+pts.map(p=>p[0].toFixed(1)+" "+p[1].toFixed(1)).join("L")+"Z";
 /* Zones à garder libres pour les sondes */
 const keepOut=[{x0:438,y0:24,x1:762,y1:126}];
 
 /* Construction du SVG */
 function el(tag,attrs,parent,text){const e=document.createElementNS(SVGNS,tag);for(const k in attrs)e.setAttribute(k,attrs[k]);if(text!=null)e.textContent=text;if(parent)parent.appendChild(e);return e;}
-let sxEl=null, sxAngle=0, readEl=null, read2El=null, limbLo=null, limbHi=null;
+let sxEl=null, sxAngle=0, sxMirror=1, sightEl=null, readEl=null, read2El=null;
+/* Sextant : dessin de Marc Poupée (assets/sextant.svg), en coordonnées du dessin (800 × 800).
+   pivot = centre de la rotule, posé au centre du compas ; axisY = hauteur de l'axe de la lunette ;
+   mirrorX = bout gauche de l'axe (petit miroir). On vise de l'oculaire (à droite) vers le petit miroir (à gauche). */
+const SEXTANT={pivot:[374,182],axisY:280,mirrorX:105,scale:.35,d:"M120.99,304.49c-1.27-6.36-4.17-16.7-5.63-23.03-.65.13-.5,2.67-.65,4.45,1.09,29.3,6.2,78.69,12.4,94.89,5.68-13.83-4.74-69.36-6.12-76.32ZM442.61,246.09c5.78-2.55,7.81-6.52,6.06-11.84-2.05-6.24-7.33-8.83-14.3-7.01-6.8,3.15-9.03,8.65-5.87,14.5,3.03,5.62,9.18,7.52,14.11,4.34ZM312.37,443.69c.37-5.63-2.62-8.36-7.65-9.75-24.08-6.63-46.92-16.22-68.5-28.83-7.55-4.41-11.82-3.13-15.86,4.56-9.08,17.28-18.17,34.55-27.14,51.88-3.46,6.68-8.82,12.93-5.53,21.43.3.77-.18,1.97-.55,2.86-1.4,3.36-.2,5.43,2.83,7.2,29.7,17.34,61.31,29.91,94.75,37.83,7.75,1.83,10.38-.09,11.91-7.84,3.2-16.22,6.29-32.47,9.49-48.7,2.02-10.23,4.16-20.43,6.25-30.64ZM477.16,421.17c-6.82,3.6-14.1,4.83-10.71,15.25,6.89,21.15,19.2,53.12,25.72,74.37,2.15,7.02,3.52,10.83,14.4,6.88,29.65-10.78,57.36-25.34,82.31-44.78,2.54-1.98,5.11-5.68,5.21-8.66.27-8.12.07-12.28-1.54-15.69-1.32-2.79-8.89-12.2-10.69-14.79-10.01-14.43-19.99-28.88-30.06-43.27-2.81-4.01-7.82-9.21-12.49-5.51-11.27,8.91-36.14,22.44-40.45,25.01-3.37,1.99-21.69,11.18-21.69,11.18ZM338.55,312.5c.21-4.26-1.81-6.29-5.61-8.07-11.19-5.26-22.32-10.73-33.1-16.79-8.02-4.51-12.9-3.73-17.33,4.59-14.28,26.77-28.5,53.57-42.69,80.38-3.71,7.01-2.55,10.44,4.34,14.55,19.05,11.37,39.36,19.81,60.53,26.3,9.7,2.97,13.46.86,15.5-9.01,3.63-17.52,7.2-35.05,10.71-52.59,2.62-13.1,5.09-26.24,7.63-39.36ZM106.07,472.52l23.12-25.2,12.51,12.5c2.73,2.26,5.51,4.46,8.32,6.63,6.01,4.66,15.72,4.07,19.5-2.38,7.26-12.4,13.85-25.23,20.08-38.19,2.7-5.6-2.02-11.59-8.31-11.34-15.37.61-30.69,1.52-47.37,2.08-1.53.05-22.17.76-22.17.76,0,0-4.84-.64-7.77-.38-1.89-.38-3.81-29.52-3.22-41.87l11.81-.06c-5.05-21.98-10.52-77.79-9.07-96.5.24-3.15.06-6.33.39-9.47.37-3.47,1.32-6.55,5.69-7.12,4.16-.53,6.49,1.52,7.56,5.05,2.33,7.72,4.72,15.45,6.44,23.32,2.27,10.4,4.03,20.92,5.73,31.43l1.4,9.51c2.46,16.96,3.12,25.38,5.36,41.5.01-.18,11.85-.46,11.85-.46l9.05,1.79s11.99,2.36,17.65-.76c4.1-2.26,4.85-6.42,3.43-10.36-6.73-18.7-13.75-37.3-20.86-56.47-4.05,1.18-7.66,2-11.09,3.3-3.06,1.16-4.82.55-5.92-2.59-1.49-4.26-3.2-8.45-5.1-13.4,7.2-3.25,14.13-6.38,20.57-9.29.2-1.58-.06-3.53.57-3.88,4.13-2.29.64-4.21-.08-6.26-1.25.69-2.46,1.5-3.77,2.05-3.22,1.36-6.47,2.67-9.76,3.86-2.77.99-5.61,1.77-9.13,2.87-2.13-5.39-4.19-10.6-6.49-16.43,7.87-3.41,15.21-6.59,22.88-9.92-2.17-6.12-4.05-11.89-6.28-17.53-1.66-4.19-.67-6.75,3.64-8.21s8.5-2.83,12.58-4.65c4.38-1.96,6.58-.52,8.21,3.62,5.65,14.37,11.49,28.66,17.27,42.98.44,1.08.94,2.13,1.58,3.56l7.56-1.9c7.63,19.58,15.46,39.48,23.11,59.44,1.76,4.58,3.97,8.12,9.44,8.29,5.21.16,8.28-2.52,10.63-6.96,10.05-19.01,20.16-37.99,30.52-56.84,2.5-4.54,2.65-7.76-.93-12.05-7.55-9.04-14.35-18.71-21.44-28.13-1.75-2.32-2.67-5.82-7.03-3.83-.6.27-2.44-2.17-3.92-3.56l-8.31-12.47c1.71-4.43,2.2-8.88,4.67-11.27,2.82-2.72,7.41-3.59,11.51-5.39-2.16-8.29-6.75-24.77-6.75-24.77,0,0,3.73-8.29,6.76-9.55,4.29,4.29,19.09,19.5,27.54,28.8,0,0,16.42,2.27,25.5,3.59,1.96-.24,4.47-.49,6.95-.88,4.26-.67,5.69-2.83,5.23-7.41-2.79-28.21,8.95-57.74,38.34-70.14,5.05-2.13,10.46-3.64,15.85-4.64,2.18-.4,8.76-.67,8.76-.67,1.41-11.4,2.75-22.05,4.05-32.7.48-3.92.41-7.98,1.53-11.7.53-1.79,1.21-4.44,2.96-4.47,5.09-.09,13.46.72,18.57,1.14,3.95.32,4.2,2.68,3.81,6.74-1.04,10.8-2.5,26.71-3.62,37.51,0,0,1.61,1.34,5.42,3.34,6.07,3.18,12.07,6.76,17.35,11.1,2.45,2.01,3.09,6.21,4.57,9.4.56,1.22.97,2.57,1.79,3.59,11.27,13.98,13.84,30.48,14.44,47.73.15,4.23,1.42,8.96,3.68,12.49,7.84,12.23,16.35,24.03,25.4,37.14-.16-4.51.68-9.31.68-9.31,0,0,6.33-.18,9.09.2,15.23,2.06,30.94,2.34,45.59,6.41,26.38,7.33,53.07,7.34,79.9,7.35,16.19,0,32.4-.07,48.56-.86,11.79-.58,23.84-1.18,35.17-4.11,7.43-1.92,14.61-3.94,22.28-3.99,12.42-.08,24.85.23,37.25-.31,4.14-.18,8.25-2.3,12.27-3.81,6.29-2.35,8.23-2.05,9.99,4.52,2.59,9.68,4.6,19.57,6.04,29.49,2.33,16.06,2.66,32.2-.46,48.25-.38,1.94-1.23,5.05-1.89,6.91-2.8,7.9-4.13,9.49-14.2,6.53-5.2-1.53-9.17-2.01-14.75-1.84-14.35.42-34.2,1.04-46.8,1.23,0,0-.19-1.71-.38-2.56-35.64-1.58-119.78,3.88-124.86,3.98-19.23.38-34.39,12.98-35.15,11.94,4.19,5.77,9.84,14.11,13.48,19.39,18.47,26.81,36.99,53.6,55.5,80.39,5.25,7.6,14.35,8.52,20.85,2.02,4.19-4.18,8.25-8.5,12.24-12.87,5.04-5.53,8.2-6.03,13.87-1.49,5.07,4.06,17.64,13.93,17.64,13.93-16.48,24.73-75.57,79.58-164.75,112.55,5.92,11.86.86,16.97-6.16,26.42-10.94,14.72-21.43,29.82-31.38,45.22-10.03,15.52-9.32,31.36,1.47,46.41,2.62,3.65,1.88,5.57-2.31,8.15-3.33,2.05-6.5,4.36-9.35,7.04-6.82,6.4-11.47,6.86-14.31-.96-3.39-9.37-5.65-19.17-7.97-28.89-1.05-4.38-1.36-8.99-1.48-13.52-.15-5.33-3.44-6.76-7.8-7.28-4.91-.58-5.59,2.39-6.19,6.44-2.38,16.07-6.3,31.69-15.21,45.64-6.39,10-6.71,10.14-16.99,4.02-1.35-.8-2.66-1.66-4.52-2.82,9.61-15.12,15.57-31.28,15.04-49.83-4.92.36-9.41,1.15-13.85.92-12.35-.63-24.69-1.52-37-2.69-3.2-.3-6.29-1.38-8.92-3.22-5.97-4.19-12.67-3.63-19.29-3.98-2.03-.11-4.05-.4-6.4-.64v5.16l.2,2.85c1.26,5.1,2.55,10.36,4.05,16.45-10.03,2.22-19.55,4.32-29.7,6.57-1.71-6.95-3.48-14.12-5.25-21.29-.45.06-.9.11-1.35.17.52,3.35.96,6.71,1.6,10.03.75,3.87,1.7,7.69,2.53,11.55.56,2.62,1.02,4.97-2.77,5.86-3.15.74-5.32.72-6.49-2.81-4.81-14.54-9.72-29.04-14.56-43.57-.37-1.11-.95-2.44-.65-3.45,3.33-11.33-1.34-22.21-1.66-33.32-.05-1.84.66-4.5,1.97-5.42,4.02-2.82,6.88-1.31,7.91,3.58,1.41,6.7,2.83,13.39,5.47,19.92-1.16-7.08-2.32-14.15-3.56-21.69,7.84-1.87,15.28-3.57,22.67-5.47,1.98-.51,3.81-1.62,5.71-2.45,1.3,4.46,3.31,8.86,3.68,13.39.33,4.02,1.66,4.84,5,3.88,2.44-.69,5.16-1.14,7.1-2.58,1.56-1.15,2.9-3.6,2.95-5.51l.76-8.41c-22.63-5.34-45.66-8.72-68.97-15.35-22.44-6.39-45.67-17.85-66.69-28.04-20.36-9.87-60.78-40.22-61.77-40.55-12.45-8.73-17.43-14.97-17.43-14.97ZM359.12,289.75c0-2.87.12-4.8-.02-6.72-.66-9.01-1.55-18.01-2.04-27.03-.25-4.61-.09-8.93-6.68-8.5-1.11.07-2.38-1.19-3.47-1.98-6.36-4.62-12.61-9.37-19.04-13.89-4.01-2.83-11.74-2.06-12.87.94-1.16,3.09-2.5,6.12-3.76,9.17-.74.11-1.49.23-2.23.34,3.2,4,6.49,7.94,9.56,12.04,1.36,1.82,2.82,3.86,3.28,6,1.15,5.36,1.63,10.86,2.66,16.25.29,1.49,1.22,3.46,2.44,4.08,9.86,5.03,20.33,8.07,32.17,9.29ZM476.31,349.93c-4.17-6.82-6.07-68.03-6.63-66.32-.3.93-5.49-12.11-5.68-11.18-.64,3.07-33.1,23.24-35.81,24.82-4.55,2.65-4.82,4.72-5.12,7.96-.05.55,31.77,95.38,32.4,96.25,2.46,3.41,9.28,4.2,10.61,3.41,14.79-8.77,47.48-24.81,62.02-33.97,5.29-3.33,5.31-7.36,1.8-12.67-2.17-3.28-4.45-7.37-6.41-10.77,0,0-2.59-4.75-6.25-3.6-6.23,1.95-26.91,5.12-40.93,6.06ZM364.26,356.34c-.95-12.47-1.89-24.94-2.84-37.41-.2,0-.07-5.95-1.46-8.1-.84.93-2.43,4.07-2.46,4.23-6.42,31.73-12.9,60.3-19.07,92.08-.48,2.47.04,8.28.76,10.99.67-.05,4.51,3.09,5.18,3.03,1.43,1.02,2.92.88,6.32,1.01,1.64.06,15.66.44,17.87.38-.44-6.32-2.72-44.28-2.72-45.98,0,0-1.87-20.2-1.58-20.23ZM473.65,519.03c.54-.53-25.43-81.51-28.33-83.46-4.07-2.75-7.58-2.18-14.31-1.42,1.24,1.79,7.48,57.79,7.39,57.51,0,0,5.02,5.12,12.41,10.61,0,0,18.64,13.6,22.83,16.77ZM371.05,499.23s-3.98-44.91-4.74-53.15c-.4-4.33-4.26-6.06-6.73-7.2-1.52-.15-17.24-.57-21.79-.76-3.24-.13-5.94,5.57-6.25,5.87-2.46,2.36-18.19,79.67-17.05,91.99,0,0,18.09,1.58,20.08.85,6.73-4.07,33.95-35.18,36.47-37.61ZM438.6,257.65c-12.51-1.52-16.67-8.15-21.98-17.43-.98-1.72-7.85-.03-10.23-.38-.69-.1,4.92,43.9,4.93,45.47,5.68.19,25.01-10.23,30.51-17.81,2.17-2.99-.15-9.28-3.22-9.85ZM428.56,416.24c6.44.38,10.52-7.8,10.23-9.47-.37-2.15-17.81-59.49-21.79-71.62,0,8.72,10.23,75.6,11.56,81.09ZM144.82,488.68l-.29-.2-.04.32.33-.12ZM201.52,510.23l.2-.3-.33-.04.13.33Z"};
+fetch("assets/sextant.svg").then(r=>r.ok?r.text():null).then(txt=>{if(!txt)return;
+ const doc=new DOMParser().parseFromString(txt,"image/svg+xml");
+ const ds=[...doc.querySelectorAll("path")].filter(q=>!q.closest('[class*="cls-1"],[display="none"]')).map(q=>q.getAttribute("d")).filter(Boolean);
+ if(ds.length){SEXTANT.d=ds.join(" ");document.querySelectorAll(".sx-body,.sx-glow").forEach(n=>n.setAttribute("d",SEXTANT.d));}}).catch(()=>{});
 
 function build(){
  const svg=$("#map"); svg.innerHTML="";
  const defs=el("defs",{},svg);
  const f=el("filter",{id:"blur",x:"-100%",y:"-100%",width:"300%",height:"300%"},defs); el("feGaussianBlur",{stdDeviation:"5"},f);
+ const fg=el("filter",{id:"sxglow",x:"-20%",y:"-20%",width:"140%",height:"140%"},defs); el("feGaussianBlur",{stdDeviation:"3"},fg);
  for(const g of ARCH){const p=el("pattern",{id:"h-"+g.a.hue,width:"6",height:"6",patternUnits:"userSpaceOnUse",patternTransform:"rotate(35)"},defs);
   el("line",{x1:"0",y1:"0",x2:"0",y2:"6",class:"hl g-"+g.a.hue},p);}
  el("rect",{class:"sea",x:"0",y:"0",width:W,height:H},svg);
@@ -406,13 +413,17 @@ function build(){
  el("circle",{class:"rcircle",cx:CX,cy:CY,r:"330"},rc);
  for(let i=0;i<16;i++){const th=i*Math.PI/8;el("circle",{class:"rnode",cx:(CX+Math.cos(th)*330).toFixed(1),cy:(CY+Math.sin(th)*330).toFixed(1),r:"3"},rc);}
 
+ const nearRose=b=>{const x=clamp(CX,b.x0,b.x1),y=clamp(CY,b.y0,b.y1);return Math.hypot(x-CX,y-CY)<168;};
  /* Côté des étiquettes d'escale, calculé avant les sondes pour qu'elles s'en écartent */
  const starBoxes=[];
  for(const g of ARCH)for(const st of g.stars){
   st.lbl=L(st.res.short||st.res.title); const w=st.lbl.length*8.3+16;
-  let right=st.lab?st.lab==="r":st.x>=g.cx-2;
-  if(!st.lab){if(right&&st.x+w>W-30)right=false;else if(!right&&st.x-w<30)right=true;}
-  st.right=right; starBoxes.push({x0:right?st.x-12:st.x-w,y0:st.y-14,x1:right?st.x+w:st.x+12,y1:st.y+12});
+  const box=side=>side==="r"?{x0:st.x-12,y0:st.y-14,x1:st.x+w,y1:st.y+12}:side==="l"?{x0:st.x-w,y0:st.y-14,x1:st.x+12,y1:st.y+12}
+   :side==="t"?{x0:st.x-w/2,y0:st.y-34,x1:st.x+w/2,y1:st.y+12}:{x0:st.x-w/2,y0:st.y-12,x1:st.x+w/2,y1:st.y+32};
+  const bad=b=>b.x0<30||b.x1>W-30||b.y0<24||b.y1>H-24||nearRose(b);
+  let side=st.lab;
+  if(!side){const first=st.x>=g.cx-2?"r":"l";side=[first,first==="r"?"l":"r","t","b"].find(k=>!bad(box(k)))||first;}
+  st.side=side; starBoxes.push(box(side));
  }
  /* Sondes (jour) */
  const so=el("g",{class:"day-only","aria-hidden":"true"},svg), rr=rng(42); let placed=0; const soundPts=[];
@@ -422,6 +433,46 @@ function build(){
   let ok=true,dmin=1e9; for(const b of boxes){const dx=Math.max(b.x0-x,0,x-b.x1),dy=Math.max(b.y0-y,0,y-b.y1),d=Math.hypot(dx,dy);dmin=Math.min(dmin,d);if(d<18)ok=false;}
   for(const q of soundPts)if(Math.hypot(q[0]-x,q[1]-y)<30)ok=false;
   if(!ok)continue; soundPts.push([x,y]); el("text",{class:"sound",x:x.toFixed(0),y:y.toFixed(0)},so,String(Math.round(6+dmin/6+rr()*12))); placed++;}
+
+ /* Emblème : la rose des vents posée sur un sextant. Le jour on devine le sextant sous la rose ; la nuit il passe devant, doré */
+ const E=el("g",{transform:`translate(${CX} ${CY})`,"aria-hidden":"true"},svg);
+ /* Sextant : le dessin de assets/sextant.svg, pivotant sur l'axe de sa lunette */
+ sxEl=el("g",{class:"sx"},E);
+ const sxT=`scale(${SEXTANT.scale}) translate(${-SEXTANT.pivot[0]} ${-SEXTANT.pivot[1]})`;
+ el("path",{class:"sx-glow",d:SEXTANT.d,transform:sxT},sxEl);
+ el("path",{class:"sx-body",d:SEXTANT.d,transform:sxT},sxEl);
+ const R=el("g",{class:"rose"},E);
+ el("circle",{class:"em-bg",r:"132"},R);
+ el("circle",{class:"em-ring",r:"124"},R); el("circle",{class:"em-ring",r:"117"},R);
+ for(let d=0;d<360;d+=5){const th=(d-90)*Math.PI/180,l=d%30===0?8:d%10===0?5:3;
+  el("line",{class:"tick",x1:(Math.cos(th)*124).toFixed(1),y1:(Math.sin(th)*124).toFixed(1),x2:(Math.cos(th)*(124-l)).toFixed(1),y2:(Math.sin(th)*(124-l)).toFixed(1)},R);
+  }
+ const bp=(b,r)=>`${(Math.sin(b*Math.PI/180)*r).toFixed(2)} ${(-Math.cos(b*Math.PI/180)*r).toFixed(2)}`;
+ el("path",{id:"degUp",d:`M${bp(275,104)} A104 104 0 0 1 ${bp(85,104)}`,fill:"none"},R);
+ el("path",{id:"degLo",d:`M${bp(265,111)} A111 111 0 0 0 ${bp(95,111)}`,fill:"none"},R);
+ for(let d=30;d<360;d+=30){if(d%90===0)continue;const up=d<90||d>270;
+  const tx=el("text",{class:"deg"},R);
+  el("textPath",{href:up?"#degUp":"#degLo",startOffset:((up?((d-275+360)%360):(265-d))/170*100).toFixed(2)+"%","text-anchor":"middle"},tx,String(d).padStart(3,"0"));}
+ const point=(ang,len,w,parent)=>{const th=(ang-90)*Math.PI/180,px=Math.cos(th),py=Math.sin(th),qx=-py,qy=px;
+  const tip=`${(px*len).toFixed(1)} ${(py*len).toFixed(1)}`, l=`${(qx*w).toFixed(1)} ${(qy*w).toFixed(1)}`, r=`${(-qx*w).toFixed(1)} ${(-qy*w).toFixed(1)}`;
+  el("path",{class:"rose-l",d:`M0 0 L${l} L${tip}Z`},parent); el("path",{class:"rose-d",d:`M0 0 L${r} L${tip}Z`},parent);};
+ for(let i=0;i<16;i++){if(i%2)point(i*22.5,46,5,R);}
+ for(let i=0;i<8;i++){if(i%2)point(i*45,72,10,R);}
+ for(let i=0;i<4;i++)point(i*90,104,13,R);
+ el("circle",{class:"hub",r:"6"},R);
+ [["N",0],["E",90],["S",180],["O",270]].forEach(([n,a])=>{const th=(a-90)*Math.PI/180;
+  el("text",{class:"card-n",x:(Math.cos(th)*146).toFixed(1),y:(Math.sin(th)*146+6).toFixed(1),"text-anchor":"middle"},E,lang==="en"&&n==="O"?"W":n);});
+
+ /* Cartouche */
+ const K=el("g",{"aria-hidden":"true"},svg);
+ el("rect",{class:"cart",x:"446",y:"30",width:"308",height:"90",rx:"2"},K);
+ el("rect",{class:"cart2",x:"452",y:"36",width:"296",height:"78"},K);
+ el("text",{class:"ct1",x:"600",y:"62","text-anchor":"middle"},K,t("cart1"));
+ el("text",{class:"ct2",x:"600",y:"84","text-anchor":"middle"},K,t("cart2"));
+ for(let i=0;i<5;i++)el("rect",{class:i%2?"scale-b":"scale-a",x:String(530+i*28),y:"93",width:"28",height:"5"},K);
+ for(let i=0;i<=5;i++)el("text",{class:"scale-n",x:String(530+i*28),y:"108","text-anchor":"middle"},K,i===5?"5 h":String(i));
+
+ sightEl=el("line",{class:"sight",x1:CX,y1:CY,x2:CX,y2:CY},svg);
 
  /* Archipels */
  for(const g of ARCH){
@@ -445,68 +496,13 @@ function build(){
    el("circle",{class:"hit",r:"18"},A);
    const C=el("g",{class:"core"},A);
    el("circle",{class:"halo",r:(14*k).toFixed(1)},C); el("circle",{class:"ring day-only",r:(9.5*k).toFixed(1)},C); el("path",{class:"s4",d:STAR4,transform:`scale(${k})`},C);
-   const lbl=s.lbl, right=s.right;
-   el("text",{class:"slabel",x:(s.x+(right?15:-15)).toFixed(1),y:(s.y+5).toFixed(1),"text-anchor":right?"start":"end"},G,lbl);
+   const lbl=s.lbl, sd=s.side;
+   el("text",{class:"slabel",x:(s.x+(sd==="r"?15:sd==="l"?-15:0)).toFixed(1),y:(s.y+(sd==="t"?-17:sd==="b"?27:5)).toFixed(1),"text-anchor":sd==="r"?"start":sd==="l"?"end":"middle"},G,lbl);
   }
  }
 
- /* Emblème : un sextant stylisé (un sixième de cercle), la rose des vents posée sur son pivot */
- const E=el("g",{transform:`translate(${CX} ${CY})`,"aria-hidden":"true"},svg);
- sxEl=el("g",{class:"sx"},E);
- const RO=208,RI=182,P=(a,r)=>[Math.cos(a*Math.PI/180)*r,Math.sin(a*Math.PI/180)*r],F=q=>q[0].toFixed(1)+" "+q[1].toFixed(1);
- /* Cadre : bords incurvés, oreilles arrondies aux extrémités du limbe, fenêtre évidée */
- const frame=`M${F(P(54,RO))}A${RO} ${RO} 0 0 1 ${F(P(126,RO))}A13 13 0 0 1 ${F(P(126,RI))}Q${F(P(117,118))} ${F(P(150,30))}A30 30 0 1 1 ${F(P(30,30))}Q${F(P(63,118))} ${F(P(54,RI))}A13 13 0 0 1 ${F(P(54,RO))}Z`;
- const win=`M${F(P(69,168))}A168 168 0 0 1 ${F(P(111,168))}A12 12 0 0 1 ${F(P(111,144))}A144 144 0 0 0 ${F(P(69,144))}A12 12 0 0 1 ${F(P(69,168))}Z`;
- el("path",{class:"sx-frame",d:frame+win,"fill-rule":"evenodd"},sxEl);
- el("path",{class:"sx-limb",d:`M${F(P(58,RO-11))}A${RO-11} ${RO-11} 0 0 1 ${F(P(122,RO-11))}`},sxEl);
- for(let d=60;d<=120;d++){const l=d%10===0?9:d%5===0?6:3.5;
-  el("line",{class:"limb-t",x1:F(P(d,RO-2)).split(" ")[0],y1:F(P(d,RO-2)).split(" ")[1],x2:F(P(d,RO-2-l)).split(" ")[0],y2:F(P(d,RO-2-l)).split(" ")[1]},sxEl);}
- /* Graduation doublée : un sextant porte 120° sur un arc de 60°, car un miroir qui tourne de θ dévie le rayon de 2θ */
- const pa=(deg,r)=>F(P(deg,r));
- el("path",{id:"limbLoP",d:`M${pa(125,RO+16)} A${RO+16} ${RO+16} 0 0 0 ${pa(55,RO+16)}`,fill:"none"},sxEl);
- el("path",{id:"limbHiP",d:`M${pa(55,RO+9)} A${RO+9} ${RO+9} 0 0 1 ${pa(125,RO+9)}`,fill:"none"},sxEl);
- limbLo=el("g",{},sxEl); limbHi=el("g",{},sxEl);
- for(let d=60;d<=120;d+=10){const v=String((120-d)*2);
-  const t1=el("text",{class:"limb-n"},limbLo); el("textPath",{href:"#limbLoP",startOffset:((125-d)/70*100).toFixed(2)+"%","text-anchor":"middle"},t1,v);
-  const t2=el("text",{class:"limb-n"},limbHi); el("textPath",{href:"#limbHiP",startOffset:((d-55)/70*100).toFixed(2)+"%","text-anchor":"middle"},t2,v);}
- el("rect",{class:"sx-part",x:"-23",y:"-6.5",width:"46",height:"13",rx:"6.5",transform:`translate(${F(P(62,150))}) rotate(-30)`},sxEl);
- el("rect",{class:"sx-part",x:"-7",y:"-11",width:"14",height:"22",rx:"3",transform:`translate(${F(P(119,152))}) rotate(30)`},sxEl);
- el("path",{class:"sx-arm",d:`M-6 0L6 0L3.2 ${RO+6}Q0 ${RO+11} -3.2 ${RO+6}Z`},sxEl);
- el("rect",{class:"sx-vern",x:"-12",y:String(RI-4),width:"24",height:String(RO-RI+6),rx:"5"},sxEl);
- el("line",{class:"sx-index",x1:"0",y1:String(RI-2),x2:"0",y2:String(RO)},sxEl);
- el("circle",{class:"sx-vern",cx:"22",cy:String(RI-14),r:"8"},sxEl);
-
- el("circle",{class:"em-bg",r:"132"},E);
- el("circle",{class:"em-ring",r:"124"},E); el("circle",{class:"em-ring",r:"117"},E);
- for(let d=0;d<360;d+=5){const th=(d-90)*Math.PI/180,l=d%30===0?8:d%10===0?5:3;
-  el("line",{class:"tick",x1:(Math.cos(th)*124).toFixed(1),y1:(Math.sin(th)*124).toFixed(1),x2:(Math.cos(th)*(124-l)).toFixed(1),y2:(Math.sin(th)*(124-l)).toFixed(1)},E);
-  }
- const bp=(b,r)=>`${(Math.sin(b*Math.PI/180)*r).toFixed(2)} ${(-Math.cos(b*Math.PI/180)*r).toFixed(2)}`;
- el("path",{id:"degUp",d:`M${bp(275,104)} A104 104 0 0 1 ${bp(85,104)}`,fill:"none"},E);
- el("path",{id:"degLo",d:`M${bp(265,111)} A111 111 0 0 0 ${bp(95,111)}`,fill:"none"},E);
- for(let d=30;d<360;d+=30){if(d%90===0)continue;const up=d<90||d>270;
-  const tx=el("text",{class:"deg"},E);
-  el("textPath",{href:up?"#degUp":"#degLo",startOffset:((up?((d-275+360)%360):(265-d))/170*100).toFixed(2)+"%","text-anchor":"middle"},tx,String(d).padStart(3,"0"));}
- const point=(ang,len,w,parent)=>{const th=(ang-90)*Math.PI/180,px=Math.cos(th),py=Math.sin(th),qx=-py,qy=px;
-  const tip=`${(px*len).toFixed(1)} ${(py*len).toFixed(1)}`, l=`${(qx*w).toFixed(1)} ${(qy*w).toFixed(1)}`, r=`${(-qx*w).toFixed(1)} ${(-qy*w).toFixed(1)}`;
-  el("path",{class:"rose-l",d:`M0 0 L${l} L${tip}Z`},parent); el("path",{class:"rose-d",d:`M0 0 L${r} L${tip}Z`},parent);};
- for(let i=0;i<16;i++){if(i%2)point(i*22.5,46,5,E);}
- for(let i=0;i<8;i++){if(i%2)point(i*45,72,10,E);}
- for(let i=0;i<4;i++)point(i*90,104,13,E);
- el("circle",{class:"hub",r:"6"},E);
- [["N",0],["E",90],["S",180],["O",270]].forEach(([n,a])=>{const th=(a-90)*Math.PI/180;
-  el("text",{class:"card-n",x:(Math.cos(th)*146).toFixed(1),y:(Math.sin(th)*146+6).toFixed(1),"text-anchor":"middle"},E,lang==="en"&&n==="O"?"W":n);});
  readEl=el("text",{class:"readout",x:CX,y:String(CY+252),"text-anchor":"middle"},svg,t("readIdle"));
  read2El=el("text",{class:"readout2",x:CX,y:String(CY+276),"text-anchor":"middle"},svg,"");
-
- /* Cartouche */
- const K=el("g",{"aria-hidden":"true"},svg);
- el("rect",{class:"cart",x:"446",y:"30",width:"308",height:"90",rx:"2"},K);
- el("rect",{class:"cart2",x:"452",y:"36",width:"296",height:"78"},K);
- el("text",{class:"ct1",x:"600",y:"62","text-anchor":"middle"},K,t("cart1"));
- el("text",{class:"ct2",x:"600",y:"84","text-anchor":"middle"},K,t("cart2"));
- for(let i=0;i<5;i++)el("rect",{class:i%2?"scale-b":"scale-a",x:String(530+i*28),y:"93",width:"28",height:"5"},K);
- for(let i=0;i<=5;i++)el("text",{class:"scale-n",x:String(530+i*28),y:"108","text-anchor":"middle"},K,i===5?"5 h":String(i));
 
  /* Bordure graduée */
  const B=el("g",{"aria-hidden":"true"},svg);
@@ -515,24 +511,31 @@ function build(){
  for(let x=16,i=0;x<W-16;x+=40,i++){if(i%2===0){el("rect",{class:"bseg",x:String(x),y:"8",width:String(Math.min(40,W-16-x)),height:"8"},B);el("rect",{class:"bseg",x:String(x),y:String(H-16),width:String(Math.min(40,W-16-x)),height:"8"},B);}}
  for(let y=16,i=0;y<H-16;y+=40,i++){if(i%2===0){el("rect",{class:"bseg",x:"8",y:String(y),width:"8",height:String(Math.min(40,H-16-y))},B);el("rect",{class:"bseg",x:String(W-16),y:String(y),width:"8",height:String(Math.min(40,H-16-y))},B);}}
 
- sxEl.style.transform=`rotate(${sxAngle}deg)`; limbOrient();
+ sxApply();
  bindStars();
 }
 
 /* Visée */
-function limbOrient(){const low=Math.sin((90+sxAngle)*Math.PI/180)>-.2;limbLo.setAttribute("display",low?"inline":"none");limbHi.setAttribute("display",low?"none":"inline");}
+/* Le sextant tourne sur sa rotule et se retourne pour viser à l'est ; l'axe de sa lunette, prolongé au-delà du petit miroir, passe exactement par l'escale */
+function sxApply(){sxEl.style.transform=`rotate(${sxAngle}deg) scaleX(${sxMirror})`;}
 const allStars=()=>ARCH.flatMap(g=>g.stars);
 const starById=id=>allStars().find(s=>s.res.id===id);
 const bearing=s=>(Math.round(Math.atan2(s.x-CX,-(s.y-CY))*180/Math.PI)+360)%360;
 function aim(s){
- const target=bearing(s)-180;
- let delta=((target-sxAngle)%360+540)%360-180; sxAngle+=delta;
- sxEl.style.transform=`rotate(${sxAngle}deg)`; limbOrient();
+ const S=SEXTANT,k=S.scale,a=(S.axisY-S.pivot[1])*k,dx=s.x-CX,dy=s.y-CY,dd=Math.hypot(dx,dy)||1;
+ const b=bearing(s); sxMirror=(b>0&&b<180)?-1:1;
+ const phi=Math.atan2(dy,dx)*180/Math.PI, off=Math.asin(clamp(a/dd,-1,1))*180/Math.PI;
+ const target=sxMirror===1?phi-180+off:phi-off;
+ let delta=((target-sxAngle)%360+540)%360-180; sxAngle+=delta; sxApply();
+ const th=target*Math.PI/180,lx=sxMirror*(S.mirrorX-S.pivot[0])*k,x1=CX+lx*Math.cos(th)-a*Math.sin(th),y1=CY+lx*Math.sin(th)+a*Math.cos(th);
+ const ux=s.x-x1,uy=s.y-y1,ul=Math.hypot(ux,uy)||1;
+ sightEl.setAttribute("x1",x1.toFixed(1));sightEl.setAttribute("y1",y1.toFixed(1));
+ sightEl.setAttribute("x2",(s.x-ux/ul*14).toFixed(1));sightEl.setAttribute("y2",(s.y-uy/ul*14).toFixed(1));sightEl.classList.add("on");
  readEl.textContent=`${t("bearing").toUpperCase()} ${String(bearing(s)).padStart(3,"0")}°`;
  read2El.textContent=L(s.res.title)+(s.island&&s.island.name?` · ${s.island.name}`:"");
  document.querySelectorAll(".st").forEach(n=>n.classList.toggle("on",n.dataset.id===s.res.id));
 }
-function rest(){readEl.textContent=t("readIdle");read2El.textContent="";document.querySelectorAll(".st.on").forEach(n=>n.classList.remove("on"));}
+function rest(){sightEl.classList.remove("on");readEl.textContent=t("readIdle");read2El.textContent="";document.querySelectorAll(".st.on").forEach(n=>n.classList.remove("on"));}
 function pos(s){const g=ARCH.find(q=>q.stars.includes(s));const ll=g&&g.lonlat?g.lonlat(s.x,s.y):[50-s.y/H*11,-6+s.x/W*15].reverse();const lat=ll[1],lon=ll[0];
  const f=(v,p,n)=>{const tm=Math.round(Math.abs(v)*60),d=Math.floor(tm/60),m=tm%60;return `${d}°${String(m).padStart(2,"0")}′ ${v>=0?p:n}`;};
  return `${f(lat,"N","S")} · ${f(lon,"E",lang==="en"?"W":"O")}`;}

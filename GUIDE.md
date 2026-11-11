@@ -77,7 +77,9 @@ Puis déposez le fichier de la ressource. L'étoile se place toute seule.
 - La première ressource d'un archipel va sur la plus grande île ; chaque suivante va sur l'île la plus éloignée de celles déjà prises. Les ressources se répartissent ainsi sur tout l'archipel.
 - Pour choisir l'île vous-même, ajoutez `ile: "Stromboli"` dans le bloc de la ressource (nom exact, accents compris).
 - Quand toutes les îles sont prises (les Saintes en ont cinq), les suivantes se posent sur les plus grandes îles, plusieurs étoiles par île.
-- Si le nom d'une ressource déborde ou chevauche, ajoutez `cote: "gauche"` ou `cote: "droite"`.
+- Le nom d'une ressource se place seul à droite, à gauche, au-dessus ou au-dessous de son étoile, en évitant le compas et les bords. Pour l'imposer : `cote: "gauche"`, `"droite"`, `"haut"` ou `"bas"`.
+
+**Le sextant** : le dessin vient de `assets/sextant.svg`. Le jour, on le devine sous la rose ; la nuit, il passe en doré et la rose s'efface. Il tourne sur sa rotule, posée au centre du compas, et se retourne pour viser vers l'est ; on vise comme en vrai : de l'oculaire vers le petit miroir ; une ligne de visée prolonge l'axe de la lunette jusqu'à l'escale survolée. Si vous redessinez le sextant (carré de 800 × 800, lunette horizontale), demandez à Claude d'ajuster `pivot`, `axisY`, `mirrorX` et `scale` dans `index.html` (constante `SEXTANT`).
 - La nuit, les étoiles d'un archipel sont reliées par le chemin le plus court qui les rassemble : c'est sa constellation. Les îles sans ressource y figurent en petites étoiles.
 
 **Position et taille d'un archipel** : dans `archipelagos`, `center` est le centre de l'archipel sur la carte (x de 0 à 1200, y de 0 à 800) et `size` sa plus grande dimension en pixels ; `label` (facultatif) place son nom ailleurs que sous l'archipel.
