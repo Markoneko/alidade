@@ -38,6 +38,7 @@ window.ALIDADE = {
       audience: { fr: "Master FIRS", en: "FIRS master's students" },
       duration: { fr: "Semestre", en: "Semester" } },
 
+      /* ============================================================
 //    { id: "feu-de-saumos", arch: "academique", status: "publie", langs: ["fr", "en"],
 //      href: "ressources/feu-de-saumos/index.html",
 //      title: { fr: "Le feu de Saumos", en: "The Saumos fire" },
@@ -46,7 +47,8 @@ window.ALIDADE = {
 //               en: "A short hands-on introduction to remote sensing: reading a forest fire from space." },
 //      audience: { fr: "Élèves et étudiants en visite", en: "Visiting students" },
 //      duration: { fr: "30 min", en: "30 min" } },
-
+   ============================================================ */
+   
     { id: "enquete-sig", arch: "academique", status: "chantier", langs: ["fr"],
       href: "ressources/enquete-sig/index.html",
       title: { fr: "Enquête SIG : les flux forestiers", en: "GIS investigation: forest data flows" },
